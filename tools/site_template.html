@@ -102,7 +102,7 @@ td .pv { color: var(--ink-3); font-size: 12px; font-weight: 400; }
 .madeby { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--divider); color: var(--ink); font-size: 16px; }
 .madeby img { height: 32px; width: auto; display: block; }
 .radars { display: flex; flex-wrap: wrap; gap: 8px 16px; }
-.radar { margin: 0; width: 230px; }
+.radar { margin: 0; width: 460px; max-width: 100%; }
 .radar figcaption { font-weight: 700; text-align: center; }
 .radar svg { width: 100%; height: auto; display: block; overflow: visible; }
 .rlabel { font-size: 14px; fill: var(--ink-2); }
@@ -134,7 +134,7 @@ td.none { color: var(--ink-3); }
   .card, table, h2, h3 { break-inside: avoid; }
   footer { break-before: avoid; }
   .radars { gap: 0 6px; }
-  .radar { width: 18%; break-inside: avoid; }
+  .radar { width: 32%; break-inside: avoid; }
   .radar figcaption { font-size: 9pt; }
   .rlabel { font-size: 9px; }
   h1 { font-size: 17pt; margin: 12px 0 2px; }
@@ -214,7 +214,7 @@ const T = {
   how: ["各文のローマ字を同じ手順で打ち、確定した文字を記録します。完全一致しない出力は IME 名を伏せて言語モデルが判定します（A 表記ちがい、B 別の言葉だが自然、C 誤り）。fair % は完全一致と A の合計です。", "Each sentence's romaji is typed the same way and the committed text recorded. Outputs that are not exact are judged by a language model without input method names (A notation variant, B other words that read naturally, C error). fair % is exact plus A."],
   madeby: ["このベンチマークは Capitata が作成しています。", "This benchmark is made by Capitata."],
   generated: ["作成日", "Generated"], overview: ["全体の比較", "Overview"], profiles: ["IME ごとの得意・不得意", "Strengths per input method"],
-  profilesNote: ["軸はセット、中心が 0 %、外周が 100 %。点にマウスを乗せると数値が出ます。", "One axis per set, 0% at the centre, 100% at the edge. Hover a point for its value."],
+  profilesNote: ["全セットを測った IME だけを表示。軸はセット、中心が 0 %、外周が 100 %。", "Input methods measured on every set. One axis per set, 0% at the centre, 100% at the edge."],
   setShort: { ajimee: ["AJIMEE", "AJIMEE"], mozc: ["MOZC", "MOZC"], ja: ["JA", "JA"], jatypo: ["JA-SLIP", "JA-SLIP"],
     postsja: ["POST-JA", "POST-JA"], mixB: ["MIX-SP", "MIX-SP"], mixC: ["MIX-RUN", "MIX-RUN"],
     postsmixB: ["POST-MIX-SP", "POST-MIX-SP"], postsmixC: ["POST-MIX-RUN", "POST-MIX-RUN"],
@@ -327,7 +327,7 @@ const GROUP = { ajimee: "groupJa", ja: "groupJa", jatypo: "groupJa", postsja: "g
   mixB: "groupMix", mixC: "groupMix", postsmixB: "groupMix", postsmixC: "groupMix",
   en: "groupEn", enclean: "groupEn", postsen: "groupEn", postsentypo: "groupEn" };
 function radar(r, sets) {
-  const W = 230, H = 210, cx = W / 2, cy = 108, R = 70, n = sets.length;
+  const W = 420, H = 330, cx = W / 2, cy = 165, R = 105, n = sets.length;
   const ang = i => -Math.PI / 2 + 2 * Math.PI * i / n;
   const pt = (i, v) => [cx + R * v / 100 * Math.cos(ang(i)), cy + R * v / 100 * Math.sin(ang(i))];
   const short = name => { const k = DATA.sets[name] ? name : name; const m = T.setShort[k] || T.setShort[DATA.sets[name] && DATA.sets[name].kind]; return m ? m[lang] : name; };
@@ -358,7 +358,10 @@ function radar(r, sets) {
 function profiles() {
   const ov = DATA.overview;
   if (!ov || ov.sets.length < 3) return "";
-  return `<h2>${t("profiles")}</h2><div class="card"><p class="note">${t("profilesNote")}</p><div class="radars">${ov.rows.map(r => radar(r, ov.sets)).join("")}</div></div>`;
+  // Only input methods measured on every set: an axis without a value would read as 0%.
+  const full = ov.rows.filter(r => ov.sets.every(n => r.values[n] != null));
+  if (!full.length) return "";
+  return `<h2>${t("profiles")}</h2><div class="card"><p class="note">${t("profilesNote")}</p><div class="radars">${full.map(r => radar(r, ov.sets)).join("")}</div></div>`;
 }
 
 function overview() {
@@ -371,7 +374,7 @@ function overview() {
   }
   let h = `<h2>${t("overview")}</h2><div class="card"><p class="note">${t("overviewNote")}</p><div class="scroll"><table class="ovt">
     <tr><th></th>${groups.map(g => `<th colspan="${g.n}" class="grp">${t(g.g)}</th>`).join("")}</tr>
-    <tr><th>${t("ime")}</th>${ov.sets.map(n => `<th>${esc((T.setNames[n] || T.setShort[n] || T.setShort[DATA.sets[n].kind] || [n, n])[lang])}</th>`).join("")}</tr>`;
+    <tr><th>${t("ime")}</th>${ov.sets.map(n => `<th title="${esc((T.setNames[n] || [n, n])[lang])}">${esc((T.setShort[n] || T.setShort[DATA.sets[n].kind] || [n, n])[lang])}</th>`).join("")}</tr>`;
   for (const r of ov.rows) {
     h += `<tr><td>${esc(r.name)}</td>${ov.sets.map(n => r.values[n] == null ? `<td class="none">—</td>` :
       `<td><div class="ov"><span class="ovbar" style="width:${r.values[n].toFixed(1)}%"></span></div><span class="ovv">${r.values[n].toFixed(1)}</span></td>`).join("")}</tr>`;

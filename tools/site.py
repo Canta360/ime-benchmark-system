@@ -25,6 +25,8 @@ NAMES = {
     "copilot": "Copilot Keyboard", "mozc": "Mozc", "meltype": "Meltype",
 }
 GOOD = {"exact", "A"}
+OVERVIEW_AS = {"tekitomix": "tekito", "tekitoauto": "tekito"}
+OVERVIEW_ORDER = ["tekito", "tekitomix", "tekitoauto"]
 
 
 def wilson(k: int, n: int) -> tuple[float, float]:
@@ -119,11 +121,17 @@ def main() -> int:
     for set_name in names:
         for sysd in data["sets"][set_name]["systems"]:
             base = sysd["system"].removeprefix("real.").partition("-")[0]
-            label = NAMES.get(base, base)
-            row = rows.setdefault(label, {"name": label, "values": {}, "bundles": {}})
-            if sysd["bundle"] >= row["bundles"].get(set_name, ""):
+            # One input method in its modes is one row (TEKITO in Japanese, Mix and Auto);
+            # for a set measured in several modes the first mode listed wins.
+            label = NAMES.get(OVERVIEW_AS.get(base, base), base)
+            rank = OVERVIEW_ORDER.index(base) if base in OVERVIEW_ORDER else 99
+            row = rows.setdefault(label, {"name": label, "values": {}, "bundles": {}, "rank": {}})
+            if rank < row["rank"].get(set_name, 100) or (rank == row["rank"].get(set_name) and sysd["bundle"] >= row["bundles"].get(set_name, "")):
+                row["rank"][set_name] = rank
                 row["values"][set_name] = sysd["fair"]
                 row["bundles"][set_name] = sysd["bundle"]
+    for r in rows.values():
+        r.pop("rank", None)
     data["overview"] = {"sets": names, "rows": sorted(rows.values(), key=lambda r: r["name"])}
     for f in sorted((ROOT / "heldout").glob("*_commitments.txt")):
         data["commitments"].append({"cycle": f.stem.split("_")[0],
