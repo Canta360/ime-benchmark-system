@@ -169,7 +169,7 @@ keeps its own license:
 | held-out text, `results/`, `labels.tsv` | CC BY 4.0 |
 | `assets/`, `runner/icon/` (logos, icon) | all rights reserved by Capitata |
 
-The logo lettering uses [851ゴチカクット](https://pm85122.onamae.jp/851fontpage.html)
+The logo lettering uses [851ゴチカクット](https://pm85122.onamae.jp/851Gkktt.html)
 (試) and [f.k 機械彫刻](https://font.kim/) (IME精度測定), converted to outlines.
 The results page uses the Digital Agency Design System.
 

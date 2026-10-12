@@ -129,7 +129,7 @@ IME精度測定は、TEKITO という IME を開発している Capitata が作�
 | held-out の文、`results/`、`labels.tsv` | CC BY 4.0 |
 | `assets/`、`runner/icon/`（ロゴ、アイコン） | 権利は Capitata にあります |
 
-ロゴの文字は [851ゴチカクット](https://pm85122.onamae.jp/851fontpage.html)（「試」）と [f.k 機械彫刻](https://font.kim/)（「IME精度測定」）をアウトライン化したものです。結果ページのデザインは、デジタル庁デザインシステムを使っています。
+ロゴの文字は [851ゴチカクット](https://pm85122.onamae.jp/851Gkktt.html)（「試」）と [f.k 機械彫刻](https://font.kim/)（「IME精度測定」）をアウトライン化したものです。結果ページのデザインは、デジタル庁デザインシステムを使っています。
 
 IME精度測定は [Capitata](https://capitata.dev) が開発しています。
 
