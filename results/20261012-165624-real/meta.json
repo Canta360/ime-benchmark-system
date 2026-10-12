@@ -1,0 +1,68 @@
+{
+ "windows": "Windows 10 Pro 26H2 build 26300.9457",
+ "note": "public AJIMEE (all 200) and MOZC, learning on as installed; TEKITO 2026-10-07 build",
+ "harness": "ImeBench 3813f219b7d1",
+ "learning": "on",
+ "date": "2026-10-12 18:43",
+ "sets_sha256": {
+  "ajimee": "c2fb8949947d44270ab693e36b738ba95e9a4c845d9911bfd4be1a8fcc4a5bbb",
+  "mozc": "038bb5ac3c29c0e23c9bceab873365a53bbf7b920a54b241d9fa8d8747a1acb0"
+ },
+ "done": [
+  "tekito/ajimee",
+  "tekito/mozc",
+  "tekitolive/ajimee",
+  "tekitolive/mozc",
+  "msime/ajimee",
+  "msime/mozc",
+  "google/ajimee",
+  "google/mozc",
+  "copilot/ajimee",
+  "copilot/mozc",
+  "mozc/ajimee",
+  "mozc/mozc",
+  "meltype/ajimee",
+  "meltype/mozc"
+ ],
+ "skipped": [],
+ "kind": "real-ime",
+ "group": "dev",
+ "imes": {
+  "tekito": {
+   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll",
+   "modified": "2026-10-07T17:39:36",
+   "version": ""
+  },
+  "tekitolive": {
+   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll",
+   "modified": "2026-10-07T17:39:36",
+   "version": ""
+  },
+  "msime": {
+   "dll": "C:\\Windows\\System32\\IME\\IMEJP\\imjptip.dll",
+   "modified": "2026-09-09T17:33:54",
+   "version": "10.0.26100.9278 (WinBuild.160101.0800)"
+  },
+  "google": {
+   "dll": "C:\\Program Files (x86)\\Google\\Google Japanese Input\\GoogleIMEJaTIP64.dll",
+   "modified": "2026-07-24T06:16:10",
+   "version": "3.34.6260.0"
+  },
+  "copilot": {
+   "dll": "C:\\Program Files\\CopilotKeyboard\\MAIIME.dll",
+   "modified": "2026-07-20T02:15:18",
+   "version": "1.0.0.11040"
+  },
+  "mozc": {
+   "dll": "C:\\Program Files (x86)\\Mozc\\mozc_tip64.dll",
+   "modified": "2026-10-11T18:37:30",
+   "version": "3.34.6345.100"
+  },
+  "meltype": {
+   "dll": "C:\\Program Files\\Meltype\\tip\\x64\\MeltypeTip.dll",
+   "modified": "2026-10-11T08:38:02",
+   "version": "1.0.0"
+  }
+ },
+ "measured_by": "maintainer (verified)"
+}

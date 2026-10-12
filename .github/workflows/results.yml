@@ -1,0 +1,40 @@
+name: results
+
+# A pull request that adds or changes result bundles: check them and score
+# them from their raw outputs (scores in a submission are never trusted).
+on:
+  pull_request:
+    paths: ["results/**", "labels.tsv", "sets/**", "tools/**"]
+  push:
+    branches: [main]
+    paths: ["results/**", "labels.tsv", "sets/**", "tools/**"]
+
+jobs:
+  check-and-score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Bundles changed
+        id: changed
+        run: |
+          base="${{ github.event.pull_request.base.sha || github.event.before }}"
+          bundles=$(git diff --name-only "$base" HEAD -- results/ | cut -d/ -f1-2 | sort -u | while read b; do [ -d "$b" ] && echo "$b"; done | tr '\n' ' ')
+          [ -z "$bundles" ] && bundles=$(ls -d results/*/ | tr '\n' ' ')
+          echo "bundles=$bundles" >> "$GITHUB_OUTPUT"
+      - name: Check
+        run: python tools/bench.py check ${{ steps.changed.outputs.bundles }}
+      - name: Score
+        run: |
+          for b in ${{ steps.changed.outputs.bundles }}; do
+            python tools/bench.py score "$b" --prev none > /dev/null
+            cat "$b/report.md" >> "$GITHUB_STEP_SUMMARY"
+          done
+      - name: Outputs not judged yet
+        run: |
+          python tools/bench.py judge-export dev --size 100000 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "Outputs not judged yet are judged by the maintainers after merge (labels.tsv)." >> "$GITHUB_STEP_SUMMARY"

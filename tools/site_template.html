@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IME精度測定 IME Benchmark system</title>
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@400;700&family=M+PLUS+1+Code&display=swap" rel="stylesheet">
+<style>
+/* Design: the Digital Agency Design System (DADS) tokens
+   (@digital-go-jp/design-tokens), with the logo's green as the key color.
+   Key: green-800 (4.5:1 on white for text); chart: green-700 / green-500 (dark). */
+:root {
+  --key: #197a4b; --key-bg: #e6f5ec;
+  --surface: #ffffff; --page: #f2f2f2; --ink: #1a1a1a; --ink-2: #4d4d4d; --ink-3: #666666;
+  --grid: #e6e6e6; --line: #949494; --divider: #cccccc; --bar: #1d8b56;
+  --ok-bg: #197a4b; --ok-ink: #ffffff; --warn-bg: #fff0b3; --warn-ink: #6e5600; --bad-bg: #ce0000; --bad-ink: #ffffff;
+  --win: #197a4b; --lose: #ce0000; --chip: #f2f2f2; --link: #0017c1;
+  --radius: 0.75rem; --radius-s: 0.5rem;
+  --elev: 0 2px 12px 2px rgba(0,0,0,0.1), 0 1px 6px 0 rgba(0,0,0,0.3);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --key: #71c598; --key-bg: #0c472a;
+    --surface: #1a1a1a; --page: #0d0d0d; --ink: #ffffff; --ink-2: #cccccc; --ink-3: #b3b3b3;
+    --grid: #333333; --line: #7f7f7f; --divider: #4d4d4d; --bar: #2cac6e;
+    --ok-bg: #71c598; --ok-ink: #032213; --warn-bg: #604b00; --warn-ink: #fff0b3; --bad-bg: #ff7171; --bad-ink: #1a1a1a;
+    --win: #71c598; --lose: #ff9696; --chip: #333333; --link: #9db7f9;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font-family: "M PLUS 1", sans-serif;
+       font-size: 16px; line-height: 1.7; letter-spacing: 0.02em; }
+a { color: var(--link); }
+:focus-visible { outline: 4px solid #000000; outline-offset: 2px; box-shadow: 0 0 0 2px #ffd43d; border-radius: 4px; }
+header { background: var(--surface); border-bottom: 4px solid var(--key); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0; flex-wrap: wrap; }
+.top img { height: 56px; max-width: 100%; }
+.toggle { display: inline-flex; border: 1px solid var(--key); border-radius: var(--radius-s); overflow: hidden; }
+.toggle button { background: var(--surface); color: var(--key); border: 0; padding: 8px 16px; font: inherit; font-size: 16px; line-height: 1; cursor: pointer; min-height: 44px; }
+.toggle button[aria-pressed="true"] { background: var(--key); color: var(--surface); font-weight: 700; }
+.toggle button:hover:not([aria-pressed="true"]) { background: var(--key-bg); }
+h1 { font-size: 32px; line-height: 1.5; letter-spacing: 0.01em; margin: 24px 0 8px; }
+h2 { font-size: 24px; line-height: 1.5; margin: 40px 0 8px; padding-left: 12px; border-left: 6px solid var(--key); }
+h3 { font-size: 20px; line-height: 1.5; margin: 0 0 8px; }
+p.lead { color: var(--ink-2); margin: 0 0 16px; }
+.card { background: var(--surface); border: 1px solid var(--divider); border-radius: var(--radius); padding: 24px; margin: 16px 0; }
+.note { color: var(--ink-2); font-size: 14px; line-height: 1.7; }
+.chart { position: relative; margin-top: 8px; }
+.bar-row { display: grid; grid-template-columns: minmax(130px, 220px) 1fr 64px; align-items: center; gap: 12px; height: 40px; }
+.bar-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { position: relative; height: 100%; border-left: 1px solid var(--line); }
+.bar-track .gridline { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--grid); }
+.bar-fill { position: absolute; left: 0; top: 11px; height: 18px; background: var(--bar); border-radius: 0 4px 4px 0; }
+.bar-ci { position: absolute; top: 19px; height: 2px; background: var(--ink); }
+.bar-ci::before, .bar-ci::after { content: ""; position: absolute; top: -6px; width: 2px; height: 14px; background: var(--ink); }
+.bar-ci::before { left: 0; } .bar-ci::after { right: 0; }
+.bar-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.bar-row:hover { background: var(--key-bg); border-radius: 4px; }
+.axis { display: grid; grid-template-columns: minmax(130px, 220px) 1fr 64px; gap: 12px; color: var(--ink-3); font-size: 14px; }
+.axis .ticks { position: relative; height: 24px; }
+.axis .ticks span { position: absolute; transform: translateX(-50%); }
+.tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border-radius: var(--radius-s);
+       padding: 12px 16px; font-size: 14px; line-height: 1.7; box-shadow: var(--elev); display: none; z-index: 10; max-width: 340px; }
+.tip b { font-variant-numeric: tabular-nums; }
+.badge { display: inline-block; font-size: 14px; line-height: 1.3; padding: 0 8px; border-radius: 999px; background: var(--chip); color: var(--ink-2); vertical-align: middle; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.7; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+th { color: var(--ink); font-weight: 700; background: var(--chip); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.sig { white-space: nowrap; }
+.sig.win { color: var(--win); font-weight: 700; }
+.sig.lose { color: var(--lose); font-weight: 700; }
+.sig.same { color: var(--ink-3); }
+.v { display: inline-block; min-width: 22px; font-size: 14px; line-height: 1.4; font-weight: 700; padding: 0 4px; border-radius: 4px; margin-right: 6px; text-align: center; }
+.v.exact, .v.A { background: var(--ok-bg); color: var(--ok-ink); }
+.v.B { background: var(--warn-bg); color: var(--warn-ink); }
+.v.C { background: var(--bad-bg); color: var(--bad-ink); }
+.v.q { background: var(--chip); color: var(--ink-2); }
+.controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 8px 0; }
+.controls input[type=search] { font: inherit; padding: 8px 12px; min-height: 44px; border: 1px solid var(--line); border-radius: var(--radius-s); background: var(--surface); color: var(--ink); }
+.controls input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--key); vertical-align: middle; }
+details summary { cursor: pointer; color: var(--key); font-weight: 700; margin-top: 8px; }
+code, pre { font-family: "M PLUS 1 Code", monospace; font-size: 14px; word-break: break-all; white-space: pre-wrap; }
+footer { color: var(--ink-2); font-size: 14px; padding: 32px 16px 48px; }
+@media (max-width: 640px) {
+  .bar-row, .axis { grid-template-columns: 110px 1fr 52px; gap: 8px; }
+  .top img { height: 44px; }
+  .axis .ticks span.minor { display: none; }
+  h1 { font-size: 26px; }
+  h2 { font-size: 22px; }
+  .card { padding: 16px; }
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand .icon { width: 56px; height: 56px; }
+h3.sub { margin-top: 16px; }
+td .pv { color: var(--ink-3); font-size: 12px; font-weight: 400; }
+.madeby { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--divider); color: var(--ink); font-size: 16px; }
+.madeby img { height: 32px; width: auto; display: block; }
+.radars { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.radar { margin: 0; width: 230px; }
+.radar figcaption { font-weight: 700; text-align: center; }
+.radar svg { width: 100%; height: auto; display: block; overflow: visible; }
+.rlabel { font-size: 14px; fill: var(--ink-2); }
+table.ovt td { vertical-align: middle; }
+table.ovt th.grp { text-align: center; border-bottom: 2px solid var(--key); }
+.ov { display: inline-block; width: 90px; height: 10px; background: var(--grid); border-radius: 2px; vertical-align: middle; margin-right: 8px; position: relative; }
+.ovbar { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bar); border-radius: 2px; }
+.ovv { font-variant-numeric: tabular-nums; font-weight: 700; }
+td.none { color: var(--ink-3); }
+.pdf { color: var(--key); font-weight: 700; text-decoration: none; border: 1px solid var(--key); border-radius: var(--radius-s); padding: 10px 16px; line-height: 1; }
+.pdf:hover { background: var(--key-bg); }
+.right { display: flex; gap: 12px; align-items: center; }
+.printed { display: none; }
+/* A4 landscape report: everything expanded, no controls, no sentence browser. */
+@page { size: A4 landscape; margin: 12mm 14mm; }
+@media print {
+  :root { --surface: #ffffff; --page: #ffffff; }
+  body { font-size: 10pt; line-height: 1.55; letter-spacing: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .wrap { max-width: none; padding: 0; }
+  header { border-bottom-width: 3px; }
+  .top { padding: 0 0 8px; }
+  .brand .icon { width: 44px; height: 44px; }
+  .brand .wordmark { height: 44px; }
+  .toggle, .pdf, .browse, .tip, details summary { display: none !important; }
+  .printed { display: block; }
+  .card { border-color: #cccccc; padding: 10px 12px; margin: 8px 0; }
+  section.pg { break-before: page; }
+  section.pg.first { break-before: auto; }
+  .card, table, h2, h3 { break-inside: avoid; }
+  footer { break-before: avoid; }
+  .radars { gap: 0 6px; }
+  .radar { width: 18%; break-inside: avoid; }
+  .radar figcaption { font-size: 9pt; }
+  .rlabel { font-size: 9px; }
+  h1 { font-size: 17pt; margin: 12px 0 2px; }
+  h2 { font-size: 13pt; margin: 14px 0 4px; break-after: avoid; }
+  h3 { font-size: 10.5pt; margin: 0 0 4px; break-after: avoid; }
+  p.lead { margin-bottom: 4px; }
+  .note, .axis { font-size: 8pt; }
+  table { font-size: 8pt; line-height: 1.4; }
+  th, td { padding: 3px 5px; }
+  tr { break-inside: avoid; }
+  table.sigt { table-layout: fixed; font-size: 7.5pt; }
+  table.sigt th:first-child { width: 15%; }
+  td .pv { font-size: 6.5pt; }
+  .bar-row { height: 24px; grid-template-columns: 150px 1fr 48px; }
+  .axis { grid-template-columns: 150px 1fr 48px; }
+  .bar-fill { top: 5px; height: 14px; } .bar-ci { top: 11px; }
+  .scroll { overflow: visible; }
+  footer { padding: 12px 0 0; font-size: 7.5pt; }
+  .madeby { font-size: 9pt; padding-top: 8px; break-inside: avoid; }
+  .madeby img { height: 22px; }
+  pre, code { font-size: 6.5pt; line-height: 1.3; }
+  #commitments .card { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<header><div class="wrap top">
+  <div class="brand"><img class="icon" src="icon.png" alt=""><img class="wordmark" src="logotext.svg" alt="IME精度測定 IME Benchmark system"></div>
+  <div class="right"><a class="pdf" href="report.ja.pdf">PDF (A4)</a>
+  <div class="toggle" role="group" aria-label="Language">
+    <button data-lang="ja">日本語</button><button data-lang="en">English</button>
+  </div></div>
+</div></header>
+<main class="wrap">
+  <h1 data-t="title"></h1>
+  <p class="lead" data-t="lead"></p>
+  <p class="note printed" id="printed"></p>
+  <div id="overview"></div>
+  <div id="sets"></div>
+  <section class="pg last">
+  <h2 data-t="heldoutTitle"></h2>
+  <p class="note" data-t="heldoutNote"></p>
+  <div id="commitments"></div>
+  <h2 data-t="howTitle"></h2>
+  <div class="card note" data-t="how"></div>
+  </section>
+</main>
+<footer class="wrap">
+  <div class="madeby"><span data-t="madeby"></span>
+    <a href="https://capitata.dev"><picture><source media="(prefers-color-scheme: dark)" srcset="capitata-dark.png"><img src="capitata.svg" alt="Capitata"></picture></a></div>
+  <p data-t="footer"></p>
+</footer>
+<div class="tip" id="tip"></div>
+<script>
+const DATA = /*DATA*/null;
+const T = {
+  title: ["IME の変換精度の比較", "How accurately input methods convert"],
+  lead: ["どの IME にも同じキーを同じ手順で打った結果です。数字はすべて公開した出力から計算しています。", "Every input method gets the same keys, typed the same way. All numbers are computed from the published outputs."],
+  fair: ["fair %（完全一致＋表記ちがい）", "fair % (exact + notation variants)"],
+  fairShort: ["fair %", "fair %"],
+  ci: ["ひげは 95% 信頼区間です。", "Whiskers: 95% interval."],
+  table: ["表で見る", "Show as a table"],
+  ime: ["IME", "Input method"], n: ["文数", "Rows"], exact: ["完全一致 %", "Exact %"], plusB: ["+B %", "+B %"], cer: ["CER %", "CER %"],
+  acc1: ["acc@1 %（AJIMEE 公式）", "acc@1 % (AJIMEE)"], mincer: ["MinCER", "MinCER"], version: ["バージョン", "Version"],
+  learning: ["学習", "Learning"], measured: ["計測", "Measured"], verified: ["verified（メンテナー計測）", "verified (maintainers)"],
+  community: ["community（提出）", "community (submitted)"], pending: ["未判定", "not judged"],
+  sigTitle: ["有意差（McNemar 検定、同じ文で比較）", "Significance (McNemar test on the same rows)"],
+  sigNote: ["行の IME だけが正解した文数 − 列の IME だけが正解した文数。▲▼ は有意差あり（p < 0.05）、― は差なし。", "Rows only the row's input method got right minus rows only the column's got right. ▲▼ significant (p < 0.05), ― no difference."],
+  browseTitle: ["文ごとの出力", "Outputs sentence by sentence"],
+  onlyDiff: ["IME で結果が分かれた文だけ", "Only rows where input methods differ"],
+  search: ["検索", "Search"], meant: ["意図した文", "Meant text"],
+  legend: ["✓ 完全一致　A 表記ちがい　B 別の言葉だが自然　C 誤り　? 未判定", "✓ exact   A notation variant   B other words, reads naturally   C error   ? not judged"],
+  shown: ["件を表示", "rows shown"],
+  heldoutTitle: ["held-out セット（非公開）", "Held-out sets (not public yet)"],
+  heldoutNote: ["held-out セットは結果より先にハッシュだけを公開し、退役後に中身を公開します。", "Held-out files are published as hashes before any result, and in full once retired."],
+  howTitle: ["測り方と判定", "How it is measured and judged"],
+  how: ["各文のローマ字を同じ手順で打ち、確定した文字を記録します。完全一致しない出力は IME 名を伏せて言語モデルが判定します（A 表記ちがい、B 別の言葉だが自然、C 誤り）。fair % は完全一致と A の合計です。", "Each sentence's romaji is typed the same way and the committed text recorded. Outputs that are not exact are judged by a language model without input method names (A notation variant, B other words that read naturally, C error). fair % is exact plus A."],
+  madeby: ["このベンチマークは Capitata が作成しています。", "This benchmark is made by Capitata."],
+  generated: ["作成日", "Generated"], overview: ["全体の比較", "Overview"], profiles: ["IME ごとの得意・不得意", "Strengths per input method"],
+  profilesNote: ["軸はセット、中心が 0 %、外周が 100 %。点にマウスを乗せると数値が出ます。", "One axis per set, 0% at the centre, 100% at the edge. Hover a point for its value."],
+  setShort: { ajimee: ["AJIMEE", "AJIMEE"], mozc: ["MOZC", "MOZC"], ja: ["JA", "JA"], jatypo: ["JA-SLIP", "JA-SLIP"],
+    postsja: ["POST-JA", "POST-JA"], mixB: ["MIX-SP", "MIX-SP"], mixC: ["MIX-RUN", "MIX-RUN"],
+    postsmixB: ["POST-MIX-SP", "POST-MIX-SP"], postsmixC: ["POST-MIX-RUN", "POST-MIX-RUN"],
+    en: ["EN-SLIP", "EN-SLIP"], enclean: ["EN", "EN"], postsen: ["POST-EN", "POST-EN"], postsentypo: ["POST-EN-SLIP", "POST-EN-SLIP"] },
+  overviewNote: ["セットごとの点数（日本語・英語まじりは fair %、英語は正しい文の割合）。棒の長さは 0–100 %。", "Score per set (fair % for Japanese and mixed input, sentences right for English). Bar length: 0–100%."],
+  groupJa: ["日本語", "Japanese"], groupMix: ["英語まじり", "Japanese with English"], groupEn: ["英語", "English"],
+conditions: ["計測条件", "Conditions"], scoresTitle: ["成績と計測条件", "scores and conditions"], sigShort: ["有意差", "significance"], webpage: ["文ごとの出力はウェブページにあります。", "Per-sentence outputs are on the web page."],
+  footer: ["コードは Apache License 2.0、データはそれぞれのライセンスです（README 参照）。デザインはデジタル庁デザインシステムを使用しています。", "Code: Apache License 2.0; data under its own licenses (see the README). Design: the Digital Agency Design System."],
+  setNames: {
+    ajimee: ["AJIMEE（AJIMEE-Bench 全 200 問）", "AJIMEE (AJIMEE-Bench, all 200 items)"],
+    mozc: ["MOZC（Mozc 評価データ）", "MOZC (Mozc evaluation set)"],
+    ja: ["JA（日本語の文）", "JA (Japanese sentences)"],
+    jatypo: ["JA-SLIP（打ち間違い入りの日本語）", "JA-SLIP (Japanese with slips)"],
+    mixB: ["MIX-SP（英語まじり・区切りあり）", "MIX-SP (Japanese with English, spaced)"],
+    mixC: ["MIX-RUN（英語まじり・区切りなし）", "MIX-RUN (Japanese with English, run together)"],
+    enclean: ["EN（英文）", "EN (English)"],
+    en: ["EN-SLIP（打ち間違い入りの英文）", "EN-SLIP (English with slips)"],
+    postsja: ["POST-JA（投稿・日本語）", "POST-JA (posts, Japanese)"],
+    postsmixB: ["POST-MIX-SP（投稿・英語まじり・区切りあり）", "POST-MIX-SP (posts with English, spaced)"],
+    postsmixC: ["POST-MIX-RUN（投稿・英語まじり・区切りなし）", "POST-MIX-RUN (posts with English, run together)"],
+    postsen: ["POST-EN（投稿・英語）", "POST-EN (posts, English)"],
+    postsentypo: ["POST-EN-SLIP（投稿・打ち間違い入りの英語）", "POST-EN-SLIP (posts, English with slips)"] },
+};
+const PRINT = new URLSearchParams(location.search).has("print");
+let saved = null;
+try { saved = localStorage.getItem("lang"); } catch (e) {}
+let lang = (saved || navigator.language || "ja").startsWith("ja") ? 0 : 1;
+try { const q = new URLSearchParams(location.search).get("lang"); if (q) lang = q === "en" ? 1 : 0; } catch (e) {}
+const t = k => (T[k] || [k, k])[lang];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const tip = document.getElementById("tip");
+function showTip(e, html) { tip.innerHTML = html; tip.style.display = "block"; const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8); tip.style.left = x + "px"; tip.style.top = (e.clientY + 14) + "px"; }
+function hideTip() { tip.style.display = "none"; }
+
+function chart(name, set) {
+  const sys = set.systems;
+  const lo = 0, hi = 100;
+  const pos = v => ((v - lo) / (hi - lo) * 100).toFixed(2) + "%";
+  let h = '<div class="chart">';
+  for (const s of sys) {
+    h += `<div class="bar-row" data-set="${esc(name)}" data-s="${esc(s.system)}">
+      <div class="bar-name" title="${esc(s.name)}">${esc(s.name)}${s.verified ? "" : ` <span class="badge">${t("community")}</span>`}</div>
+      <div class="bar-track">${[25, 50, 75].map(g => `<div class="gridline" style="left:${pos(g)}"></div>`).join("")}
+        <div class="bar-fill" style="width:${pos(s.fair)}"></div>
+        <div class="bar-ci" style="left:${pos(s.lo)};width:calc(${pos(s.hi)} - ${pos(s.lo)})"></div></div>
+      <div class="bar-val">${s.fair.toFixed(1)}</div></div>`;
+  }
+  h += `<div class="axis"><div></div><div class="ticks">${[0, 25, 50, 75, 100].map(g => `<span class="${g % 50 ? "minor" : ""}" style="left:${pos(g)}">${g}</span>`).join("")}</div><div></div></div></div>`;
+  return h;
+}
+
+function scoreTable(set) {
+  const aj = set.kind === "ajimee";
+  let h = `<div class="scroll"><table class="scores"><tr><th>${t("ime")}</th><th class="num">${t("fairShort")}</th><th class="num">95% CI</th><th class="num">${t("exact")}</th><th class="num">${t("plusB")}</th><th class="num">${t("cer")}</th>${aj ? `<th class="num">${t("acc1")}</th><th class="num">${t("mincer")}</th>` : ""}<th class="num">${t("n")}</th></tr>`;
+  for (const s of set.systems) {
+    h += `<tr><td>${esc(s.name)}</td><td class="num">${s.fair.toFixed(1)}</td><td class="num">${s.lo.toFixed(1)}–${s.hi.toFixed(1)}</td><td class="num">${s.exact.toFixed(1)}</td><td class="num">${s.lenient.toFixed(1)}</td><td class="num">${s.cer.toFixed(1)}</td>${aj ? `<td class="num">${s.acc1.toFixed(1)}</td><td class="num">${s.mincer.toFixed(3)}</td>` : ""}<td class="num">${s.n}${s.pending ? ` (${t("pending")} ${s.pending})` : ""}</td></tr>`;
+  }
+  return h + "</table></div>";
+}
+
+function condTable(set) {
+  let h = `<div class="scroll"><table class="conds"><tr><th>${t("ime")}</th><th>${t("version")}</th><th>${t("learning")}</th><th>${t("measured")}</th></tr>`;
+  for (const s of set.systems) {
+    h += `<tr><td>${esc(s.name)}</td><td>${esc(s.version)}</td><td>${esc(s.learning)}</td><td>${esc(s.date)} · ${s.verified ? t("verified") : t("community")}</td></tr>`;
+  }
+  return h + "</table></div>";
+}
+
+function sigTable(set) {
+  const sys = set.systems;
+  let h = `<div class="scroll"><table class="sigt"><tr><th></th>${sys.map(s => `<th>${esc(s.name)}</th>`).join("")}</tr>`;
+  for (const a of sys) {
+    h += `<tr><th>${esc(a.name)}</th>`;
+    for (const b of sys) {
+      if (a === b) { h += "<td></td>"; continue; }
+      const p = set.pairs[a.system + "|" + b.system], d = p.a - p.b;
+      const cls = p.p < 0.05 ? (d > 0 ? "win" : "lose") : "same";
+      const mark = p.p < 0.05 ? (d > 0 ? "▲" : "▼") : "―";
+      h += `<td class="sig ${cls}" title="p = ${p.p.toFixed(3)}">${mark} ${d > 0 ? "+" : ""}${d}<br><span class="pv">p=${p.p < 0.001 ? "<0.001" : p.p.toFixed(3)}</span></td>`;
+    }
+    h += "</tr>";
+  }
+  return h + "</table></div>";
+}
+
+const V = { exact: "✓", A: "A", B: "B", C: "C", "?": "?" };
+function browser(name, set) {
+  return `<div class="controls"><label><input type="checkbox" class="onlydiff" checked> ${t("onlyDiff")}</label>
+    <input type="search" class="find" placeholder="${t("search")}"> <span class="note count"></span></div>
+    <div class="note">${t("legend")}</div><div class="scroll rows" data-set="${esc(name)}"></div>`;
+}
+function renderRows(box) {
+  const name = box.querySelector(".rows").dataset.set, set = DATA.sets[name];
+  const only = box.querySelector(".onlydiff").checked, q = box.querySelector(".find").value.trim();
+  let h = `<table><tr><th>${t("meant")}</th>${set.systems.map(s => `<th>${esc(s.name)}</th>`).join("")}</tr>`;
+  let shown = 0;
+  for (const r of set.rows) {
+    const vs = set.systems.map(s => s.verdict[r.id] || "?");
+    const good = vs.map(v => v === "exact" || v === "A");
+    if (only && good.every(g => g === good[0])) continue;
+    if (q && !r.meant.includes(q) && !set.systems.some(s => (s.out[r.id] || "").includes(q))) continue;
+    if (++shown > 300) continue;
+    h += `<tr><td>${esc(r.meant)}</td>${set.systems.map((s, i) => `<td><span class="v ${vs[i] === "?" ? "q" : vs[i]}">${V[vs[i]]}</span>${esc(s.out[r.id] || "")}</td>`).join("")}</tr>`;
+  }
+  box.querySelector(".rows").innerHTML = h + "</table>";
+  box.querySelector(".count").textContent = `${Math.min(shown, 300)} / ${shown} ${t("shown")}`;
+}
+
+const GROUP = { ajimee: "groupJa", ja: "groupJa", jatypo: "groupJa", postsja: "groupJa",
+  mixB: "groupMix", mixC: "groupMix", postsmixB: "groupMix", postsmixC: "groupMix",
+  en: "groupEn", enclean: "groupEn", postsen: "groupEn", postsentypo: "groupEn" };
+function radar(r, sets) {
+  const W = 230, H = 210, cx = W / 2, cy = 108, R = 70, n = sets.length;
+  const ang = i => -Math.PI / 2 + 2 * Math.PI * i / n;
+  const pt = (i, v) => [cx + R * v / 100 * Math.cos(ang(i)), cy + R * v / 100 * Math.sin(ang(i))];
+  const short = name => { const k = DATA.sets[name] ? name : name; const m = T.setShort[k] || T.setShort[DATA.sets[name] && DATA.sets[name].kind]; return m ? m[lang] : name; };
+  let g = "";
+  for (const level of [25, 50, 75, 100]) {
+    g += `<polygon points="${sets.map((_, i) => pt(i, level).map(v => v.toFixed(1)).join(",")).join(" ")}" fill="none" stroke="var(--grid)" stroke-width="1"/>`;
+  }
+  sets.forEach((name, i) => {
+    const [x, y] = pt(i, 100);
+    g += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--grid)" stroke-width="1"/>`;
+    const [lx, ly] = pt(i, 122);
+    const anchor = Math.abs(lx - cx) < 4 ? "middle" : lx < cx ? "end" : "start";
+    g += `<text x="${lx.toFixed(1)}" y="${(ly + 4).toFixed(1)}" text-anchor="${anchor}" class="rlabel">${esc(short(name))}</text>`;
+  });
+  const vals = sets.map(name => r.values[name]);
+  const poly = vals.map((v, i) => pt(i, v == null ? 0 : v).map(c => c.toFixed(1)).join(",")).join(" ");
+  g += `<polygon points="${poly}" fill="var(--bar)" fill-opacity="0.18" stroke="var(--bar)" stroke-width="2" stroke-linejoin="round"/>`;
+  vals.forEach((v, i) => {
+    const [x, y] = pt(i, v == null ? 0 : v);
+    const label = `${esc(short(sets[i]))}: ${v == null ? "—" : v.toFixed(1)}`;
+    g += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="transparent" class="rhit" data-tip="${label}"/>`;
+    g += v == null ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="var(--surface)" stroke="var(--ink-3)" stroke-width="2"/>`
+                   : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="var(--bar)" stroke="var(--surface)" stroke-width="2"/>`;
+  });
+  return `<figure class="radar"><figcaption>${esc(r.name)}</figcaption><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(r.name)}">${g}</svg></figure>`;
+}
+
+function profiles() {
+  const ov = DATA.overview;
+  if (!ov || ov.sets.length < 3) return "";
+  return `<h2>${t("profiles")}</h2><div class="card"><p class="note">${t("profilesNote")}</p><div class="radars">${ov.rows.map(r => radar(r, ov.sets)).join("")}</div></div>`;
+}
+
+function overview() {
+  const ov = DATA.overview;
+  if (!ov || ov.sets.length < 2) return "";
+  const groups = [];
+  for (const n of ov.sets) {
+    const g = GROUP[DATA.sets[n].kind] || "groupJa";
+    if (groups.length && groups[groups.length - 1].g === g) groups[groups.length - 1].n++; else groups.push({ g, n: 1 });
+  }
+  let h = `<h2>${t("overview")}</h2><div class="card"><p class="note">${t("overviewNote")}</p><div class="scroll"><table class="ovt">
+    <tr><th></th>${groups.map(g => `<th colspan="${g.n}" class="grp">${t(g.g)}</th>`).join("")}</tr>
+    <tr><th>${t("ime")}</th>${ov.sets.map(n => `<th>${esc((T.setNames[n] || T.setShort[n] || T.setShort[DATA.sets[n].kind] || [n, n])[lang])}</th>`).join("")}</tr>`;
+  for (const r of ov.rows) {
+    h += `<tr><td>${esc(r.name)}</td>${ov.sets.map(n => r.values[n] == null ? `<td class="none">—</td>` :
+      `<td><div class="ov"><span class="ovbar" style="width:${r.values[n].toFixed(1)}%"></span></div><span class="ovv">${r.values[n].toFixed(1)}</span></td>`).join("")}</tr>`;
+  }
+  return h + "</table></div></div>";
+}
+
+function render() {
+  document.documentElement.lang = lang ? "en" : "ja";
+  document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
+  document.querySelectorAll(".toggle button").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.lang === "en") === (lang === 1))));
+  let h = "", first = true;
+  for (const [name, set] of Object.entries(DATA.sets)) {
+    const title = (T.setNames[name] || T.setShort[name] || T.setShort[set.kind] || [name, name])[lang];
+    if (PRINT) {
+      h += `<section class="pg${first ? " first" : ""}"><h2>${esc(title)}</h2><div class="card"><h3>${t("fair")}</h3>${chart(name, set)}<p class="note">${t("ci")}</p></div></section>
+        <section class="pg"><h2>${esc(title)}: ${t("scoresTitle")}</h2><div class="card">${scoreTable(set)}</div><div class="card"><h3>${t("conditions")}</h3>${condTable(set)}</div></section>
+        <section class="pg"><h2>${esc(title)}: ${t("sigShort")}</h2><div class="card"><p class="note">${t("sigNote")}</p>${sigTable(set)}</div></section>`;
+      first = false;
+      continue;
+    }
+    h += `<h2>${esc(title)}</h2><div class="card keep"><h3>${t("fair")}</h3>${chart(name, set)}<p class="note">${t("ci")}</p>
+      <details><summary>${t("table")}</summary>${scoreTable(set)}<h3 class="sub">${t("conditions")}</h3>${condTable(set)}</details></div>
+      <div class="card"><h3>${t("sigTitle")}</h3><p class="note">${t("sigNote")}</p>${sigTable(set)}</div>
+      <div class="card browse" data-set="${esc(name)}"><h3>${t("browseTitle")}</h3>${browser(name, set)}</div>`;
+  }
+  const ov = overview(), pr = profiles();
+  document.getElementById("overview").innerHTML = PRINT
+    ? (pr ? `<section class="pg first">${pr}</section>` : "") + (ov ? `<section class="pg${pr ? "" : " first"}">${ov}</section>` : "")
+    : pr + ov;
+  document.getElementById("sets").innerHTML = PRINT && ov ? h.replace('<section class="pg first">', '<section class="pg">') : h;
+  document.querySelectorAll(".browse").forEach(box => {
+    renderRows(box);
+    box.querySelector(".onlydiff").onchange = () => renderRows(box);
+    box.querySelector(".find").oninput = () => renderRows(box);
+  });
+  document.querySelectorAll(".bar-row").forEach(row => {
+    row.onmousemove = e => {
+      const s = DATA.sets[row.dataset.set].systems.find(x => x.system === row.dataset.s);
+      showTip(e, `<div><b>${esc(s.name)}</b></div><div>${t("fairShort")} <b>${s.fair.toFixed(1)}</b> (95% CI ${s.lo.toFixed(1)}–${s.hi.toFixed(1)})</div>
+        <div>${t("exact")} ${s.exact.toFixed(1)} · ${t("cer")} ${s.cer.toFixed(1)} · ${t("n")} ${s.n}</div>
+        <div class="note">${esc(s.version)} · ${t("learning")} ${esc(s.learning)} · ${esc(s.date)}</div>`);
+    };
+    row.onmouseleave = hideTip;
+  });
+  document.querySelectorAll(".rhit").forEach(c => { c.onmousemove = e => showTip(e, c.dataset.tip); c.onmouseleave = hideTip; });
+  document.getElementById("commitments").innerHTML = DATA.commitments.map(c =>
+    `<details class="card"><summary>${esc(c.cycle)}</summary><pre><code>${c.lines.map(esc).join("\n")}</code></pre></details>`).join("");
+}
+function afterRender() {
+  document.querySelector(".pdf").href = lang ? "report.en.pdf" : "report.ja.pdf";
+  document.getElementById("printed").textContent = `${t("generated")}: ${DATA.generated || ""}. ${t("webpage")}`;
+  if (PRINT) document.querySelectorAll("details").forEach(d => d.open = true);
+}
+document.querySelectorAll(".toggle button").forEach(b => b.onclick = () => {
+  lang = b.dataset.lang === "en" ? 1 : 0;
+  try { localStorage.setItem("lang", b.dataset.lang); } catch (e) {}
+  render(); afterRender();
+});
+render(); afterRender();
+</script>
+</body>
+</html>

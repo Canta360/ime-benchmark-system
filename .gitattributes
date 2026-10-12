@@ -1,0 +1,6 @@
+# Keep text exactly as published: sets and results are checked by SHA-256.
+* text eol=lf
+*.png binary
+*.ico binary
+*.gz binary
+*.exe binary

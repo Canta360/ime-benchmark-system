@@ -1,0 +1,24 @@
+name: release
+
+# A tag v* builds ImeBench.exe on Windows and attaches it to the release.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        shell: pwsh
+        run: |
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" -nologo -target:winexe `
+            -win32icon:runner\icon\app.ico -r:System.Drawing.dll -out:runner\ImeBench.exe `
+            runner\ImeBench.cs runner\ImeBenchApp.cs
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: runner/ImeBench.exe

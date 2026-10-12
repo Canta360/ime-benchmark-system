@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 216 210" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:affinity="https://www.affinity.studio/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-110.400971,-68.720595)">
+        <g transform="matrix(0.297678,0,0,0.297678,-379.017429,51.983365)">
+            <g transform="matrix(0.915716,0,0,0.915716,1319.587229,-1605.484)">
+                <circle cx="737.757" cy="2198.01" r="383.354" style="fill:url(#_Linear1);"/>
+            </g>
+            <g transform="matrix(0.952016,0,0,0.952016,1343.624159,-5.612078)">
+                <path d="M434.385,282.668L437.069,250.463L595.948,250.463L593.264,282.668L434.385,282.668ZM418.283,327.755L420.967,295.55L603.462,295.55L600.779,327.755L418.283,327.755ZM427.408,372.842L430.091,340.637L588.97,340.637L586.286,372.842L427.408,372.842ZM424.187,417.929L426.871,385.724L585.75,385.724L583.066,417.929L424.187,417.929ZM401.643,572.514L414.526,432.422L586.286,432.422L573.404,572.514L401.643,572.514ZM610.44,320.777L613.124,288.572L738.724,288.572L732.82,250.463L827.288,250.463L833.192,288.572L848.221,288.572L851.442,250.463L898.676,250.463L895.456,288.572L902.97,288.572L900.286,320.777L838.56,320.777L877.743,572.514L783.274,572.514L756.437,400.217L723.158,400.217L714.033,507.567L757.51,505.42L753.753,541.919L594.338,550.507L598.095,514.008L631.91,512.398L641.572,400.217L609.367,400.217L612.05,368.011L751.069,368.011L744.091,320.777L610.44,320.777ZM473.568,540.309L507.92,540.309L514.361,464.627L480.009,464.627L473.568,540.309Z" style="fill:url(#_Linear2);"/>
+            </g>
+            <g transform="matrix(0.310043,0,0,0.310043,2019.403388,-39.044705)">
+                <circle cx="737.757" cy="2198.01" r="383.354" style="fill:url(#_Linear3);"/>
+            </g>
+            <g transform="matrix(1.592883,0,0,1.592883,963.480507,-3053.077208)">
+                <clipPath id="_clip4">
+                    <circle cx="806.5" cy="2320.014" r="33.571"/>
+                </clipPath>
+                <g clip-path="url(#_clip4)">
+                    <g transform="matrix(2.108965,-0,-0,2.108965,427.300254,1951.997509)">
+                        <use xlink:href="#_Image5" x="163.885" y="158.583" width="32px" height="32px"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(595.873072,583.531865,-583.531865,595.873072,401.484809,1911.744742)"><stop offset="0" style="stop-color:white;stop-opacity:1"/><stop offset="0.23" style="stop-color:rgb(79,212,158);stop-opacity:1"/><stop offset="0.42" style="stop-color:rgb(6,194,117);stop-opacity:1"/><stop offset="0.69" style="stop-color:rgb(4,211,84);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(0,255,0);stop-opacity:1"/></linearGradient>
+        <linearGradient id="_Linear2" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.050403,0,0,1.050403,0,0)"><stop offset="0" style="stop-color:white;stop-opacity:1"/><stop offset="1" style="stop-color:white;stop-opacity:1"/></linearGradient>
+        <linearGradient id="_Linear3" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(595.873072,583.531865,-583.531865,595.873072,401.484809,1911.744742)"><stop offset="0" style="stop-color:rgb(0,255,65);stop-opacity:1"/><stop offset="0.23" style="stop-color:rgb(0,217,69);stop-opacity:1"/><stop offset="0.42" style="stop-color:rgb(0,201,71);stop-opacity:1"/><stop offset="0.69" style="stop-color:rgb(22,216,103);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(77,255,184);stop-opacity:1"/></linearGradient>
+        <image id="_Image5" width="32px" height="32px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAL0lEQVRYhe3OMQEAAAjDsIF/z0MGT2qgmbbNY/s5BwAAAAAAAAAAAAAAAAAASJIDTYgEPK7MJIIAAAAASUVORK5CYII="/>
+    </defs>
+</svg>
