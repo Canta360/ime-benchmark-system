@@ -10,10 +10,10 @@
 
 <p align="center">
   <a href="README_JP.md">日本語</a> ·
-  <a href="#principles">Principles</a> ·
   <a href="#measuring">Measuring</a> ·
   <a href="#results-page">Results page</a> ·
   <a href="#sharing-results">Sharing results</a> ·
+  <a href="#principles">Principles</a> ·
   <a href="https://capitata.dev">capitata.dev</a>
 </p>
 
@@ -27,27 +27,6 @@ What is measured:
 - **Japanese**: romaji typed without separators.
 - **English**: English with and without slips, for input methods that correct it.
 - **Japanese with English words**: typed with spaces around the English, and run together.
-
-## Principles
-
-IME Benchmark system is made by Capitata, which also makes the TEKITO input
-method. A benchmark run by one of the measured parties is easy to doubt, so
-this one is built to be checked, not trusted.
-
-- **A measure, not a showcase.** It exists to find out how input methods
-  actually do, including where TEKITO does worse and TEKITO's own bugs.
-- **No tuning to the test.** TEKITO's developers see only scores on held-out
-  sets, never their sentences or outputs, and held-out text is removed from
-  TEKITO's training data by hash. The sets are evaluated separately from
-  TEKITO's development.
-- **Same conditions for every input method.** Every input method, TEKITO
-  included, is typed by the same program with the same keys, using released
-  builds. Only these runs are compared.
-- **Everything checkable.** Code, sets, raw outputs, every judgement and the
-  held-out commitments are public. Anyone can re-score every result.
-- **Open to others.** Anyone can submit results or propose sets and changes
-  through pull requests. Changes to how scores are computed are made in
-  public, with the reason.
 
 ## Sets
 
@@ -156,6 +135,27 @@ marks maintainers' runs **verified** and others **community**.
 - Live conversion as shown while typing, and in mixed input.
 - Keystrokes per character in mixed input, counting mode switches.
 - Learning off as the main condition.
+
+## Principles
+
+IME Benchmark system is made by Capitata, which also makes the TEKITO input
+method. A benchmark run by one of the measured parties is easy to doubt, so
+this one is built to be checked, not trusted.
+
+- **A measure, not a showcase.** It exists to find out how input methods
+  actually do, including where TEKITO does worse and TEKITO's own bugs.
+- **No tuning to the test.** TEKITO's developers see only scores on held-out
+  sets, never their sentences or outputs, and held-out text is removed from
+  TEKITO's training data by hash. The sets are evaluated separately from
+  TEKITO's development.
+- **Same conditions for every input method.** Every input method, TEKITO
+  included, is typed by the same program with the same keys, using released
+  builds. Only these runs are compared.
+- **Everything checkable.** Code, sets, raw outputs, every judgement and the
+  held-out commitments are public. Anyone can re-score every result.
+- **Open to others.** Anyone can submit results or propose sets and changes
+  through pull requests. Changes to how scores are computed are made in
+  public, with the reason.
 
 ## License
 
