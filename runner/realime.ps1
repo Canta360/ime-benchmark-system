@@ -1,7 +1,7 @@
 # Several input methods and sets in one go, without the window (for
 # maintainers): ImeBench.exe activates each input method for its own window
-# by its TSF IDs and types the keys. Slow (minutes per set) and the bench
-# window must stay in front; do not use the PC while it runs. The usual way
+# by its TSF IDs and types the keys. Slow (minutes per set). Touching the
+# mouse or keys pauses it until they have been still for 5 s. The usual way
 # to measure is the window (ImeBench.exe without arguments).
 #
 #   .\realime.ps1 [-Group dev|heldout] [-Imes msime,google,...] [-Sets a,b] [-Limit N] [-Learning on|off] [-Note "..."]
@@ -68,10 +68,25 @@ function Ime-Info($clsid) {
     $dll = (Get-ItemProperty "Registry::HKEY_CLASSES_ROOT\CLSID\$clsid\InprocServer32" -ErrorAction SilentlyContinue).'(default)'
     if (-not $dll -or -not (Test-Path $dll)) { return @{ dll = "$dll"; version = "?" } }
     $item = Get-Item $dll
-    @{ dll = $dll; version = "$($item.VersionInfo.FileVersion)"; modified = $item.LastWriteTime.ToString("s") }
+    # The user's folders as variables: a published result does not carry the user name.
+    $shown = $dll.Replace($env:LOCALAPPDATA, "%LOCALAPPDATA%").Replace($env:USERPROFILE, "%USERPROFILE%")
+    @{ dll = $shown; version = "$($item.VersionInfo.FileVersion)"; modified = $item.LastWriteTime.ToString("s") }
 }
 $cv = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion"
 $windows = "$($cv.ProductName) $($cv.DisplayVersion) build $($cv.CurrentBuild).$($cv.UBR)"
+# Rows of the whole batch, for the progress the bench window shows.
+function Set-Rows([string]$s) {
+    $n = if ($ext -eq ".tsv.gz") {
+        $in = [IO.File]::OpenRead("$setDir\$s$ext")
+        $r = New-Object IO.StreamReader((New-Object IO.Compression.GZipStream($in, [IO.Compression.CompressionMode]::Decompress)))
+        $c = 0; while ($null -ne ($l = $r.ReadLine())) { if (($l -split "`t").Count -ge 4) { $c++ } }; $r.Close(); $c
+    } else { @(Get-Content "$setDir\$s$ext" -Encoding utf8 | Where-Object { ($_ -split "`t").Count -ge 4 }).Count }
+    [Math]::Min($n, $Limit)
+}
+$batchRows = 0; $rowsDone = 0; $jobs = 0; $jobNo = 0
+foreach ($ime in $Imes) { foreach ($s in $Sets) { if ($kinds[$s] -in $profiles[$ime].kinds) { $batchRows += Set-Rows $s; $jobs++ } } }
+$env:IMEBENCH_TOTAL = "$batchRows"
+
 foreach ($ime in $Imes) {
     $p = $profiles[$ime]
     if (-not $p) { throw "no profile $ime" }
@@ -121,7 +136,11 @@ foreach ($ime in $Imes) {
             }
         }
         $start = Get-Date
+        $jobNo++
+        $env:IMEBENCH_LABEL = "$ime $s ($jobNo/$jobs)"
+        $env:IMEBENCH_BEFORE = "$rowsDone"
         Start-Process "$K\ImeBench.exe" -ArgumentList $p.ids[0], $p.ids[1], "`"$keys`"", "`"$out`"", $Limit -Wait
+        $rowsDone += Set-Rows $s
         "{0} {1}: {2:N1} min" -f $ime, $s, ((Get-Date) - $start).TotalMinutes
         if ($Group -eq "heldout") {
             $in = [IO.File]::OpenRead($out); $o = [IO.File]::Create("$run\out\real.$ime`__$s.tsv.gz")

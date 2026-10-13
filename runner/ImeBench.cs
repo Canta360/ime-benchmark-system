@@ -23,10 +23,62 @@ static class Native {
     [DllImport("user32.dll")] public static extern short VkKeyScan(char ch);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr h, IntPtr pid);
+    [DllImport("user32.dll")] public static extern bool AttachThreadInput(uint a, uint b, bool attach);
+    [DllImport("user32.dll")] public static extern bool BringWindowToTop(IntPtr h);
+    [DllImport("kernel32.dll")] public static extern uint GetCurrentThreadId();
+
+    // Windows lets only the window that got the last input take the front;
+    // sharing input with the front window's thread lets the bench back in
+    // after the person has used another window.
+    public static void TakeFront(IntPtr h) {
+        if (GetForegroundWindow() == h) return;
+        uint front = GetWindowThreadProcessId(GetForegroundWindow(), IntPtr.Zero), me = GetCurrentThreadId();
+        bool attached = front != 0 && front != me && AttachThreadInput(me, front, true);
+        BringWindowToTop(h);
+        SetForegroundWindow(h);
+        if (attached) AttachThreadInput(me, front, false);
+    }
     [DllImport("imm32.dll")] public static extern IntPtr ImmGetContext(IntPtr h);
     [DllImport("imm32.dll")] public static extern bool ImmReleaseContext(IntPtr h, IntPtr c);
     [DllImport("imm32.dll")] public static extern bool ImmSetOpenStatus(IntPtr c, bool open);
     [DllImport("imm32.dll")] public static extern bool ImmSetConversionStatus(IntPtr c, int conv, int sent);
+}
+
+// The person at the PC: a mouse move, click or key that no program sent pauses
+// the measurement, which goes on once mouse and keys have been still for IdleMs.
+// The hooks run on their own thread so a busy bench never delays the mouse.
+static class UserInput {
+    public const int IdleMs = 5000;
+    delegate IntPtr HookProc(int code, IntPtr w, IntPtr l);
+    [DllImport("user32.dll")] static extern IntPtr SetWindowsHookEx(int id, HookProc proc, IntPtr module, uint thread);
+    [DllImport("user32.dll")] static extern IntPtr CallNextHookEx(IntPtr hook, int code, IntPtr w, IntPtr l);
+    [DllImport("kernel32.dll")] static extern IntPtr GetModuleHandle(string name);
+    static HookProc mouseProc, keyProc;   // kept so the collector leaves them alone
+    static long lastTicks;
+    static int count;
+
+    // How many times the person has touched the PC since the start.
+    public static int Count { get { return Thread.VolatileRead(ref count); } }
+    public static bool Busy { get { return IdleLeftMs > 0; } }
+    public static int IdleLeftMs { get { return Math.Max(0, IdleMs - (int)((DateTime.UtcNow.Ticks - Interlocked.Read(ref lastTicks)) / 10000)); } }
+
+    static void Touch() { Interlocked.Exchange(ref lastTicks, DateTime.UtcNow.Ticks); Interlocked.Increment(ref count); }
+
+    public static void Start() {
+        var t = new Thread(() => {
+            IntPtr module = GetModuleHandle(null);
+            IntPtr mouse = IntPtr.Zero, keys = IntPtr.Zero;
+            // Injected events (flag bit 0 for the mouse, 0x10 for keys) are the bench's own keys.
+            mouseProc = (c, w, l) => { if (c >= 0 && (Marshal.ReadInt32(l, 12) & 1) == 0) Touch(); return CallNextHookEx(mouse, c, w, l); };
+            keyProc = (c, w, l) => { if (c >= 0 && (Marshal.ReadInt32(l, 8) & 0x10) == 0) Touch(); return CallNextHookEx(keys, c, w, l); };
+            mouse = SetWindowsHookEx(14, mouseProc, module, 0);   // WH_MOUSE_LL
+            keys = SetWindowsHookEx(13, keyProc, module, 0);      // WH_KEYBOARD_LL
+            Application.Run();
+        });
+        t.IsBackground = true;
+        t.Start();
+    }
 }
 
 [ComImport, Guid("71c6e74c-0f28-11d8-a82a-00065b84435c"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -50,12 +102,46 @@ struct TF_INPUTPROCESSORPROFILE {
 class Bench : Form {
     readonly TextBoxBase box = Environment.GetEnvironmentVariable("IMEBENCH_RICH") == "1" ? (TextBoxBase)new RichTextBox() : new TextBox();
     readonly string[] args;
+    readonly ProgressBar bar = new ProgressBar { Dock = DockStyle.Bottom, Height = 18 };
+    readonly Label status = new Label { Dock = DockStyle.Bottom, Height = 28, Font = new System.Drawing.Font("Yu Gothic UI", 11) };
+    static readonly bool ja = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ja";
+    // Progress over the whole batch (realime.ps1): a label, the rows done before
+    // this set, and the rows of the batch. Without them, this set alone.
+    readonly string label = Environment.GetEnvironmentVariable("IMEBENCH_LABEL") ?? "";
+    int before, total;
+    double typedSeconds;   // time spent typing, pauses left out, for the time left
+
     public Bench(string[] a) {
         args = a;
-        Text = "IME bench"; Width = 1000; Height = 200; TopMost = true;
+        Text = "IME bench"; Width = 1000; Height = 250; TopMost = true;
         box.Multiline = true; box.Dock = DockStyle.Fill; box.Font = new System.Drawing.Font("Yu Gothic UI", 16);
         Controls.Add(box);
+        Controls.Add(status);
+        Controls.Add(bar);
         Shown += (s, e) => { BeginInvoke(new Action(Run)); };
+    }
+
+    void Show(int n, int rows) {
+        int done = before + n, all = Math.Max(total, before + rows);
+        bar.Maximum = Math.Max(1, all); bar.Value = Math.Min(bar.Maximum, done);
+        string left = "";
+        if (n > 0) {
+            var t = TimeSpan.FromSeconds(typedSeconds / n * (all - done));
+            left = ja ? string.Format("　残り約 {0} 分", Math.Ceiling(t.TotalMinutes)) : string.Format(", about {0} min left", Math.Ceiling(t.TotalMinutes));
+        }
+        status.Text = (label == "" ? "" : label + "　") + (ja ? string.Format("{0} / {1} 文（残り {2} 文）", done, all, all - done) : string.Format("{0} / {1} rows ({2} left)", done, all, all - done)) + left;
+    }
+
+    // While the person uses the PC: wait until mouse and keys have been still.
+    void WaitIdle() {
+        if (!UserInput.Busy) return;
+        string was = status.Text;
+        while (UserInput.Busy) {
+            int s = (UserInput.IdleLeftMs + 999) / 1000;
+            status.Text = ja ? string.Format("一時停止中：マウスとキーが止まって {0} 秒後に再開します", s) : string.Format("Paused: goes on {0} s after the mouse and keys stop", s);
+            Settle(200);
+        }
+        status.Text = was;
     }
 
     internal static void Key(ushort vk, bool up) {
@@ -129,6 +215,12 @@ class Bench : Form {
             }
         }
         int n = 0;
+        int rows = 0;
+        foreach (var l in File.ReadLines(args[2], Encoding.UTF8)) if (l.Split('\t').Length >= 4) rows++;
+        rows = Math.Min(rows, limit);
+        int.TryParse(Environment.GetEnvironmentVariable("IMEBENCH_BEFORE"), out before);
+        int.TryParse(Environment.GetEnvironmentVariable("IMEBENCH_TOTAL"), out total);
+        Show(0, rows);
         // Warm-up: input methods that load their data on first use (TEKITO's
         // English) get it loaded before anything is measured.
         if (Environment.GetEnvironmentVariable("IMEBENCH_WARMUP") == "1") {
@@ -146,10 +238,13 @@ class Bench : Form {
             if (f.Length < 4) continue;
             n++;
             string text = null;
-            // Keys go only to this window: wait while another is in front,
-            // and type the sentence again if this one lost the front.
+            // Keys go only to this window, and only while nobody else uses the PC:
+            // wait for both, and type the sentence again if either changed on the way.
             for (int attempt = 0; text == null && attempt < 5; attempt++) {
+                WaitIdle();
                 WaitForFront();
+                int touches = UserInput.Count;
+                var rowStart = DateTime.UtcNow;
                 box.Clear();
                 string context;
                 if (contexts.TryGetValue(f[1], out context) && context.Length > 0) {
@@ -159,32 +254,44 @@ class Bench : Form {
                 box.Focus();
                 // Some input methods toggle on a mode key (TEKITO's No-convert): those keys once.
                 if (n == 1 || Environment.GetEnvironmentVariable("IMEBENCH_KEYS_ONCE") != "1") OpenJapanese();
-                Settle(50);
+                // The first row waits longer: an input method may still be switching modes.
+                Settle(n == 1 && attempt == 0 ? 1000 : 50);
+                Func<bool> undisturbed = () => InFront() && UserInput.Count == touches;
                 bool lost = false;
                 foreach (char ch in f[2]) {
-                    if (!InFront()) { lost = true; break; }
+                    if (!undisturbed()) { lost = true; break; }
                     Type(ch);
                     Settle(delay / 10);
                 }
-                if (lost || !InFront()) { Press(0x1B, false); continue; }
-                Settle(delay);
-                // English: the text as typed (and corrected as typed); nothing to convert.
-                bool english = Environment.GetEnvironmentVariable("IMEBENCH_ENGLISH") == "1";
-                // Live: the conversion is shown while typing; Enter takes it.
-                bool live = Environment.GetEnvironmentVariable("IMEBENCH_LIVE") == "1";
-                if (!english) {
-                    if (!live) Press(Environment.GetEnvironmentVariable("IMEBENCH_CONVERT_KEY") == "1" ? (ushort)0x1C : (ushort)0x20, false);   // Space (or the convert key): convert
+                if (!lost) {
+                    Settle(delay);
+                    // English: the text as typed (and corrected as typed); nothing to convert.
+                    bool english = Environment.GetEnvironmentVariable("IMEBENCH_ENGLISH") == "1";
+                    // Live: the conversion is shown while typing; Enter takes it.
+                    bool live = Environment.GetEnvironmentVariable("IMEBENCH_LIVE") == "1";
+                    if (!english && undisturbed()) {
+                        if (!live) Press(Environment.GetEnvironmentVariable("IMEBENCH_CONVERT_KEY") == "1" ? (ushort)0x1C : (ushort)0x20, false);   // Space (or the convert key): convert
+                        Settle(delay * 2);
+                        if (undisturbed()) Press(0x0D, false);   // Enter: commit
+                    }
                     Settle(delay * 2);
-                    if (!InFront()) { Press(0x1B, false); continue; }
-                    Press(0x0D, false);   // Enter: commit
+                    lost = !undisturbed();
                 }
-                Settle(delay * 2);
+                if (lost) {
+                    // Drop what is half typed, in this window only.
+                    if (InFront()) Press(0x1B, false);
+                    // A person using the PC does not use up a try.
+                    if (UserInput.Count != touches) attempt--;
+                    continue;
+                }
+                typedSeconds += (DateTime.UtcNow - rowStart).TotalSeconds;
                 text = box.Text.Replace("\r", "").Replace("\n", "");
                 if (context.Length > 0 && text.StartsWith(context)) text = text.Substring(context.Length);
             }
             if (text == null) text = "\u0000lost";
             output.WriteLine(f[0] + "\t" + f[1] + "\t" + text);
             output.Flush();
+            Show(n, rows);
             if (n % 50 == 0) Console.WriteLine(n + " done");
         }
         output.Close();
@@ -196,7 +303,8 @@ class Bench : Form {
     void WaitForFront() {
         bool told = false;
         while (!InFront()) {
-            Native.SetForegroundWindow(Handle);
+            WaitIdle();
+            Native.TakeFront(Handle);
             Settle(300);
             if (!InFront() && !told) { Console.WriteLine("waiting for the bench window to be in front"); told = true; }
         }
@@ -205,6 +313,7 @@ class Bench : Form {
     [STAThread]
     static void Main(string[] a) {
         Application.EnableVisualStyles();
+        UserInput.Start();
         // With arguments: the batch run (realime.ps1). Without: the window
         // where a person picks the input method and starts a measurement.
         if (a.Length >= 4 && !a[0].StartsWith("--")) Application.Run(new Bench(a));

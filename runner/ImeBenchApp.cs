@@ -58,7 +58,8 @@ class App : Form {
         { "probe", new[] { "試し打ち中…", "Trying three rows…" } },
         { "notConverting", new[] { "日本語に変換されていません。IME とモード（ひらがな入力になっているか、IME 本体のアプリが起動しているか）を確かめてください。",
                                    "Nothing is converted to Japanese. Check the input method and its mode (kana input on, and the input method's own app running)." } },
-        { "progress", new[] { "{0} / {1} 文　残り約 {2}　（PC に触らないでください）", "{0} / {1} rows, about {2} left (do not use the PC)" } },
+        { "progress", new[] { "{0} / {1} 文（残り {3} 文）　残り約 {2}　（マウスかキーを触ると一時停止します）", "{0} / {1} rows ({3} left), about {2} left (touching the mouse or keys pauses it)" } },
+        { "paused", new[] { "一時停止中：マウスとキーが止まって {0} 秒後に再開します", "Paused: goes on {0} s after the mouse and keys stop" } },
         { "minutes", new[] { "{0} 分", "{0} min" } },
         { "seconds", new[] { "{0} 秒", "{0} s" } },
         { "done", new[] { "完了しました: ", "Done: " } },
@@ -202,7 +203,10 @@ class App : Form {
             } else {
                 product = L("noIme");
             }
-            imeClsid = p.clsid; imeProfile = p.guidProfile; imeDll = dll; imeProduct = product; imeVersion = version;
+            // The user's folders as variables: a published result does not carry the user name.
+            string shown = dll.Replace(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "%LOCALAPPDATA%")
+                              .Replace(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "%USERPROFILE%");
+            imeClsid = p.clsid; imeProfile = p.guidProfile; imeDll = shown; imeProduct = product; imeVersion = version;
             imeLabel.Text = product + " " + version;
             nameBox.Text = Regex.Replace(product.ToLowerInvariant(), "[^a-z0-9]+", "");
         } catch (Exception e) {
@@ -214,30 +218,57 @@ class App : Form {
 
     void WaitForFront() {
         while (!InFront() && !stopping) {
+            WaitIdle();
             status.Text = L("waitFront");
-            Native.SetForegroundWindow(Handle);
+            Native.TakeFront(Handle);
             Bench.Settle(300);
         }
     }
 
-    // Types one row's keys and returns what the text box got (null: lost the front).
+    // While the person uses the PC: wait until mouse and keys have been still.
+    double pausedSeconds;
+    void WaitIdle() {
+        if (!UserInput.Busy || stopping) return;
+        string was = status.Text;
+        var start = DateTime.UtcNow;
+        while (UserInput.Busy && !stopping) {
+            status.Text = string.Format(L("paused"), (UserInput.IdleLeftMs + 999) / 1000);
+            Bench.Settle(200);
+        }
+        pausedSeconds += (DateTime.UtcNow - start).TotalSeconds;
+        status.Text = was;
+    }
+
+    // Types one row's keys and returns what the text box got (null: lost the
+    // front, or the person used the PC on the way; the row is then typed again).
+    bool touched;
     string TypeRow(string keys, Commit commit) {
+        touched = false;
+        WaitIdle();
         WaitForFront();
+        int touches = UserInput.Count;
+        Func<bool> undisturbed = () => InFront() && UserInput.Count == touches && !stopping;
         box.Clear();
         box.Focus();
         Bench.Settle(50);
+        bool lost = false;
         foreach (char ch in keys) {
-            if (!InFront() || stopping) { Bench.Press(0x1B, false); return null; }
+            if (!undisturbed()) { lost = true; break; }
             Bench.Type(ch);
             Bench.Settle(Delay / 10);
         }
-        Bench.Settle(Delay);
-        if (commit == Commit.SpaceEnter) { Bench.Press(0x20, false); Bench.Settle(Delay * 2); }
-        if (commit != Commit.None) {
-            if (!InFront()) { Bench.Press(0x1B, false); return null; }
-            Bench.Press(0x0D, false);
+        if (!lost) {
+            Bench.Settle(Delay);
+            if (commit == Commit.SpaceEnter && undisturbed()) { Bench.Press(0x20, false); Bench.Settle(Delay * 2); }
+            if (commit != Commit.None && undisturbed()) Bench.Press(0x0D, false);
+            Bench.Settle(Delay * 2);
+            lost = !undisturbed();
         }
-        Bench.Settle(Delay * 2);
+        if (lost) {
+            if (InFront()) Bench.Press(0x1B, false);   // drop what is half typed, in this window only
+            touched = UserInput.Count != touches;
+            return null;
+        }
         return box.Text.Replace("\r", "").Replace("\n", "");
     }
 
@@ -307,6 +338,7 @@ class App : Form {
         var started = DateTime.Now;
         string runDir = Path.Combine(resultsDir, started.ToString("yyyyMMdd-HHmmss") + "-" + name + "-" + runKey);
         Directory.CreateDirectory(Path.Combine(runDir, "out"));
+        pausedSeconds = 0;
         int total = stages.Sum(st => st.Sum(j => j.rows.Count)), done = 0;
         double typingSeconds = 0;
         bar.Maximum = Math.Max(1, total); bar.Value = 0;
@@ -346,15 +378,18 @@ class App : Form {
                     foreach (var f in job.rows) {
                         if (stopping) break;
                         string text = null;
-                        for (int attempt = 0; text == null && attempt < 5 && !stopping; attempt++) text = TypeRow(f[2], job.mode.commit);
+                        for (int attempt = 0; text == null && attempt < 5 && !stopping; attempt++) {
+                            text = TypeRow(f[2], job.mode.commit);
+                            if (touched) attempt--;   // a person using the PC does not use up a try
+                        }
                         if (text == null) break;
                         w.Write(f[0] + "\t" + f[1] + "\t" + text + "\n");
                         jobDone++; done++;
                         bar.Value = Math.Min(bar.Maximum, done);
-                        double perRow = (typingSeconds + (DateTime.Now - jobStart).TotalSeconds) / done;
+                        double perRow = (typingSeconds + (DateTime.Now - jobStart).TotalSeconds - pausedSeconds) / done;
                         var left = TimeSpan.FromSeconds(perRow * (total - done));
                         string leftText = left.TotalMinutes >= 1 ? string.Format(L("minutes"), Math.Ceiling(left.TotalMinutes)) : string.Format(L("seconds"), Math.Ceiling(left.TotalSeconds));
-                        status.Text = job.set + "　" + string.Format(L("progress"), done, total, leftText);
+                        status.Text = job.set + "　" + string.Format(L("progress"), done, total, leftText, total - done);
                     }
                 }
                 typingSeconds += (DateTime.Now - jobStart).TotalSeconds;
