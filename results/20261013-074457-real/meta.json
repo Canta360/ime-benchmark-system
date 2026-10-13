@@ -14,16 +14,16 @@
  "imes": {
   "tekito": {
    "modified": "2026-10-13T07:05:04",
-   "version": "",
+   "version": "0.5.0",
    "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll"
   },
   "tekitolive": {
    "modified": "2026-10-13T07:05:04",
-   "version": "",
+   "version": "0.5.0",
    "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll"
   }
  },
- "note": "TEKITO 2026-10-13 build, Japanese sets",
+ "note": "TEKITO 0.5.0, Japanese sets",
  "done": [
   "tekito/ajimee",
   "tekito/mozc",

@@ -1,0 +1,53 @@
+{
+ "date": "2026-10-13 18:29",
+ "group": "dev",
+ "windows": "Windows 10 Pro 26H2 build 26300.9457",
+ "sets_sha256": {
+  "ajimee": "c2fb8949947d44270ab693e36b738ba95e9a4c845d9911bfd4be1a8fcc4a5bbb",
+  "mozc": "038bb5ac3c29c0e23c9bceab873365a53bbf7b920a54b241d9fa8d8747a1acb0",
+  "ja": "61e6e43cf546b7c1f02858b7e958bc20e1969a963489f0413e01ad4db1958be9",
+  "jatypo": "5ed185a2ac137aade2ea7934965c904f0e959588a26ec0455abb0f720e1eadda",
+  "postsja": "7c6495a54932164415845d984fd6c9c3dc7be0ab0716642292ccf3e0166f77db",
+  "mixB": "f512c20a1f9803d79636979b5d0617b7951da31bcf8f426707fd626354f632a8",
+  "mixC": "659ff55dd7250d712bf791d1f5b122ef02db102215e88f27ad4a9e9b97b27c5f",
+  "postsmixB": "9da5bea0f8ecd56c618fb9ef2e6ce336acc2556271295eea0f63fbaceeba4361",
+  "postsmixC": "e20a8e125f3d5c9555d8f4d1fb96ba5194c0f82482a487ca476142eab5df1e6a",
+  "en": "02291391e653ef6450a2c2ffb9b5681f54f55f779affa8c92764f5e14c8dfd38",
+  "enclean": "9f5e06b904837a00330ae83daf803b936754611b46f06c4d85b447ff9f0b08ca",
+  "postsen": "3c4c458e6230c8bef98f05193f5eebbebd482d61a26a480aa872963ec9e04e02",
+  "postsentypo": "a940dadd17ae0be69fc2379a112bd354e37096f310f5c079b9569793cbb9d5a4"
+ },
+ "learning": "on",
+ "kind": "real-ime",
+ "skipped": [],
+ "harness": "ImeBench 0bb588abd965",
+ "done": [
+  "tekitomix/ajimee",
+  "tekitomix/mozc",
+  "tekitomix/ja",
+  "tekitomix/jatypo",
+  "tekitomix/postsja",
+  "tekitomix/mixB",
+  "tekitomix/mixC",
+  "tekitomix/postsmixB",
+  "tekitomix/postsmixC",
+  "tekitoauto/en",
+  "tekitoauto/enclean",
+  "tekitoauto/postsen",
+  "tekitoauto/postsentypo"
+ ],
+ "note": "TEKITO 0.5.0, Mix and English Auto",
+ "imes": {
+  "tekitomix": {
+   "version": "0.5.0",
+   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll",
+   "modified": "2026-10-13T07:05:04"
+  },
+  "tekitoauto": {
+   "version": "0.5.0",
+   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll",
+   "modified": "2026-10-13T07:05:04"
+  }
+ },
+ "measured_by": "maintainer (verified)"
+}

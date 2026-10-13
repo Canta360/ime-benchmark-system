@@ -12,21 +12,6 @@
   "postsmixC": "e20a8e125f3d5c9555d8f4d1fb96ba5194c0f82482a487ca476142eab5df1e6a"
  },
  "imes": {
-  "tekitoauto": {
-   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll",
-   "modified": "2026-10-07T17:39:36",
-   "version": ""
-  },
-  "tekitodirect": {
-   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll",
-   "modified": "2026-10-07T17:39:36",
-   "version": ""
-  },
-  "tekitomix": {
-   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll",
-   "modified": "2026-10-07T17:39:36",
-   "version": ""
-  },
   "meltype": {
    "dll": "C:\\Program Files\\Meltype\\tip\\x64\\MeltypeTip.dll",
    "modified": "2026-10-11T08:38:02",
@@ -37,18 +22,6 @@
  "kind": "real-ime",
  "windows": "Windows 10 Pro 26H2 build 26300.9457",
  "done": [
-  "tekitoauto/en",
-  "tekitoauto/enclean",
-  "tekitoauto/postsen",
-  "tekitoauto/postsentypo",
-  "tekitodirect/en",
-  "tekitodirect/enclean",
-  "tekitodirect/postsen",
-  "tekitodirect/postsentypo",
-  "tekitomix/mixB",
-  "tekitomix/mixC",
-  "tekitomix/postsmixB",
-  "tekitomix/postsmixC",
   "meltype/mixB",
   "meltype/mixC",
   "meltype/postsmixB",
