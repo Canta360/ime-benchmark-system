@@ -1,0 +1,42 @@
+{
+ "learning": "on",
+ "date": "2026-10-13 11:20",
+ "sets_sha256": {
+  "ajimee": "c2fb8949947d44270ab693e36b738ba95e9a4c845d9911bfd4be1a8fcc4a5bbb",
+  "mozc": "038bb5ac3c29c0e23c9bceab873365a53bbf7b920a54b241d9fa8d8747a1acb0",
+  "ja": "61e6e43cf546b7c1f02858b7e958bc20e1969a963489f0413e01ad4db1958be9",
+  "jatypo": "5ed185a2ac137aade2ea7934965c904f0e959588a26ec0455abb0f720e1eadda",
+  "postsja": "7c6495a54932164415845d984fd6c9c3dc7be0ab0716642292ccf3e0166f77db"
+ },
+ "skipped": [],
+ "kind": "real-ime",
+ "harness": "ImeBench 0bb588abd965",
+ "imes": {
+  "tekito": {
+   "modified": "2026-10-13T07:05:04",
+   "version": "",
+   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll"
+  },
+  "tekitolive": {
+   "modified": "2026-10-13T07:05:04",
+   "version": "",
+   "dll": "%LOCALAPPDATA%\\Programs\\TEKITO\\Tekito.Tsf.dll"
+  }
+ },
+ "note": "TEKITO 2026-10-13 build, Japanese sets",
+ "done": [
+  "tekito/ajimee",
+  "tekito/mozc",
+  "tekito/ja",
+  "tekito/jatypo",
+  "tekito/postsja",
+  "tekitolive/ajimee",
+  "tekitolive/mozc",
+  "tekitolive/ja",
+  "tekitolive/jatypo",
+  "tekitolive/postsja"
+ ],
+ "windows": "Windows 10 Pro 26H2 build 26300.9457",
+ "group": "dev",
+ "measured_by": "maintainer (verified)"
+}
