@@ -16,9 +16,7 @@
   "copilot/ajimee",
   "copilot/mozc",
   "mozc/ajimee",
-  "mozc/mozc",
-  "meltype/ajimee",
-  "meltype/mozc"
+  "mozc/mozc"
  ],
  "skipped": [],
  "kind": "real-ime",
@@ -43,11 +41,6 @@
    "dll": "C:\\Program Files (x86)\\Mozc\\mozc_tip64.dll",
    "modified": "2026-10-11T18:37:30",
    "version": "3.34.6345.100"
-  },
-  "meltype": {
-   "dll": "C:\\Program Files\\Meltype\\tip\\x64\\MeltypeTip.dll",
-   "modified": "2026-10-11T08:38:02",
-   "version": "1.0.0"
   }
  },
  "measured_by": "maintainer (verified)"
