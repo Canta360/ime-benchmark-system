@@ -26,47 +26,47 @@ its own text box, commits as the mode needs (Space then Enter, or Enter), and
 records the text. It reads only which input method is in use, so any TSF
 input method can be measured.
 
-What is measured:
+What is measured, each kind shown on its own (no score adds them up):
 
 - **Japanese**: romaji typed without separators.
-- **English**: English with and without slips, for input methods that correct it.
-- **Japanese with English words**: typed with spaces around the English, and run together.
+- **Japanese with English words**, typed two ways and measured apart:
+  - (1) in one mode, Space around the English, for input methods made for it;
+  - (2) switching the input method's mode for the English, for every input method.
+- **English**: typed in the input method's English mode.
 
 ## Sets
 
-| test | what | size | source, license |
-|---|---|---|---|
-| AJIMEE | AJIMEE-Bench, all items, exactly as published (romaji keys added) | 200 | azooKey/AJIMEE-Bench, CC BY-SA 3.0 |
-| MOZC | Mozc evaluation rows with one expected conversion | 296 | google/mozc, BSD-3-Clause |
-| JA | Japanese sentences, short to long | 998 | this benchmark |
-| JA-SLIP | the JA sentences with two slips each | 998 | this benchmark |
-| MIX-SP | Japanese with English words, Space around the English | 499 | this benchmark |
-| MIX-RUN | the same, typed run together | 499 | this benchmark |
-| EN | English sentences | 498 | this benchmark |
-| EN-SLIP | the EN sentences with two slips each | 498 | this benchmark |
-| POST-JA | tweet-like posts, Japanese | 100 posts (254 sentences) | this benchmark |
-| POST-MIX-SP, POST-MIX-RUN | posts with English words, spaced and run together | 100 posts (237 sentences) each | this benchmark |
-| POST-EN, POST-EN-SLIP | posts in English, as typed right and with two slips each | 100 posts each | this benchmark |
+The current sets are cycle 3 (`sets/c3_*.tsv`). Every slip set has at most
+one slip per sentence.
 
-Sizes are the rows scored: rows with the very same keys count once (one in MOZC, one in MIX). Posts are typed and scored sentence by sentence.
+| test | what | size |
+|---|---|---|
+| JA-A / JA-B / JA-C | Japanese with little / some / much ambiguity (names, terms, numbers) | 300 / 298 / 298 |
+| JA-SLIP | sentences from JA-A to C with one slip | 300 |
+| JA-CTX | Japanese only the sentence before decides; that sentence is put in the box first | 200 |
+| POST-JA / POST-JA-SLIP | tweet-like posts (right / up to one slip a sentence) | 100 posts (203 sentences) each |
+| MIX-A / MIX-B / MIX-C | with English, little / some / much ambiguity (product names, abbreviations) | 148 / 147 / 150 |
+| MIX-SLIP | with English and one slip (half in the Japanese, half in an English word) | 296 |
+| POST-MIX / POST-MIX-SLIP | posts with English (right / with slips) | 99 posts (198 sentences) each |
+| EN / EN-SLIP | English (right / one slip) | 300 each |
+| POST-EN / POST-EN-SLIP | posts in English (right / one slip) | 100 posts each |
+| AJIMEE | AJIMEE-Bench, all items, exactly as published (romaji keys added) | 200 |
+| MOZC | Mozc evaluation rows with one expected conversion | 296 |
 
-The sets written for this benchmark are held-out cycle c1 (published unchanged
-in `heldout/c1/`, matching `heldout/c1_commitments.txt`) plus sentences
-written the same way to make them larger. The current held-out cycle, c2, has
-the same tests at about the same sizes.
+- The sets with English come for both ways of typing; (2) is `c3_mix*2.tsv`, switching at "|".
+- Sizes are the rows scored: rows with the very same keys count once. Posts are typed and scored sentence by sentence.
+- Each row's ambiguity and use (chat, work, names, numbers, tech, daily) is in `sets/c3_meta.tsv`.
+- AJIMEE comes from azooKey/AJIMEE-Bench (CC BY-SA 3.0), MOZC from google/mozc (BSD-3-Clause); the rest was written for this benchmark.
 
-**Held-out sets** keep the numbers honest: sentences nobody tuning an input
-method has seen.
+The sentences were written fresh by Claude Sonnet 5.5 (JA-CTX by Claude Opus
+5.5), not taken from any corpus; every kana reading was proofread by Claude
+Opus 5.5 and checked by script against the romaji keys. The instructions and
+the written sources are in `sources/c3/`.
 
-1. Written fresh each cycle by Claude Sonnet 5.5 (natural text people type,
-   not from any corpus); every kana reading proofread by Claude Opus 5.5, and
-   checked by script against the romaji keys.
-2. The SHA-256 of every file is published before any result
-   (`heldout/cN_commitments.txt`).
-3. When the cycle is retired, the files are published and become public sets.
-
-The TEKITO developer sees only held-out scores, and removes held-out text
-from training data by hash.
+**Earlier sets**: the sets before cycle 3 (JA, JA-SLIP, MIX-SP, MIX-RUN and
+so on, with two slips) and the results measured on them stay as they are. The
+held-out cycles c1 and c2 are published in `heldout/c1/` and `heldout/c2/`,
+matching `heldout/c1_commitments.txt` and `heldout/c2_commitments.txt`.
 
 ## Judging
 
@@ -165,11 +165,10 @@ others are **community**.
 
 ## Planned
 
-- AJIMEE-Bench with left context: the input methods measured did not read
-  text placed in the box by the program, so it is left out for now.
-- Live conversion as shown while typing, and in mixed input.
-- Keystrokes per character in mixed input, counting mode switches.
-- Learning off as the main condition.
+- Every input method on cycle 3, with learning and cloud features off as the
+  main condition.
+- The effort to fix a result, as the extra keys it takes.
+- Live conversion as shown while typing.
 
 ## Principles
 
@@ -179,15 +178,13 @@ this one is built to be checked, not trusted.
 
 - **A measure, not a showcase.** It exists to find out how input methods
   actually do, including where TEKITO does worse and TEKITO's own bugs.
-- **No tuning to the test.** TEKITO's developers see only scores on held-out
-  sets, never their sentences or outputs, and held-out text is removed from
-  TEKITO's training data by hash. The sets are evaluated separately from
-  TEKITO's development.
+- **No tuning to the test.** TEKITO is developed against its own tests, not
+  this benchmark, and this benchmark is run apart from TEKITO's development.
 - **Same conditions for every input method.** Every input method, TEKITO
   included, is typed by the same program with the same keys, using released
   builds. Only these runs are compared.
-- **Everything checkable.** Code, sets, raw outputs, every judgement and the
-  held-out commitments are public. Anyone can re-score every result.
+- **Everything checkable.** Code, sets, raw outputs and every judgement are
+  public. Anyone can re-score every result.
 - **Open to others.** Anyone can submit results or propose sets and changes
   through pull requests. Changes to how scores are computed are made in
   public, with the reason.
@@ -201,7 +198,7 @@ keeps its own license:
 |---|---|
 | `sets/ajimee.*` | CC BY-SA 3.0; azooKey/AJIMEE-Bench (commit 401666cd), built on the Japanese Wikipedia Typo Dataset v2; romaji keys added |
 | `sets/mozc.tsv` | BSD-3-Clause; google/mozc `evaluation.tsv` (commit b9c3fcbd); romaji keys added |
-| held-out text, `results/`, `labels.tsv` | CC BY 4.0 |
+| text written for this benchmark (`sets/`, `heldout/`, `sources/`), `results/`, `labels.tsv` | CC BY 4.0 |
 | `assets/`, `runner/icon/` (logos, icon) | all rights reserved by Capitata |
 
 The logo lettering uses [851ゴチカクット](https://pm85122.onamae.jp/851Gkktt.html)

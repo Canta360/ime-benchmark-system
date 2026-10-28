@@ -128,7 +128,7 @@ foreach ($ime in $Imes) {
             } else { Copy-Item "$setDir\$s$ext" $keys }
         }
         # Left context (AJIMEE-Bench): put in the box before the keys are typed.
-        $env:IMEBENCH_CONTEXT = if ($Context -and (Test-Path "$setDir\$s.context.tsv")) { "$setDir\$s.context.tsv" } else { "" }
+        $env:IMEBENCH_CONTEXT = if (($Context -or $s -like "*ctx*") -and (Test-Path "$setDir\$s.context.tsv")) { "$setDir\$s.context.tsv" } else { "" }
         $setHash[$s] = (Get-FileHash $keys -Algorithm SHA256).Hash.ToLower()
         $imeInfo[$ime] = Ime-Info $p.ids[0]
         $out = "$work\real.$ime`__$s.tsv"

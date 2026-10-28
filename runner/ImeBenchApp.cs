@@ -184,6 +184,10 @@ class App : Form {
         if (!File.Exists(json)) { status.Text = L("noSets") + setsDir; start.Enabled = false; return; }
         foreach (Match m in Regex.Matches(File.ReadAllText(json), "\"([^\"]+)\"\\s*:\\s*\"([^\"]+)\""))
             if (File.Exists(Path.Combine(setsDir, m.Groups[1].Value + ".tsv"))) kinds[m.Groups[1].Value] = m.Groups[2].Value;
+        // The current sets (cycle 3) and the two outside ones; the earlier sets
+        // stay in sets/ for the results measured on them.
+        if (kinds.Keys.Any(k => k.StartsWith("c3_")))
+            foreach (var k in kinds.Keys.Where(k => !k.StartsWith("c3_") && k != "ajimee" && k != "mozc").ToList()) kinds.Remove(k);
         foreach (var k in kinds.Keys.OrderBy(k => k)) setBox.Items.Add(k);
         if (setBox.Items.Count > 0) setBox.SelectedIndex = 0;
     }

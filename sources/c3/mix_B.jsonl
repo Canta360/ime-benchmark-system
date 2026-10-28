@@ -1,0 +1,147 @@
+{"text": "iPhoneの画面が割れてしまった。", "chunks": ["@iphone", "の", "がめんが", "われてしまった。"], "level": "B", "use": "daily"}
+{"text": "GitHubにコードを上げておいた。", "chunks": ["@github", "に", "こーどを", "あげておいた。"], "level": "B", "use": "tech"}
+{"text": "Zoomで会議を開始します。", "chunks": ["@zoom", "で", "かいぎを", "かいしします。"], "level": "B", "use": "work"}
+{"text": "Slackの通知を切っておこう。", "chunks": ["@slack", "の", "つうちを", "きっておこう。"], "level": "B", "use": "work"}
+{"text": "明日の会議はTeamsで行います。", "chunks": ["あしたの", "かいぎは", "@teams", "で", "おこないます。"], "level": "B", "use": "work"}
+{"text": "YouTubeで料理の動画を見た。", "chunks": ["@youtube", "で", "りょうりの", "どうがを", "みた。"], "level": "B", "use": "daily"}
+{"text": "iPadで資料を読んでいる。", "chunks": ["@ipad", "で", "しりょうを", "よんでいる。"], "level": "B", "use": "work"}
+{"text": "Excelの表を印刷してください。", "chunks": ["@excel", "の", "ひょうを", "いんさつしてください。"], "level": "B", "use": "work"}
+{"text": "LINEで返事をするね。", "chunks": ["@line", "で", "へんじを", "するね。"], "level": "B", "use": "chat"}
+{"text": "Googleで調べたら出てきた。", "chunks": ["@google", "で", "しらべたら", "でてきた。"], "level": "B", "use": "chat"}
+{"text": "InstagramにPhotoを載せた。", "chunks": ["@instagram", "に", "@photo", "を", "のせた。"], "level": "B", "use": "chat"}
+{"text": "MacBookを新しく買った。", "chunks": ["@macbook", "を", "あたらしく", "かった。"], "level": "B", "use": "daily"}
+{"text": "AmazonでBookを注文した。", "chunks": ["@amazon", "で", "@book", "を", "ちゅうもんした。"], "level": "B", "use": "daily"}
+{"text": "ChromeのTabが多すぎる。", "chunks": ["@chrome", "の", "@tab", "が", "おおすぎる。"], "level": "B", "use": "tech"}
+{"text": "Spotifyで音楽を聴きながら歩く。", "chunks": ["@spotify", "で", "おんがくを", "ききながら", "あるく。"], "level": "B", "use": "daily"}
+{"text": "WindowsのPCを更新した。", "chunks": ["@windows", "の", "@pc", "を", "こうしんした。"], "level": "B", "use": "tech"}
+{"text": "AndroidのAppを入れてみた。", "chunks": ["@android", "の", "@app", "を", "いれてみた。"], "level": "B", "use": "tech"}
+{"text": "NotionにNoteを書いておいたよ。", "chunks": ["@notion", "に", "@note", "を", "かいておいたよ。"], "level": "B", "use": "work"}
+{"text": "LinkedInでプロフィールを直した。", "chunks": ["@linkedin", "で", "ぷろふぃーるを", "なおした。"], "level": "B", "use": "work"}
+{"text": "今日はDiscordで集まろう。", "chunks": ["きょうは", "@discord", "で", "あつまろう。"], "level": "B", "use": "chat"}
+{"text": "Twitterに投稿したら反応があった。", "chunks": ["@twitter", "に", "とうこうしたら", "はんのうが", "あった。"], "level": "B", "use": "chat"}
+{"text": "FacebookでFriendを探した。", "chunks": ["@facebook", "で", "@friend", "を", "さがした。"], "level": "B", "use": "chat"}
+{"text": "CanvaでPosterを作ってみた。", "chunks": ["@canva", "で", "@poster", "を", "つくってみた。"], "level": "B", "use": "daily"}
+{"text": "WhatsAppで家族と話した。", "chunks": ["@whatsapp", "で", "かぞくと", "はなした。"], "level": "B", "use": "chat"}
+{"text": "iCloudに写真を保存した。", "chunks": ["@icloud", "に", "しゃしんを", "ほぞんした。"], "level": "B", "use": "tech"}
+{"text": "その会社のWebsiteを見た。", "chunks": ["その", "かいしゃの", "@website", "を", "みた。"], "level": "B", "use": "work"}
+{"text": "PowerPointのSlideを作成する。", "chunks": ["@powerpoint", "の", "@slide", "を", "さくせいする。"], "level": "B", "use": "work"}
+{"text": "明日のMeetingは早い時間です。", "chunks": ["あしたの", "@meeting", "は", "はやい", "じかんです。"], "level": "B", "use": "work"}
+{"text": "SafariのHistoryを消した。", "chunks": ["@safari", "の", "@history", "を", "けした。"], "level": "B", "use": "tech"}
+{"text": "DropboxにFileを共有した。", "chunks": ["@dropbox", "に", "@file", "を", "きょうゆうした。"], "level": "B", "use": "work"}
+{"text": "YahooのNewsを毎朝読む。", "chunks": ["@yahoo", "の", "@news", "を", "まいあさ", "よむ。"], "level": "B", "use": "daily"}
+{"text": "私のEmailは変わりました。", "chunks": ["わたしの", "@email", "は", "かわりました。"], "level": "B", "use": "work"}
+{"text": "iOSの新しいVersionを入れた。", "chunks": ["@ios", "の", "あたらしい", "@version", "を", "いれた。"], "level": "B", "use": "tech"}
+{"text": "WiFiの設定が合わない。", "chunks": ["@wifi", "の", "せっていが", "あわない。"], "level": "B", "use": "tech"}
+{"text": "Appleの製品はデザインがいい。", "chunks": ["@apple", "の", "せいひんは", "でざいんが", "いい。"], "level": "B", "use": "daily"}
+{"text": "TikTokで踊りを見るのが好き。", "chunks": ["@tiktok", "で", "おどりを", "みるのが", "すき。"], "level": "B", "use": "daily"}
+{"text": "Bluetoothが突然切れた。", "chunks": ["@bluetooth", "が", "とつぜん", "きれた。"], "level": "B", "use": "tech"}
+{"text": "今週のScheduleを確認した。", "chunks": ["こんしゅうの", "@schedule", "を", "かくにんした。"], "level": "B", "use": "work"}
+{"text": "FigmaでDesignを共有します。", "chunks": ["@figma", "で", "@design", "を", "きょうゆうします。"], "level": "B", "use": "work"}
+{"text": "Outlookの予定が重なっている。", "chunks": ["@outlook", "の", "よていが", "かさなっている。"], "level": "B", "use": "work"}
+{"text": "PayPayで支払いを済ませた。", "chunks": ["@paypay", "で", "しはらいを", "すませた。"], "level": "B", "use": "numbers"}
+{"text": "GmailのInboxが満杯だ。", "chunks": ["@gmail", "の", "@inbox", "が", "まんぱいだ。"], "level": "B", "use": "tech"}
+{"text": "LINEのGroupに入れてね。", "chunks": ["@line", "の", "@group", "に", "いれてね。"], "level": "B", "use": "chat"}
+{"text": "iPhoneのCaseを変えたい。", "chunks": ["@iphone", "の", "@case", "を", "かえたい。"], "level": "B", "use": "daily"}
+{"text": "MicrosoftのOfficeを使う。", "chunks": ["@microsoft", "の", "@office", "を", "つかう。"], "level": "B", "use": "work"}
+{"text": "今夜はNetflixのDramaを見る。", "chunks": ["こんやは", "@netflix", "の", "@drama", "を", "みる。"], "level": "B", "use": "chat"}
+{"text": "SlackでThreadを立てて。", "chunks": ["@slack", "で", "@thread", "を", "たてて。"], "level": "B", "use": "work"}
+{"text": "WordPressでBlogを始めた。", "chunks": ["@wordpress", "で", "@blog", "を", "はじめた。"], "level": "B", "use": "tech"}
+{"text": "Zoomの音声が意外と聞こえない。", "chunks": ["@zoom", "の", "おんせいが", "いがいと", "きこえない。"], "level": "B", "use": "work"}
+{"text": "Slack以外の連絡は受けない。", "chunks": ["@slack", "いがいの", "れんらくは", "うけない。"], "level": "B", "use": "work"}
+{"text": "GitHubのIssueを確認して。", "chunks": ["@github", "の", "@issue", "を", "かくにんして。"], "level": "B", "use": "tech"}
+{"text": "iPhoneで写真を撮る機会が増えた。", "chunks": ["@iphone", "で", "しゃしんを", "とる", "きかいが", "ふえた。"], "level": "B", "use": "daily"}
+{"text": "Googleのアカウントを作成する。", "chunks": ["@google", "の", "あかうんとを", "さくせいする。"], "level": "B", "use": "tech"}
+{"text": "友達にLINEで謝った。", "chunks": ["ともだちに", "@line", "で", "あやまった。"], "level": "B", "use": "chat"}
+{"text": "EメールでなくLINEで送って。", "chunks": ["@e", "めーるでなく", "@line", "で", "おくって。"], "level": "B", "use": "chat"}
+{"text": "YouTubeのCommentが怖い。", "chunks": ["@youtube", "の", "@comment", "が", "こわい。"], "level": "B", "use": "chat"}
+{"text": "MacのKeyboardは打ちやすい。", "chunks": ["@mac", "の", "@keyboard", "は", "うちやすい。"], "level": "B", "use": "tech"}
+{"text": "Windowsの起動が速くなった。", "chunks": ["@windows", "の", "きどうが", "はやく", "なった。"], "level": "B", "use": "tech"}
+{"text": "今日のZoomは参加者が多い。", "chunks": ["きょうの", "@zoom", "は", "さんかしゃが", "おおい。"], "level": "B", "use": "work"}
+{"text": "iPadのPenで絵を描く。", "chunks": ["@ipad", "の", "@pen", "で", "えを", "かく。"], "level": "B", "use": "daily"}
+{"text": "SlackのStatusを変えた。", "chunks": ["@slack", "の", "@status", "を", "かえた。"], "level": "B", "use": "work"}
+{"text": "GitHubのRepositoryを公開した。", "chunks": ["@github", "の", "@repository", "を", "こうかいした。"], "level": "B", "use": "tech"}
+{"text": "AirPodsを片方失くした。", "chunks": ["@airpods", "を", "かたほう", "なくした。"], "level": "B", "use": "daily"}
+{"text": "Chromeの拡張機能を入れた。", "chunks": ["@chrome", "の", "かくちょう", "きのうを", "いれた。"], "level": "B", "use": "tech"}
+{"text": "その歌をSpotifyで探した。", "chunks": ["その", "うたを", "@spotify", "で", "さがした。"], "level": "B", "use": "daily"}
+{"text": "Teamsのチャットで質問した。", "chunks": ["@teams", "の", "ちゃっとで", "しつもんした。"], "level": "B", "use": "work"}
+{"text": "iPhoneのBatteryがすぐ減る。", "chunks": ["@iphone", "の", "@battery", "が", "すぐ", "へる。"], "level": "B", "use": "tech"}
+{"text": "InstagramのStoryを毎日見る。", "chunks": ["@instagram", "の", "@story", "を", "まいにち", "みる。"], "level": "B", "use": "daily"}
+{"text": "Googleカレンダーを共有した。", "chunks": ["@google", "かれんだーを", "きょうゆうした。"], "level": "B", "use": "work"}
+{"text": "買い物はAmazonが早い。", "chunks": ["かいものは", "@amazon", "が", "はやい。"], "level": "B", "use": "daily"}
+{"text": "LinkedInのMessageに返事した。", "chunks": ["@linkedin", "の", "@message", "に", "へんじした。"], "level": "B", "use": "work"}
+{"text": "DiscordのServerに招待された。", "chunks": ["@discord", "の", "@server", "に", "しょうたいされた。"], "level": "B", "use": "chat"}
+{"text": "YouTubeのChannelを登録した。", "chunks": ["@youtube", "の", "@channel", "を", "とうろくした。"], "level": "B", "use": "chat"}
+{"text": "NotionのPageを複製した。", "chunks": ["@notion", "の", "@page", "を", "ふくせいした。"], "level": "B", "use": "work"}
+{"text": "Wordで文書を校正した。", "chunks": ["@word", "で", "ぶんしょを", "こうせいした。"], "level": "B", "use": "work"}
+{"text": "Safariが急に落ちた。", "chunks": ["@safari", "が", "きゅうに", "おちた。"], "level": "B", "use": "tech"}
+{"text": "Zoomの背景を変更した。", "chunks": ["@zoom", "の", "はいけいを", "へんこうした。"], "level": "B", "use": "work"}
+{"text": "Slackの絵文字が楽しい。", "chunks": ["@slack", "の", "えもじが", "たのしい。"], "level": "B", "use": "chat"}
+{"text": "GitHubでPull requestを出す。", "chunks": ["@github", "で", "@pull", "@request", "を", "だす。"], "level": "B", "use": "tech"}
+{"text": "iPhoneの時間設定が違う。", "chunks": ["@iphone", "の", "じかん", "せっていが", "ちがう。"], "level": "B", "use": "tech"}
+{"text": "PayPayのポイントが貯まった。", "chunks": ["@paypay", "の", "ぽいんとが", "たまった。"], "level": "B", "use": "numbers"}
+{"text": "Dropboxの容量がいっぱいだ。", "chunks": ["@dropbox", "の", "ようりょうが", "いっぱいだ。"], "level": "B", "use": "tech"}
+{"text": "Facebookで同窓会の連絡が来た。", "chunks": ["@facebook", "で", "どうそうかいの", "れんらくが", "きた。"], "level": "B", "use": "chat"}
+{"text": "TwitterのTrendを見ていた。", "chunks": ["@twitter", "の", "@trend", "を", "みていた。"], "level": "B", "use": "daily"}
+{"text": "Outlookで会議を設定した。", "chunks": ["@outlook", "で", "かいぎを", "せっていした。"], "level": "B", "use": "work"}
+{"text": "LINEの返信が遅れてごめん。", "chunks": ["@line", "の", "へんしんが", "おくれて", "ごめん。"], "level": "B", "use": "chat"}
+{"text": "Figmaで線を引き直した。", "chunks": ["@figma", "で", "せんを", "ひきなおした。"], "level": "B", "use": "work"}
+{"text": "Excelで合計を出してね。", "chunks": ["@excel", "で", "ごうけいを", "だしてね。"], "level": "B", "use": "work"}
+{"text": "WiFiの電波が弱い。", "chunks": ["@wifi", "の", "でんぱが", "よわい。"], "level": "B", "use": "tech"}
+{"text": "Zoomの招待を送りました。", "chunks": ["@zoom", "の", "しょうたいを", "おくりました。"], "level": "B", "use": "work"}
+{"text": "iPhoneの電源が入らない。", "chunks": ["@iphone", "の", "でんげんが", "はいらない。"], "level": "B", "use": "tech"}
+{"text": "Slackのチャンネルを整理した。", "chunks": ["@slack", "の", "ちゃんねるを", "せいりした。"], "level": "B", "use": "work"}
+{"text": "GitHubの権限を変更した。", "chunks": ["@github", "の", "けんげんを", "へんこうした。"], "level": "B", "use": "tech"}
+{"text": "Googleの検索結果が違う。", "chunks": ["@google", "の", "けんさく", "けっかが", "ちがう。"], "level": "B", "use": "tech"}
+{"text": "YouTubeを見すぎて寝不足だ。", "chunks": ["@youtube", "を", "みすぎて", "ねぶそくだ。"], "level": "B", "use": "daily"}
+{"text": "InstagramのDMが届いた。", "chunks": ["@instagram", "の", "@dm", "が", "とどいた。"], "level": "B", "use": "chat"}
+{"text": "MacのStorageが足りない。", "chunks": ["@mac", "の", "@storage", "が", "たりない。"], "level": "B", "use": "tech"}
+{"text": "TeamsのMeetingに遅れそう。", "chunks": ["@teams", "の", "@meeting", "に", "おくれそう。"], "level": "B", "use": "work"}
+{"text": "LINEスタンプを三つ買った。", "chunks": ["@line", "すたんぷを", "みっつ", "かった。"], "level": "B", "use": "numbers"}
+{"text": "Wordの校正機能が便利だ。", "chunks": ["@word", "の", "こうせい", "きのうが", "べんりだ。"], "level": "B", "use": "work"}
+{"text": "Amazonの荷物が今日届く。", "chunks": ["@amazon", "の", "にもつが", "きょう", "とどく。"], "level": "B", "use": "daily"}
+{"text": "NetflixのAccountを共有した。", "chunks": ["@netflix", "の", "@account", "を", "きょうゆうした。"], "level": "B", "use": "daily"}
+{"text": "iPadで絵を描くのは楽しい。", "chunks": ["@ipad", "で", "えを", "かくのは", "たのしい。"], "level": "B", "use": "daily"}
+{"text": "DiscordのBotを作ってみる。", "chunks": ["@discord", "の", "@bot", "を", "つくってみる。"], "level": "B", "use": "tech"}
+{"text": "PowerPointの資料を直した。", "chunks": ["@powerpoint", "の", "しりょうを", "なおした。"], "level": "B", "use": "work"}
+{"text": "GmailのFilterを設定した。", "chunks": ["@gmail", "の", "@filter", "を", "せっていした。"], "level": "B", "use": "tech"}
+{"text": "Chromeのキャッシュを消した。", "chunks": ["@chrome", "の", "きゃっしゅを", "けした。"], "level": "B", "use": "tech"}
+{"text": "Zoomの画面共有ができない。", "chunks": ["@zoom", "の", "がめん", "きょうゆうが", "できない。"], "level": "B", "use": "work"}
+{"text": "TikTokの動画が三十秒だった。", "chunks": ["@tiktok", "の", "どうがが", "さんじゅうびょうだった。"], "level": "B", "use": "numbers"}
+{"text": "SpotifyのPlaylistを作った。", "chunks": ["@spotify", "の", "@playlist", "を", "つくった。"], "level": "B", "use": "daily"}
+{"text": "Notionの表を印刷した。", "chunks": ["@notion", "の", "ひょうを", "いんさつした。"], "level": "B", "use": "work"}
+{"text": "Twitterの規約が変わった。", "chunks": ["@twitter", "の", "きやくが", "かわった。"], "level": "B", "use": "daily"}
+{"text": "MicrosoftのUpdateを待つ。", "chunks": ["@microsoft", "の", "@update", "を", "まつ。"], "level": "B", "use": "tech"}
+{"text": "FacebookのPageを管理する。", "chunks": ["@facebook", "の", "@page", "を", "かんりする。"], "level": "B", "use": "work"}
+{"text": "Androidの設定を開いた。", "chunks": ["@android", "の", "せっていを", "ひらいた。"], "level": "B", "use": "tech"}
+{"text": "Safariの画面が固まった。", "chunks": ["@safari", "の", "がめんが", "かたまった。"], "level": "B", "use": "tech"}
+{"text": "iCloudの容量を増やした。", "chunks": ["@icloud", "の", "ようりょうを", "ふやした。"], "level": "B", "use": "tech"}
+{"text": "WhatsAppのGroupに追加された。", "chunks": ["@whatsapp", "の", "@group", "に", "ついかされた。"], "level": "B", "use": "chat"}
+{"text": "YahooのMailを確認した。", "chunks": ["@yahoo", "の", "@mail", "を", "かくにんした。"], "level": "B", "use": "work"}
+{"text": "LinkedInの求人を見ている。", "chunks": ["@linkedin", "の", "きゅうじんを", "みている。"], "level": "B", "use": "work"}
+{"text": "CanvaのTemplateが可愛い。", "chunks": ["@canva", "の", "@template", "が", "かわいい。"], "level": "B", "use": "daily"}
+{"text": "Appleの発表を待っている。", "chunks": ["@apple", "の", "はっぴょうを", "まっている。"], "level": "B", "use": "daily"}
+{"text": "OutlookのSignatureを直す。", "chunks": ["@outlook", "の", "@signature", "を", "なおす。"], "level": "B", "use": "work"}
+{"text": "FigmaのCommentに返事する。", "chunks": ["@figma", "の", "@comment", "に", "へんじする。"], "level": "B", "use": "work"}
+{"text": "Slackで資料を送付した。", "chunks": ["@slack", "で", "しりょうを", "そうふした。"], "level": "B", "use": "work"}
+{"text": "Zoomの時間を間違えた。", "chunks": ["@zoom", "の", "じかんを", "まちがえた。"], "level": "B", "use": "work"}
+{"text": "iPhoneの機種変更を考えている。", "chunks": ["@iphone", "の", "きしゅへんこうを", "かんがえている。"], "level": "B", "use": "daily"}
+{"text": "GitHubのActionsが失敗した。", "chunks": ["@github", "の", "@actions", "が", "しっぱいした。"], "level": "B", "use": "tech"}
+{"text": "Slackの返信が来ない。", "chunks": ["@slack", "の", "へんしんが", "こない。"], "level": "B", "use": "work"}
+{"text": "Googleマップで道を調べる。", "chunks": ["@google", "まっぷで", "みちを", "しらべる。"], "level": "B", "use": "daily"}
+{"text": "YouTubeの広告が長い。", "chunks": ["@youtube", "の", "こうこくが", "ながい。"], "level": "B", "use": "daily"}
+{"text": "LINEで写真を送った。", "chunks": ["@line", "で", "しゃしんを", "おくった。"], "level": "B", "use": "chat"}
+{"text": "Excelの式が合わない。", "chunks": ["@excel", "の", "しきが", "あわない。"], "level": "B", "use": "work"}
+{"text": "Chromeの更新を促された。", "chunks": ["@chrome", "の", "こうしんを", "うながされた。"], "level": "B", "use": "tech"}
+{"text": "InstagramのReelsを見た。", "chunks": ["@instagram", "の", "@reels", "を", "みた。"], "level": "B", "use": "daily"}
+{"text": "Teamsの通知が多すぎる。", "chunks": ["@teams", "の", "つうちが", "おおすぎる。"], "level": "B", "use": "work"}
+{"text": "Wordの画面を拡大した。", "chunks": ["@word", "の", "がめんを", "かくだいした。"], "level": "B", "use": "work"}
+{"text": "iPadのケースを新調した。", "chunks": ["@ipad", "の", "けーすを", "しんちょうした。"], "level": "B", "use": "daily"}
+{"text": "NetflixのTitleを検索する。", "chunks": ["@netflix", "の", "@title", "を", "けんさくする。"], "level": "B", "use": "daily"}
+{"text": "Dropboxの共有を解除した。", "chunks": ["@dropbox", "の", "きょうゆうを", "かいじょした。"], "level": "B", "use": "work"}
+{"text": "MacBookの電源を切った。", "chunks": ["@macbook", "の", "でんげんを", "きった。"], "level": "B", "use": "tech"}
+{"text": "Discordの音が割れる。", "chunks": ["@discord", "の", "おとが", "われる。"], "level": "B", "use": "tech"}
+{"text": "Notionのデータを移行した。", "chunks": ["@notion", "の", "でーたを", "いこうした。"], "level": "B", "use": "work"}
+{"text": "AmazonのReviewを参考にする。", "chunks": ["@amazon", "の", "@review", "を", "さんこうに", "する。"], "level": "B", "use": "daily"}
+{"text": "PayPayで千円払った。", "chunks": ["@paypay", "で", "せんえん", "はらった。"], "level": "B", "use": "numbers"}
+{"text": "Googleの会議に参加した。", "chunks": ["@google", "の", "かいぎに", "さんかした。"], "level": "B", "use": "work"}
+{"text": "SpotifyのAppが重い。", "chunks": ["@spotify", "の", "@app", "が", "おもい。"], "level": "B", "use": "tech"}

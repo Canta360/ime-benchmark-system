@@ -253,8 +253,8 @@ const T = {
   search: ["検索", "Search"], meant: ["意図した文", "Meant text"],
   legend: ["✓ 完全一致　A 表記ちがい　B 別の言葉だが自然　C 誤り　? 未判定", "✓ exact   A notation variant   B other words, reads naturally   C error   ? not judged"],
   shown: ["件を表示", "rows shown"],
-  heldoutTitle: ["held-out セット（非公開）", "Held-out sets (not public yet)"],
-  heldoutNote: ["結果より先に、ハッシュだけを公開しています。中身はサイクルが終わってから。", "Held-out files are published as hashes before any result, and in full once retired."],
+  heldoutTitle: ["held-out のハッシュ", "Held-out hashes"],
+  heldoutNote: ["c1 と c2 は、結果より先にハッシュを公開し、あとで中身を公開しました（heldout/）。中身はこのハッシュと照合できます。", "c1 and c2 were published as hashes before any result, and in full later (heldout/); the files match these hashes."],
   howTitle: ["測り方と判定", "How it is measured and judged"],
   how: ["文ごとのローマ字を同じ手順で打ち、確定した文字を記録します。意図した文と違う出力は、IME 名を伏せたまま言語モデルが判定します。A は表記ちがい、B は別の言葉だが自然な文、C は誤り。fair % は完全一致と A の合計です。", "Each sentence's romaji is typed the same way and the committed text recorded. Outputs that are not exact are judged by a language model without input method names (A notation variant, B other words that read naturally, C error). fair % is exact plus A."],
   madeby: ["IME精度測定は Capitata が開発しています。", "This benchmark is made by Capitata."],
@@ -265,7 +265,7 @@ const T = {
     postsmixB: ["POST-MIX-SP", "POST-MIX-SP"], postsmixC: ["POST-MIX-RUN", "POST-MIX-RUN"],
     en: ["EN-SLIP", "EN-SLIP"], enclean: ["EN", "EN"], postsen: ["POST-EN", "POST-EN"], postsentypo: ["POST-EN-SLIP", "POST-EN-SLIP"] },
   overviewNote: ["セットごとの点数（日本語・英語まじりは fair %、英語は正しい文の割合）。棒の長さは 0–100 %。", "Score per set (fair % for Japanese and mixed input, sentences right for English). Bar length: 0–100%."],
-  groupJa: ["日本語", "Japanese"], groupMix: ["英語まじり", "Japanese with English"], groupEn: ["英語", "English"],
+  groupJa: ["日本語", "Japanese"], groupMix: ["英語まじり", "Japanese with English"], groupMix2: ["英語まじり（モードを切り替えて）", "With English, switching modes"], groupEn: ["英語", "English"],
 conditions: ["計測条件", "Conditions"], scoresTitle: ["成績と計測条件", "scores and conditions"], sigShort: ["有意差", "significance"], webpage: ["文ごとの出力はウェブページにあります。", "Per-sentence outputs are on the web page."],
   footer: ["コードは Apache License 2.0。データはそれぞれのライセンスに従います（README を参照）。デザインはデジタル庁デザインシステムによるものです。", "Code: Apache License 2.0; data under its own licenses (see the README). Design: the Digital Agency Design System."],
   setNames: {
@@ -283,6 +283,8 @@ conditions: ["計測条件", "Conditions"], scoresTitle: ["成績と計測条件
     postsen: ["POST-EN（投稿・英語）", "POST-EN (posts, English)"],
     postsentypo: ["POST-EN-SLIP（投稿・打ち間違い入りの英語）", "POST-EN-SLIP (posts, English with slips)"] },
 };
+Object.assign(T.setShort, {"c3_jaA": ["JA-A", "JA-A"], "c3_jaB": ["JA-B", "JA-B"], "c3_jaC": ["JA-C", "JA-C"], "c3_jaslip": ["JA-SLIP", "JA-SLIP"], "c3_jactx": ["JA-CTX", "JA-CTX"], "c3_postsja": ["POST-JA", "POST-JA"], "c3_postsjaslip": ["POST-JA-SLIP", "POST-JA-SLIP"], "c3_mixA": ["MIX-A ①", "MIX-A ①"], "c3_mixB": ["MIX-B ①", "MIX-B ①"], "c3_mixC": ["MIX-C ①", "MIX-C ①"], "c3_mixslip": ["MIX-SLIP ①", "MIX-SLIP ①"], "c3_postsmix": ["POST-MIX ①", "POST-MIX ①"], "c3_postsmixslip": ["POST-MIX-SLIP ①", "POST-MIX-SLIP ①"], "c3_mixA2": ["MIX-A ②", "MIX-A ②"], "c3_mixB2": ["MIX-B ②", "MIX-B ②"], "c3_mixC2": ["MIX-C ②", "MIX-C ②"], "c3_mixslip2": ["MIX-SLIP ②", "MIX-SLIP ②"], "c3_postsmix2": ["POST-MIX ②", "POST-MIX ②"], "c3_postsmixslip2": ["POST-MIX-SLIP ②", "POST-MIX-SLIP ②"], "c3_en": ["EN", "EN"], "c3_enslip": ["EN-SLIP", "EN-SLIP"], "c3_postsen": ["POST-EN", "POST-EN"], "c3_postsenslip": ["POST-EN-SLIP", "POST-EN-SLIP"]});
+Object.assign(T.setNames, {"c3_jaA": ["JA-A（日本語・紛れが少ない文）", "JA-A (Japanese, little ambiguity)"], "c3_jaB": ["JA-B（日本語・紛れがほどほどの文）", "JA-B (Japanese, some ambiguity)"], "c3_jaC": ["JA-C（日本語・紛れが多い文（固有名詞、専門用語、数字））", "JA-C (Japanese, much ambiguity (names, terms, numbers))"], "c3_jaslip": ["JA-SLIP（日本語・打ち間違い 1 か所）", "JA-SLIP (Japanese, one slip)"], "c3_jactx": ["JA-CTX（日本語・前の文で決まる文（前の文つき））", "JA-CTX (Japanese decided by the sentence before (given))"], "c3_postsja": ["POST-JA（投稿・日本語）", "POST-JA (Posts, Japanese)"], "c3_postsjaslip": ["POST-JA-SLIP（投稿・日本語・文ごとに打ち間違い 1 か所まで）", "POST-JA-SLIP (Posts, Japanese, up to one slip a sentence)"], "c3_mixA": ["MIX-A ①（英語まじり・紛れが少ない文・1 つのモードで）", "MIX-A ① (With English, little ambiguity, one mode)"], "c3_mixB": ["MIX-B ①（英語まじり・ほどほど・1 つのモードで）", "MIX-B ① (With English, some ambiguity, one mode)"], "c3_mixC": ["MIX-C ①（英語まじり・紛れが多い文・1 つのモードで）", "MIX-C ① (With English, much ambiguity, one mode)"], "c3_mixslip": ["MIX-SLIP ①（英語まじり・打ち間違い 1 か所・1 つのモードで）", "MIX-SLIP ① (With English, one slip, one mode)"], "c3_postsmix": ["POST-MIX ①（投稿・英語まじり・1 つのモードで）", "POST-MIX ① (Posts with English, one mode)"], "c3_postsmixslip": ["POST-MIX-SLIP ①（投稿・英語まじり・打ち間違いあり・1 つのモードで）", "POST-MIX-SLIP ① (Posts with English, slips, one mode)"], "c3_mixA2": ["MIX-A ②（英語まじり・紛れが少ない文・モードを切り替えて）", "MIX-A ② (With English, little ambiguity, switching modes)"], "c3_mixB2": ["MIX-B ②（英語まじり・ほどほど・モードを切り替えて）", "MIX-B ② (With English, some ambiguity, switching modes)"], "c3_mixC2": ["MIX-C ②（英語まじり・紛れが多い文・モードを切り替えて）", "MIX-C ② (With English, much ambiguity, switching modes)"], "c3_mixslip2": ["MIX-SLIP ②（英語まじり・打ち間違い 1 か所・モードを切り替えて）", "MIX-SLIP ② (With English, one slip, switching modes)"], "c3_postsmix2": ["POST-MIX ②（投稿・英語まじり・モードを切り替えて）", "POST-MIX ② (Posts with English, switching modes)"], "c3_postsmixslip2": ["POST-MIX-SLIP ②（投稿・英語まじり・打ち間違いあり・モードを切り替えて）", "POST-MIX-SLIP ② (Posts with English, slips, switching modes)"], "c3_en": ["EN（英文）", "EN (English)"], "c3_enslip": ["EN-SLIP（英文・打ち間違い 1 か所）", "EN-SLIP (English, one slip)"], "c3_postsen": ["POST-EN（投稿・英語）", "POST-EN (Posts, English)"], "c3_postsenslip": ["POST-EN-SLIP（投稿・英語・打ち間違い 1 か所）", "POST-EN-SLIP (Posts, English, one slip)"]});
 const PRINT = new URLSearchParams(location.search).has("print");
 let saved = null;
 try { saved = localStorage.getItem("lang"); } catch (e) {}
@@ -460,7 +462,7 @@ const median = a => { const b = [...a].sort((x, y) => x - y), m = b.length >> 1;
 // Ranks per kind of text: rows right over all of its sets, 95% interval, and
 // "tie" for an input method McNemar cannot tell from the first.
 function typeRanks(only) {
-  const groups = { ja: "groupJa", mix: "groupMix", en: "groupEn" };
+  const groups = { ja: "groupJa", mix: "groupMix", mix2: "groupMix2", en: "groupEn" };
   let h = "";
   for (const [g, key] of Object.entries(groups)) {
     const ty = DATA.types && DATA.types[g];
@@ -502,7 +504,8 @@ function dotPlot(only) {
 
 // Cycle 3 sets of three ambiguity levels (A, B, C): one line per input method.
 function levels(only) {
-  const groups = [["ja", ["jaA", "jaB", "jaC"]], ["mix", ["mixA", "mixB", "mixC"]]].filter(([, ns]) => ns.every(n => DATA.overview.sets.includes(n)));
+  const pre = DATA.current || "";
+  const groups = [["ja", ["jaA", "jaB", "jaC"]], ["mix", ["mixA", "mixB", "mixC"]]].map(([g, ns]) => [g, ns.map(n => pre + n)]).filter(([, ns]) => ns.every(n => DATA.overview.sets.includes(n)));
   if (!groups.length) return "";
   let h = "";
   for (const [g, ns] of groups) {
@@ -545,7 +548,7 @@ function imePage(slug) {
   const learning = [...new Set(sys.map(s => s.learning))].join(", ");
   // Points: rank per kind of text, then the sets furthest above and below the median.
   const pts = [];
-  for (const [g, key] of [["ja", "groupJa"], ["mix", "groupMix"], ["en", "groupEn"]]) {
+  for (const [g, key] of [["ja", "groupJa"], ["mix", "groupMix"], ["mix2", "groupMix2"], ["en", "groupEn"]]) {
     const ty = DATA.types && DATA.types[g];
     const i = ty ? ty.systems.findIndex(e => e.name === r.name) : -1;
     if (i < 0) continue;

@@ -1,0 +1,150 @@
+{"text": "Kubernetesのクラスタを再構築した。", "chunks": ["@kubernetes", "の", "くらすたを", "さいこうちくした。"], "level": "C", "use": "tech"}
+{"text": "PRのレビューをお願いします。", "chunks": ["@pr", "の", "れびゅーを", "おねがいします。"], "level": "C", "use": "work"}
+{"text": "CIが通らないので原因を調べる。", "chunks": ["@ci", "が", "とおらないので", "げんいんを", "しらべる。"], "level": "C", "use": "tech"}
+{"text": "APIのレート制限に引っかかった。", "chunks": ["@api", "の", "れーと", "せいげんに", "ひっかかった。"], "level": "C", "use": "tech"}
+{"text": "DockerのImageをRegistryに送る。", "chunks": ["@docker", "の", "@image", "を", "@registry", "に", "おくる。"], "level": "C", "use": "tech"}
+{"text": "TypeScriptの型定義を修正した。", "chunks": ["@typescript", "の", "かたていぎを", "しゅうせいした。"], "level": "C", "use": "tech"}
+{"text": "PostgreSQLのIndexを張り直す。", "chunks": ["@postgresql", "の", "@index", "を", "はりなおす。"], "level": "C", "use": "tech"}
+{"text": "AWSのLambdaでバッチを動かす。", "chunks": ["@aws", "の", "@lambda", "で", "ばっちを", "うごかす。"], "level": "C", "use": "tech"}
+{"text": "mainブランチにMergeしてください。", "chunks": ["@main", "ぶらんちに", "@merge", "してください。"], "level": "C", "use": "tech"}
+{"text": "OAuthのTokenが期限切れです。", "chunks": ["@oauth", "の", "@token", "が", "きげんぎれです。"], "level": "C", "use": "tech"}
+{"text": "REST APIとGraphQLを比較する。", "chunks": ["@rest", "@api", "と", "@graphql", "を", "ひかくする。"], "level": "C", "use": "tech"}
+{"text": "Terraformで環境をコード化する。", "chunks": ["@terraform", "で", "かんきょうを", "こーどかする。"], "level": "C", "use": "tech"}
+{"text": "RedisのCacheが溢れている。", "chunks": ["@redis", "の", "@cache", "が", "あふれている。"], "level": "C", "use": "tech"}
+{"text": "SSLの証明書が切れそうだ。", "chunks": ["@ssl", "の", "しょうめいしょが", "きれそうだ。"], "level": "C", "use": "tech"}
+{"text": "VS Codeの拡張を整理する。", "chunks": ["@vs", "@code", "の", "かくちょうを", "せいりする。"], "level": "C", "use": "tech"}
+{"text": "JSONのパースでエラーが出た。", "chunks": ["@json", "の", "ぱーすで", "えらーが", "でた。"], "level": "C", "use": "tech"}
+{"text": "LinuxのKernelを更新した。", "chunks": ["@linux", "の", "@kernel", "を", "こうしんした。"], "level": "C", "use": "tech"}
+{"text": "SQLのJoinが遅い原因を探す。", "chunks": ["@sql", "の", "@join", "が", "おそい", "げんいんを", "さがす。"], "level": "C", "use": "tech"}
+{"text": "GPUのメモリが足りなくなった。", "chunks": ["@gpu", "の", "めもりが", "たりなく", "なった。"], "level": "C", "use": "tech"}
+{"text": "CSSのGridで配置を直した。", "chunks": ["@css", "の", "@grid", "で", "はいちを", "なおした。"], "level": "C", "use": "tech"}
+{"text": "ReactのHookを書き換えた。", "chunks": ["@react", "の", "@hook", "を", "かきかえた。"], "level": "C", "use": "tech"}
+{"text": "Nginxの設定ファイルを確認する。", "chunks": ["@nginx", "の", "せってい", "ふぁいるを", "かくにんする。"], "level": "C", "use": "tech"}
+{"text": "CDNのCacheを無効化した。", "chunks": ["@cdn", "の", "@cache", "を", "むこうかした。"], "level": "C", "use": "tech"}
+{"text": "SDKのバージョンを揃えておく。", "chunks": ["@sdk", "の", "ばーじょんを", "そろえておく。"], "level": "C", "use": "tech"}
+{"text": "DNSの伝播を待っている。", "chunks": ["@dns", "の", "でんぱを", "まっている。"], "level": "C", "use": "tech"}
+{"text": "Pythonのvenvを作り直した。", "chunks": ["@python", "の", "@venv", "を", "つくりなおした。"], "level": "C", "use": "tech"}
+{"text": "NPMのパッケージを更新する。", "chunks": ["@npm", "の", "ぱっけーじを", "こうしんする。"], "level": "C", "use": "tech"}
+{"text": "SaaSの契約を見直す。", "chunks": ["@saas", "の", "けいやくを", "みなおす。"], "level": "C", "use": "work"}
+{"text": "KPIの数字を確認してください。", "chunks": ["@kpi", "の", "すうじを", "かくにんしてください。"], "level": "C", "use": "work"}
+{"text": "ROIを計算するのに時間がかかる。", "chunks": ["@roi", "を", "けいさんするのに", "じかんが", "かかる。"], "level": "C", "use": "work"}
+{"text": "BtoBの営業を担当している。", "chunks": ["@btob", "の", "えいぎょうを", "たんとうしている。"], "level": "C", "use": "work"}
+{"text": "CEOのスピーチが良かった。", "chunks": ["@ceo", "の", "すぴーちが", "よかった。"], "level": "C", "use": "work"}
+{"text": "HRの担当者に連絡した。", "chunks": ["@hr", "の", "たんとうしゃに", "れんらくした。"], "level": "C", "use": "work"}
+{"text": "MVPの機能を絞り込む。", "chunks": ["@mvp", "の", "きのうを", "しぼりこむ。"], "level": "C", "use": "work"}
+{"text": "SEOの順位が上がってきた。", "chunks": ["@seo", "の", "じゅんいが", "あがってきた。"], "level": "C", "use": "work"}
+{"text": "Salesforceのデータを移行する。", "chunks": ["@salesforce", "の", "でーたを", "いこうする。"], "level": "C", "use": "work"}
+{"text": "Snowflakeのコストを抑えたい。", "chunks": ["@snowflake", "の", "こすとを", "おさえたい。"], "level": "C", "use": "tech"}
+{"text": "OpenAIのAPIキーを再発行した。", "chunks": ["@openai", "の", "@api", "きーを", "さいはっこうした。"], "level": "C", "use": "tech"}
+{"text": "Anthropicの料金表を確認した。", "chunks": ["@anthropic", "の", "りょうきんひょうを", "かくにんした。"], "level": "C", "use": "names"}
+{"text": "NVIDIAの新しいGPUが発表された。", "chunks": ["@nvidia", "の", "あたらしい", "@gpu", "が", "はっぴょうされた。"], "level": "C", "use": "names"}
+{"text": "TSMCの工場が熊本にできた。", "chunks": ["@tsmc", "の", "こうじょうが", "くまもとに", "できた。"], "level": "C", "use": "names"}
+{"text": "SoftBankの決算を読んだ。", "chunks": ["@softbank", "の", "けっさんを", "よんだ。"], "level": "C", "use": "names"}
+{"text": "MercariでSwitchを売った。", "chunks": ["@mercari", "で", "@switch", "を", "うった。"], "level": "C", "use": "daily"}
+{"text": "UberEatsで昼食を頼んだ。", "chunks": ["@ubereats", "で", "ちゅうしょくを", "たのんだ。"], "level": "C", "use": "daily"}
+{"text": "GitLabのRunnerが止まっている。", "chunks": ["@gitlab", "の", "@runner", "が", "とまっている。"], "level": "C", "use": "tech"}
+{"text": "JenkinsのPipelineを修正する。", "chunks": ["@jenkins", "の", "@pipeline", "を", "しゅうせいする。"], "level": "C", "use": "tech"}
+{"text": "AnsibleのPlaybookを書き直す。", "chunks": ["@ansible", "の", "@playbook", "を", "かきなおす。"], "level": "C", "use": "tech"}
+{"text": "GrafanaのDashboardを作った。", "chunks": ["@grafana", "の", "@dashboard", "を", "つくった。"], "level": "C", "use": "tech"}
+{"text": "PrometheusでMetricsを収集する。", "chunks": ["@prometheus", "で", "@metrics", "を", "しゅうしゅうする。"], "level": "C", "use": "tech"}
+{"text": "ElasticsearchのIndexが壊れた。", "chunks": ["@elasticsearch", "の", "@index", "が", "こわれた。"], "level": "C", "use": "tech"}
+{"text": "KafkaのTopicを三つ作る。", "chunks": ["@kafka", "の", "@topic", "を", "みっつ", "つくる。"], "level": "C", "use": "numbers"}
+{"text": "RabbitMQのQueueが詰まった。", "chunks": ["@rabbitmq", "の", "@queue", "が", "つまった。"], "level": "C", "use": "tech"}
+{"text": "FastAPIでエンドポイントを書く。", "chunks": ["@fastapi", "で", "えんどぽいんとを", "かく。"], "level": "C", "use": "tech"}
+{"text": "DjangoのMigrationを実行する。", "chunks": ["@django", "の", "@migration", "を", "じっこうする。"], "level": "C", "use": "tech"}
+{"text": "Rustの所有権がやっと分かった。", "chunks": ["@rust", "の", "しょゆうけんが", "やっと", "わかった。"], "level": "C", "use": "tech"}
+{"text": "GoのGoroutineが増えすぎた。", "chunks": ["@go", "の", "@goroutine", "が", "ふえすぎた。"], "level": "C", "use": "tech"}
+{"text": "SwiftUIのViewを分割した。", "chunks": ["@swiftui", "の", "@view", "を", "ぶんかつした。"], "level": "C", "use": "tech"}
+{"text": "KotlinでAndroidアプリを作る。", "chunks": ["@kotlin", "で", "@android", "あぷりを", "つくる。"], "level": "C", "use": "tech"}
+{"text": "FlutterのWidgetが重い。", "chunks": ["@flutter", "の", "@widget", "が", "おもい。"], "level": "C", "use": "tech"}
+{"text": "TailwindのClassが長すぎる。", "chunks": ["@tailwind", "の", "@class", "が", "ながすぎる。"], "level": "C", "use": "tech"}
+{"text": "WebpackからViteに移行した。", "chunks": ["@webpack", "から", "@vite", "に", "いこうした。"], "level": "C", "use": "tech"}
+{"text": "ESLintのRuleを追加する。", "chunks": ["@eslint", "の", "@rule", "を", "ついかする。"], "level": "C", "use": "tech"}
+{"text": "GraphQLのSchemaを更新した。", "chunks": ["@graphql", "の", "@schema", "を", "こうしんした。"], "level": "C", "use": "tech"}
+{"text": "gRPCでサービス間を繋ぐ。", "chunks": ["@grpc", "で", "さーびすかんを", "つなぐ。"], "level": "C", "use": "tech"}
+{"text": "WebSocketの接続が切れる。", "chunks": ["@websocket", "の", "せつぞくが", "きれる。"], "level": "C", "use": "tech"}
+{"text": "HTTPSに切り替える予定です。", "chunks": ["@https", "に", "きりかえる", "よていです。"], "level": "C", "use": "tech"}
+{"text": "TCPのハンドシェイクを調べる。", "chunks": ["@tcp", "の", "はんどしぇいくを", "しらべる。"], "level": "C", "use": "tech"}
+{"text": "VPNに接続できなくなった。", "chunks": ["@vpn", "に", "せつぞく", "できなく", "なった。"], "level": "C", "use": "tech"}
+{"text": "SSHの鍵を再生成した。", "chunks": ["@ssh", "の", "かぎを", "さいせいせいした。"], "level": "C", "use": "tech"}
+{"text": "RAIDの構成を見直したい。", "chunks": ["@raid", "の", "こうせいを", "みなおしたい。"], "level": "C", "use": "tech"}
+{"text": "SSDの寿命が心配だ。", "chunks": ["@ssd", "の", "じゅみょうが", "しんぱいだ。"], "level": "C", "use": "tech"}
+{"text": "BIOSの設定を初期化した。", "chunks": ["@bios", "の", "せっていを", "しょきかした。"], "level": "C", "use": "tech"}
+{"text": "HDMIケーブルが短い。", "chunks": ["@hdmi", "けーぶるが", "みじかい。"], "level": "C", "use": "tech"}
+{"text": "RAGの精度が思ったより低い。", "chunks": ["@rag", "の", "せいどが", "おもったより", "ひくい。"], "level": "C", "use": "tech"}
+{"text": "TensorFlowからPyTorchに乗り換えた。", "chunks": ["@tensorflow", "から", "@pytorch", "に", "のりかえた。"], "level": "C", "use": "tech"}
+{"text": "Hugging Faceでモデルを探す。", "chunks": ["@hugging", "@face", "で", "もでるを", "さがす。"], "level": "C", "use": "tech"}
+{"text": "CUDAのバージョンが合わない。", "chunks": ["@cuda", "の", "ばーじょんが", "あわない。"], "level": "C", "use": "tech"}
+{"text": "OCRの認識結果を修正する。", "chunks": ["@ocr", "の", "にんしき", "けっかを", "しゅうせいする。"], "level": "C", "use": "tech"}
+{"text": "UXの調査を来月行う。", "chunks": ["@ux", "の", "ちょうさを", "らいげつ", "おこなう。"], "level": "C", "use": "work"}
+{"text": "UIのデザインを見直す。", "chunks": ["@ui", "の", "でざいんを", "みなおす。"], "level": "C", "use": "work"}
+{"text": "QAのチームが不具合を見つけた。", "chunks": ["@qa", "の", "ちーむが", "ふぐあいを", "みつけた。"], "level": "C", "use": "work"}
+{"text": "SLAの条件を確認してください。", "chunks": ["@sla", "の", "じょうけんを", "かくにんしてください。"], "level": "C", "use": "work"}
+{"text": "NDAを結んでから資料を渡す。", "chunks": ["@nda", "を", "むすんでから", "しりょうを", "わたす。"], "level": "C", "use": "work"}
+{"text": "ERPの導入に半年かかった。", "chunks": ["@erp", "の", "どうにゅうに", "はんとし", "かかった。"], "level": "C", "use": "work"}
+{"text": "CRMにデータを入力する。", "chunks": ["@crm", "に", "でーたを", "にゅうりょくする。"], "level": "C", "use": "work"}
+{"text": "PDFをExcelに変換したい。", "chunks": ["@pdf", "を", "@excel", "に", "へんかんしたい。"], "level": "C", "use": "work"}
+{"text": "CSVのヘッダーが崩れている。", "chunks": ["@csv", "の", "へっだーが", "くずれている。"], "level": "C", "use": "tech"}
+{"text": "URLの末尾にスラッシュを付ける。", "chunks": ["@url", "の", "まつびに", "すらっしゅを", "つける。"], "level": "C", "use": "tech"}
+{"text": "IPアドレスを固定にした。", "chunks": ["@ip", "あどれすを", "こていに", "した。"], "level": "C", "use": "tech"}
+{"text": "QRコードを読み取ってください。", "chunks": ["@qr", "こーどを", "よみとってください。"], "level": "C", "use": "daily"}
+{"text": "ETCカードを車に挿した。", "chunks": ["@etc", "かーどを", "くるまに", "さした。"], "level": "C", "use": "daily"}
+{"text": "JRの電車が遅れている。", "chunks": ["@jr", "の", "でんしゃが", "おくれている。"], "level": "C", "use": "daily"}
+{"text": "ANAの便を予約した。", "chunks": ["@ana", "の", "びんを", "よやくした。"], "level": "C", "use": "daily"}
+{"text": "NHKの番組を録画する。", "chunks": ["@nhk", "の", "ばんぐみを", "ろくがする。"], "level": "C", "use": "daily"}
+{"text": "KDDIの回線に乗り換えた。", "chunks": ["@kddi", "の", "かいせんに", "のりかえた。"], "level": "C", "use": "names"}
+{"text": "DeNAの株価が上がった。", "chunks": ["@dena", "の", "かぶかが", "あがった。"], "level": "C", "use": "names"}
+{"text": "IKEAで棚を買ってきた。", "chunks": ["@ikea", "で", "たなを", "かってきた。"], "level": "C", "use": "daily"}
+{"text": "NIKEのスニーカーが欲しい。", "chunks": ["@nike", "の", "すにーかーが", "ほしい。"], "level": "C", "use": "daily"}
+{"text": "TOYOTAの新型車が発表された。", "chunks": ["@toyota", "の", "しんがたしゃが", "はっぴょうされた。"], "level": "C", "use": "names"}
+{"text": "SONYのカメラを使っている。", "chunks": ["@sony", "の", "かめらを", "つかっている。"], "level": "C", "use": "names"}
+{"text": "Panasonicの炊飯器が壊れた。", "chunks": ["@panasonic", "の", "すいはんきが", "こわれた。"], "level": "C", "use": "daily"}
+{"text": "PlayStationの新作を予約した。", "chunks": ["@playstation", "の", "しんさくを", "よやくした。"], "level": "C", "use": "daily"}
+{"text": "FIFAの大会を家族で見た。", "chunks": ["@fifa", "の", "たいかいを", "かぞくで", "みた。"], "level": "C", "use": "daily"}
+{"text": "WHOの発表を読んだ。", "chunks": ["@who", "の", "はっぴょうを", "よんだ。"], "level": "C", "use": "daily"}
+{"text": "IPOの価格が決まった。", "chunks": ["@ipo", "の", "かかくが", "きまった。"], "level": "C", "use": "work"}
+{"text": "M&Aの交渉が進んでいる。", "chunks": ["@m", "@a", "の", "こうしょうが", "すすんでいる。"], "level": "C", "use": "work"}
+{"text": "ESGの報告書を作成する。", "chunks": ["@esg", "の", "ほうこくしょを", "さくせいする。"], "level": "C", "use": "work"}
+{"text": "DXの推進を任された。", "chunks": ["@dx", "の", "すいしんを", "まかされた。"], "level": "C", "use": "work"}
+{"text": "BCPの訓練を実施した。", "chunks": ["@bcp", "の", "くんれんを", "じっしした。"], "level": "C", "use": "work"}
+{"text": "MBAを取るために留学する。", "chunks": ["@mba", "を", "とるために", "りゅうがくする。"], "level": "C", "use": "work"}
+{"text": "Gemini ProのAPIを試した。", "chunks": ["@gemini", "@pro", "の", "@api", "を", "ためした。"], "level": "C", "use": "tech"}
+{"text": "Claude CodeでBugを直した。", "chunks": ["@claude", "@code", "で", "@bug", "を", "なおした。"], "level": "C", "use": "tech"}
+{"text": "LLaMAのモデルを量子化する。", "chunks": ["@llama", "の", "もでるを", "りょうしかする。"], "level": "C", "use": "tech"}
+{"text": "BERTの精度を比較した。", "chunks": ["@bert", "の", "せいどを", "ひかくした。"], "level": "C", "use": "tech"}
+{"text": "SwiftのAsyncを学んでいる。", "chunks": ["@swift", "の", "@async", "を", "まなんでいる。"], "level": "C", "use": "tech"}
+{"text": "MongoDBのShardを追加する。", "chunks": ["@mongodb", "の", "@shard", "を", "ついかする。"], "level": "C", "use": "tech"}
+{"text": "MySQLのLogを確認した。", "chunks": ["@mysql", "の", "@log", "を", "かくにんした。"], "level": "C", "use": "tech"}
+{"text": "SQLiteのファイルが破損した。", "chunks": ["@sqlite", "の", "ふぁいるが", "はそんした。"], "level": "C", "use": "tech"}
+{"text": "VercelにDeployが完了した。", "chunks": ["@vercel", "に", "@deploy", "が", "かんりょうした。"], "level": "C", "use": "tech"}
+{"text": "CloudflareのWorkersを試す。", "chunks": ["@cloudflare", "の", "@workers", "を", "ためす。"], "level": "C", "use": "tech"}
+{"text": "AzureのCostを毎月確認する。", "chunks": ["@azure", "の", "@cost", "を", "まいつき", "かくにんする。"], "level": "C", "use": "work"}
+{"text": "GCPのProjectを整理した。", "chunks": ["@gcp", "の", "@project", "を", "せいりした。"], "level": "C", "use": "tech"}
+{"text": "FirebaseのAuthが動かない。", "chunks": ["@firebase", "の", "@auth", "が", "うごかない。"], "level": "C", "use": "tech"}
+{"text": "SupabaseでDBを立てた。", "chunks": ["@supabase", "で", "@db", "を", "たてた。"], "level": "C", "use": "tech"}
+{"text": "StripeのWebhookを検証する。", "chunks": ["@stripe", "の", "@webhook", "を", "けんしょうする。"], "level": "C", "use": "tech"}
+{"text": "ShopifyでStoreを開いた。", "chunks": ["@shopify", "で", "@store", "を", "ひらいた。"], "level": "C", "use": "work"}
+{"text": "AdobeのIllustratorで描いた。", "chunks": ["@adobe", "の", "@illustrator", "で", "かいた。"], "level": "C", "use": "daily"}
+{"text": "PhotoshopのLayerを統合する。", "chunks": ["@photoshop", "の", "@layer", "を", "とうごうする。"], "level": "C", "use": "work"}
+{"text": "UnityのPrefabを複製した。", "chunks": ["@unity", "の", "@prefab", "を", "ふくせいした。"], "level": "C", "use": "tech"}
+{"text": "Unreal Engineでゲームを作る。", "chunks": ["@unreal", "@engine", "で", "げーむを", "つくる。"], "level": "C", "use": "tech"}
+{"text": "BlenderのRenderが終わった。", "chunks": ["@blender", "の", "@render", "が", "おわった。"], "level": "C", "use": "tech"}
+{"text": "KubernetesのPodがCrashLoopBackOffになった。", "chunks": ["@kubernetes", "の", "@pod", "が", "@crashloopbackoff", "に", "なった。"], "level": "C", "use": "tech"}
+{"text": "GitHub ActionsでLintを自動化した。", "chunks": ["@github", "@actions", "で", "@lint", "を", "じどうかした。"], "level": "C", "use": "tech"}
+{"text": "PythonのPandasでCSVを読み込む。", "chunks": ["@python", "の", "@pandas", "で", "@csv", "を", "よみこむ。"], "level": "C", "use": "tech"}
+{"text": "JiraのTicketを今週中に閉じる。", "chunks": ["@jira", "の", "@ticket", "を", "こんしゅうちゅうに", "とじる。"], "level": "C", "use": "work"}
+{"text": "SlackのChannelにURLを貼っておく。", "chunks": ["@slack", "の", "@channel", "に", "@url", "を", "はっておく。"], "level": "C", "use": "work"}
+{"text": "SvelteでSPAを作り直した。", "chunks": ["@svelte", "で", "@spa", "を", "つくりなおした。"], "level": "C", "use": "tech"}
+{"text": "NotionのPageをPDFで書き出す。", "chunks": ["@notion", "の", "@page", "を", "@pdf", "で", "かきだす。"], "level": "C", "use": "work"}
+{"text": "HerokuからRenderへ移行した。", "chunks": ["@heroku", "から", "@render", "へ", "いこうした。"], "level": "C", "use": "tech"}
+{"text": "MacBookのBatteryが急に減る。", "chunks": ["@macbook", "の", "@battery", "が", "きゅうに", "へる。"], "level": "C", "use": "daily"}
+{"text": "ZoomのRecordingを共有してください。", "chunks": ["@zoom", "の", "@recording", "を", "きょうゆうしてください。"], "level": "C", "use": "work"}
+{"text": "DeepLで英文のMailを翻訳した。", "chunks": ["@deepl", "で", "えいぶんの", "@mail", "を", "ほんやくした。"], "level": "C", "use": "work"}
+{"text": "SpotifyのPlaylistを作った。", "chunks": ["@spotify", "の", "@playlist", "を", "つくった。"], "level": "C", "use": "daily"}
+{"text": "YAMLのIndentがずれている。", "chunks": ["@yaml", "の", "@indent", "が", "ずれている。"], "level": "C", "use": "tech"}
+{"text": "CPUの使用率が百パーセントに張り付いた。", "chunks": ["@cpu", "の", "しようりつが", "ひゃくぱーせんとに", "はりついた。"], "level": "C", "use": "numbers"}
+{"text": "四月からCTOとしてStartupに入る。", "chunks": ["しがつから", "@cto", "として", "@startup", "に", "はいる。"], "level": "C", "use": "work"}
+{"text": "SamsungとAppleの決算を比べた。", "chunks": ["@samsung", "と", "@apple", "の", "けっさんを", "くらべた。"], "level": "C", "use": "names"}
+{"text": "MicrosoftのTeamsで会議を開いた。", "chunks": ["@microsoft", "の", "@teams", "で", "かいぎを", "ひらいた。"], "level": "C", "use": "names"}
+{"text": "RubyのGemを更新したらTestが落ちた。", "chunks": ["@ruby", "の", "@gem", "を", "こうしんしたら", "@test", "が", "おちた。"], "level": "C", "use": "tech"}
+{"text": "IntelのCPUからAMDに替えた。", "chunks": ["@intel", "の", "@cpu", "から", "@amd", "に", "かえた。"], "level": "C", "use": "names"}

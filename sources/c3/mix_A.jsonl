@@ -1,0 +1,148 @@
+{"text": "このPCは動きが遅い。", "chunks": ["この", "@pc", "は", "うごきが", "おそい。"], "level": "A", "use": "tech"}
+{"text": "emailを送っておきました。", "chunks": ["@email", "を", "おくっておきました。"], "level": "A", "use": "work"}
+{"text": "OKです、それでいきましょう。", "chunks": ["@ok", "です、", "それで", "いきましょう。"], "level": "A", "use": "chat"}
+{"text": "今夜はpizzaにしよう。", "chunks": ["こんやは", "@pizza", "に", "しよう。"], "level": "A", "use": "daily"}
+{"text": "このappは使いやすいね。", "chunks": ["この", "@app", "は", "つかいやすいね。"], "level": "A", "use": "tech"}
+{"text": "lunchは何を食べる？", "chunks": ["@lunch", "は", "なにを", "たべる？"], "level": "A", "use": "daily"}
+{"text": "パスワードをresetしてください。", "chunks": ["ぱすわーどを", "@reset", "してください。"], "level": "A", "use": "tech"}
+{"text": "今日はtestの日だ。", "chunks": ["きょうは", "@test", "の", "ひだ。"], "level": "A", "use": "daily"}
+{"text": "fileを保存するのを忘れた。", "chunks": ["@file", "を", "ほぞんするのを", "わすれた。"], "level": "A", "use": "tech"}
+{"text": "そのideaはいいと思う。", "chunks": ["その", "@idea", "は", "いいと", "おもう。"], "level": "A", "use": "chat"}
+{"text": "夜はgameをして過ごした。", "chunks": ["よるは", "@game", "を", "して", "すごした。"], "level": "A", "use": "daily"}
+{"text": "新しいcameraを買いたい。", "chunks": ["あたらしい", "@camera", "を", "かいたい。"], "level": "A", "use": "daily"}
+{"text": "このmenuは見にくい。", "chunks": ["この", "@menu", "は", "みにくい。"], "level": "A", "use": "tech"}
+{"text": "後でmailを確認します。", "chunks": ["あとで", "@mail", "を", "かくにんします。"], "level": "A", "use": "work"}
+{"text": "bagを忘れて戻った。", "chunks": ["@bag", "を", "わすれて", "もどった。"], "level": "A", "use": "daily"}
+{"text": "そのnewsは本当ですか？", "chunks": ["その", "@news", "は", "ほんとうですか？"], "level": "A", "use": "chat"}
+{"text": "今週はscheduleが詰まっている。", "chunks": ["こんしゅうは", "@schedule", "が", "つまっている。"], "level": "A", "use": "work"}
+{"text": "internetがつながらない。", "chunks": ["@internet", "が", "つながらない。"], "level": "A", "use": "tech"}
+{"text": "このsoftwareは無料です。", "chunks": ["この", "@software", "は", "むりょうです。"], "level": "A", "use": "tech"}
+{"text": "ありがとう、本当にniceだったよ。", "chunks": ["ありがとう、", "ほんとうに", "@nice", "だったよ。"], "level": "A", "use": "chat"}
+{"text": "会議のagendaを共有します。", "chunks": ["かいぎの", "@agenda", "を", "きょうゆうします。"], "level": "A", "use": "work"}
+{"text": "今日はなんだかhappyだ。", "chunks": ["きょうは", "なんだか", "@happy", "だ。"], "level": "A", "use": "chat"}
+{"text": "このbookは面白かった。", "chunks": ["この", "@book", "は", "おもしろかった。"], "level": "A", "use": "daily"}
+{"text": "printerの紙がなくなった。", "chunks": ["@printer", "の", "かみが", "なくなった。"], "level": "A", "use": "work"}
+{"text": "夕方からrainになるそうだ。", "chunks": ["ゆうがたから", "@rain", "に", "なるそうだ。"], "level": "A", "use": "daily"}
+{"text": "このwebサイトは見やすい。", "chunks": ["この", "@web", "さいとは", "みやすい。"], "level": "A", "use": "tech"}
+{"text": "先にcheckしておくね。", "chunks": ["さきに", "@check", "しておくね。"], "level": "A", "use": "chat"}
+{"text": "このsizeで大丈夫ですか？", "chunks": ["この", "@size", "で", "だいじょうぶですか？"], "level": "A", "use": "work"}
+{"text": "大きなbugが見つかった。", "chunks": ["おおきな", "@bug", "が", "みつかった。"], "level": "A", "use": "tech"}
+{"text": "そのnameは覚えやすい。", "chunks": ["その", "@name", "は", "おぼえやすい。"], "level": "A", "use": "names"}
+{"text": "明日はholidayだから休みです。", "chunks": ["あしたは", "@holiday", "だから", "やすみです。"], "level": "A", "use": "daily"}
+{"text": "reportを今日中に出します。", "chunks": ["@report", "を", "きょうじゅうに", "だします。"], "level": "A", "use": "work"}
+{"text": "このcoffeeはおいしいね。", "chunks": ["この", "@coffee", "は", "おいしいね。"], "level": "A", "use": "daily"}
+{"text": "今からshopping行ってくる。", "chunks": ["いまから", "@shopping", "いってくる。"], "level": "A", "use": "daily"}
+{"text": "projectの締め切りは来週です。", "chunks": ["@project", "の", "しめきりは", "らいしゅうです。"], "level": "A", "use": "work"}
+{"text": "そのsongをよく聴いている。", "chunks": ["その", "@song", "を", "よく", "きいている。"], "level": "A", "use": "chat"}
+{"text": "このdataは古いかもしれない。", "chunks": ["この", "@data", "は", "ふるいかもしれない。"], "level": "A", "use": "tech"}
+{"text": "さっきのmessageは読んだよ。", "chunks": ["さっきの", "@message", "は", "よんだよ。"], "level": "A", "use": "chat"}
+{"text": "ここにnoteを書いておく。", "chunks": ["ここに", "@note", "を", "かいておく。"], "level": "A", "use": "work"}
+{"text": "このsystemは安定している。", "chunks": ["この", "@system", "は", "あんていしている。"], "level": "A", "use": "tech"}
+{"text": "明日はbusで行きます。", "chunks": ["あしたは", "@bus", "で", "いきます。"], "level": "A", "use": "daily"}
+{"text": "今日のdinnerは私が作る。", "chunks": ["きょうの", "@dinner", "は", "わたしが", "つくる。"], "level": "A", "use": "daily"}
+{"text": "serverの調子が悪いようです。", "chunks": ["@server", "の", "ちょうしが", "わるいようです。"], "level": "A", "use": "tech"}
+{"text": "このtableは少し重い。", "chunks": ["この", "@table", "は", "すこし", "おもい。"], "level": "A", "use": "daily"}
+{"text": "返信はtomorrowでもいいよ。", "chunks": ["へんしんは", "@tomorrow", "でも", "いいよ。"], "level": "A", "use": "chat"}
+{"text": "今日はmondayで気が重い。", "chunks": ["きょうは", "@monday", "で", "きが", "おもい。"], "level": "A", "use": "daily"}
+{"text": "次のstepに進みましょう。", "chunks": ["つぎの", "@step", "に", "すすみましょう。"], "level": "A", "use": "work"}
+{"text": "このlistに名前を足して。", "chunks": ["この", "@list", "に", "なまえを", "たして。"], "level": "A", "use": "names"}
+{"text": "ここのwifiは速いね。", "chunks": ["ここの", "@wifi", "は", "はやいね。"], "level": "A", "use": "tech"}
+{"text": "今朝はcoffeeを二杯飲んだ。", "chunks": ["けさは", "@coffee", "を", "にはい", "のんだ。"], "level": "A", "use": "numbers"}
+{"text": "そのwordは初めて聞いた。", "chunks": ["その", "@word", "は", "はじめて", "きいた。"], "level": "A", "use": "chat"}
+{"text": "新しいcardを作りました。", "chunks": ["あたらしい", "@card", "を", "つくりました。"], "level": "A", "use": "daily"}
+{"text": "ここにfolderを作ってね。", "chunks": ["ここに", "@folder", "を", "つくってね。"], "level": "A", "use": "tech"}
+{"text": "今日のlessonは楽しかった。", "chunks": ["きょうの", "@lesson", "は", "たのしかった。"], "level": "A", "use": "daily"}
+{"text": "このmailは迷惑かもしれない。", "chunks": ["この", "@mail", "は", "めいわくかもしれない。"], "level": "A", "use": "tech"}
+{"text": "会議はonlineで行います。", "chunks": ["かいぎは", "@online", "で", "おこないます。"], "level": "A", "use": "work"}
+{"text": "そのwindowを閉じてください。", "chunks": ["その", "@window", "を", "とじてください。"], "level": "A", "use": "tech"}
+{"text": "夏休みはtripに行きたい。", "chunks": ["なつやすみは", "@trip", "に", "いきたい。"], "level": "A", "use": "daily"}
+{"text": "このcodeは読みやすい。", "chunks": ["この", "@code", "は", "よみやすい。"], "level": "A", "use": "tech"}
+{"text": "お客様にinvoiceを送った。", "chunks": ["おきゃくさまに", "@invoice", "を", "おくった。"], "level": "A", "use": "work"}
+{"text": "ちょっとだけwaitしてね。", "chunks": ["ちょっとだけ", "@wait", "してね。"], "level": "A", "use": "chat"}
+{"text": "今月のbudgetは足りない。", "chunks": ["こんげつの", "@budget", "は", "たりない。"], "level": "A", "use": "work"}
+{"text": "新しいphotoを見せて。", "chunks": ["あたらしい", "@photo", "を", "みせて。"], "level": "A", "use": "chat"}
+{"text": "このradioは古いけど音がいい。", "chunks": ["この", "@radio", "は", "ふるいけど", "おとが", "いい。"], "level": "A", "use": "daily"}
+{"text": "朝からstudyに集中した。", "chunks": ["あさから", "@study", "に", "しゅうちゅうした。"], "level": "A", "use": "daily"}
+{"text": "そのpageはまだ作成中です。", "chunks": ["その", "@page", "は", "まだ", "さくせいちゅうです。"], "level": "A", "use": "tech"}
+{"text": "明日のtripは中止になった。", "chunks": ["あしたの", "@trip", "は", "ちゅうしに", "なった。"], "level": "A", "use": "daily"}
+{"text": "このlinkをクリックしてね。", "chunks": ["この", "@link", "を", "くりっくしてね。"], "level": "A", "use": "tech"}
+{"text": "大事なdocumentを失くした。", "chunks": ["だいじな", "@document", "を", "なくした。"], "level": "A", "use": "work"}
+{"text": "今夜のmovieは何にする？", "chunks": ["こんやの", "@movie", "は", "なににする？"], "level": "A", "use": "chat"}
+{"text": "ここでtaxiを拾おう。", "chunks": ["ここで", "@taxi", "を", "ひろおう。"], "level": "A", "use": "daily"}
+{"text": "そのcallは後でかけ直します。", "chunks": ["その", "@call", "は", "あとで", "かけなおします。"], "level": "A", "use": "work"}
+{"text": "このsettingは変えないで。", "chunks": ["この", "@setting", "は", "かえないで。"], "level": "A", "use": "tech"}
+{"text": "朝のtrainは混んでいる。", "chunks": ["あさの", "@train", "は", "こんでいる。"], "level": "A", "use": "daily"}
+{"text": "今日のworkは終わりです。", "chunks": ["きょうの", "@work", "は", "おわりです。"], "level": "A", "use": "work"}
+{"text": "このmusicはよく眠れる。", "chunks": ["この", "@music", "は", "よく", "ねむれる。"], "level": "A", "use": "daily"}
+{"text": "その画面をcopyして。", "chunks": ["その", "がめんを", "@copy", "して。"], "level": "A", "use": "tech"}
+{"text": "夕飯はcurryがいいな。", "chunks": ["ゆうはんは", "@curry", "が", "いいな。"], "level": "A", "use": "daily"}
+{"text": "新しいteamに入りました。", "chunks": ["あたらしい", "@team", "に", "はいりました。"], "level": "A", "use": "work"}
+{"text": "そのquestionは難しい。", "chunks": ["その", "@question", "は", "むずかしい。"], "level": "A", "use": "chat"}
+{"text": "今日のweatherは晴れだ。", "chunks": ["きょうの", "@weather", "は", "はれだ。"], "level": "A", "use": "daily"}
+{"text": "shopでセーターを買った。", "chunks": ["@shop", "で", "せーたーを", "かった。"], "level": "A", "use": "daily"}
+{"text": "今度のeventは日曜です。", "chunks": ["こんどの", "@event", "は", "にちようです。"], "level": "A", "use": "daily"}
+{"text": "そのimageは大きすぎる。", "chunks": ["その", "@image", "は", "おおきすぎる。"], "level": "A", "use": "tech"}
+{"text": "いつものcafeで会おう。", "chunks": ["いつもの", "@cafe", "で", "あおう。"], "level": "A", "use": "chat"}
+{"text": "前のversionに戻したい。", "chunks": ["まえの", "@version", "に", "もどしたい。"], "level": "A", "use": "tech"}
+{"text": "今日はとてもbusyだった。", "chunks": ["きょうは", "とても", "@busy", "だった。"], "level": "A", "use": "chat"}
+{"text": "このsnackは甘すぎる。", "chunks": ["この", "@snack", "は", "あますぎる。"], "level": "A", "use": "daily"}
+{"text": "今朝のtrafficはひどかった。", "chunks": ["けさの", "@traffic", "は", "ひどかった。"], "level": "A", "use": "daily"}
+{"text": "そのtopicは別の日に話そう。", "chunks": ["その", "@topic", "は", "べつの", "ひに", "はなそう。"], "level": "A", "use": "work"}
+{"text": "このpenは書きやすい。", "chunks": ["この", "@pen", "は", "かきやすい。"], "level": "A", "use": "daily"}
+{"text": "夜のwalkは気持ちがいい。", "chunks": ["よるの", "@walk", "は", "きもちが", "いい。"], "level": "A", "use": "daily"}
+{"text": "お昼はsaladで済ませた。", "chunks": ["おひるは", "@salad", "で", "すませた。"], "level": "A", "use": "daily"}
+{"text": "そのcommentには同意します。", "chunks": ["その", "@comment", "には", "どういします。"], "level": "A", "use": "work"}
+{"text": "新しいjobが決まったよ。", "chunks": ["あたらしい", "@job", "が", "きまったよ。"], "level": "A", "use": "chat"}
+{"text": "このtoolは便利だと思う。", "chunks": ["この", "@tool", "は", "べんりだと", "おもう。"], "level": "A", "use": "tech"}
+{"text": "今日のmenuはカレーです。", "chunks": ["きょうの", "@menu", "は", "かれーです。"], "level": "A", "use": "daily"}
+{"text": "先週のmeetingは長かった。", "chunks": ["せんしゅうの", "@meeting", "は", "ながかった。"], "level": "A", "use": "work"}
+{"text": "そのpointは大事だね。", "chunks": ["その", "@point", "は", "だいじだね。"], "level": "A", "use": "chat"}
+{"text": "空港のgateはどこですか？", "chunks": ["くうこうの", "@gate", "は", "どこですか？"], "level": "A", "use": "daily"}
+{"text": "このlightは明るすぎる。", "chunks": ["この", "@light", "は", "あかるすぎる。"], "level": "A", "use": "daily"}
+{"text": "windowsのupdateが終わった。", "chunks": ["@windows", "の", "@update", "が", "おわった。"], "level": "A", "use": "tech"}
+{"text": "今夜はnetflixを見よう。", "chunks": ["こんやは", "@netflix", "を", "みよう。"], "level": "A", "use": "chat"}
+{"text": "次のmeetingは来週の月曜です。", "chunks": ["つぎの", "@meeting", "は", "らいしゅうの", "げつようです。"], "level": "A", "use": "work"}
+{"text": "今日はcleanな服を着たい。", "chunks": ["きょうは", "@clean", "な", "ふくを", "きたい。"], "level": "A", "use": "daily"}
+{"text": "そのqueueは長すぎる。", "chunks": ["その", "@queue", "は", "ながすぎる。"], "level": "A", "use": "tech"}
+{"text": "このdeskは高さが変えられる。", "chunks": ["この", "@desk", "は", "たかさが", "かえられる。"], "level": "A", "use": "daily"}
+{"text": "そのreviewは丁寧でした。", "chunks": ["その", "@review", "は", "ていねいでした。"], "level": "A", "use": "work"}
+{"text": "このmapは古いね。", "chunks": ["この", "@map", "は", "ふるいね。"], "level": "A", "use": "daily"}
+{"text": "画面をrefreshしてみて。", "chunks": ["がめんを", "@refresh", "してみて。"], "level": "A", "use": "tech"}
+{"text": "最後のslideを直します。", "chunks": ["さいごの", "@slide", "を", "なおします。"], "level": "A", "use": "work"}
+{"text": "このdrinkは冷たくておいしい。", "chunks": ["この", "@drink", "は", "つめたくて", "おいしい。"], "level": "A", "use": "daily"}
+{"text": "夕方のtalkは中止です。", "chunks": ["ゆうがたの", "@talk", "は", "ちゅうしです。"], "level": "A", "use": "work"}
+{"text": "このgroupに招待するね。", "chunks": ["この", "@group", "に", "しょうたいするね。"], "level": "A", "use": "chat"}
+{"text": "そのstoryは泣けた。", "chunks": ["その", "@story", "は", "なけた。"], "level": "A", "use": "chat"}
+{"text": "朝のtaskを整理した。", "chunks": ["あさの", "@task", "を", "せいりした。"], "level": "A", "use": "work"}
+{"text": "大きなsaleが始まった。", "chunks": ["おおきな", "@sale", "が", "はじまった。"], "level": "A", "use": "daily"}
+{"text": "次のplanを考えよう。", "chunks": ["つぎの", "@plan", "を", "かんがえよう。"], "level": "A", "use": "work"}
+{"text": "このsoupは少し辛い。", "chunks": ["この", "@soup", "は", "すこし", "からい。"], "level": "A", "use": "daily"}
+{"text": "そのgoalは遠くない。", "chunks": ["その", "@goal", "は", "とおくない。"], "level": "A", "use": "chat"}
+{"text": "このmodeは電池を使う。", "chunks": ["この", "@mode", "は", "でんちを", "つかう。"], "level": "A", "use": "tech"}
+{"text": "空のboxを捨てておいた。", "chunks": ["からの", "@box", "を", "すてておいた。"], "level": "A", "use": "daily"}
+{"text": "会場のseatは満席です。", "chunks": ["かいじょうの", "@seat", "は", "まんせきです。"], "level": "A", "use": "daily"}
+{"text": "このfaxは使われていない。", "chunks": ["この", "@fax", "は", "つかわれていない。"], "level": "A", "use": "work"}
+{"text": "今日のtestは満点だった。", "chunks": ["きょうの", "@test", "は", "まんてんだった。"], "level": "A", "use": "daily"}
+{"text": "そのmailは宛先が違う。", "chunks": ["その", "@mail", "は", "あてさきが", "ちがう。"], "level": "A", "use": "work"}
+{"text": "駅のbenchで待っている。", "chunks": ["えきの", "@bench", "で", "まっている。"], "level": "A", "use": "daily"}
+{"text": "このlevelは難しいね。", "chunks": ["この", "@level", "は", "むずかしいね。"], "level": "A", "use": "chat"}
+{"text": "父のcarを借りた。", "chunks": ["ちちの", "@car", "を", "かりた。"], "level": "A", "use": "daily"}
+{"text": "明日のpartyは楽しみだ。", "chunks": ["あしたの", "@party", "は", "たのしみだ。"], "level": "A", "use": "chat"}
+{"text": "今のtimingがちょうどいい。", "chunks": ["いまの", "@timing", "が", "ちょうど", "いい。"], "level": "A", "use": "work"}
+{"text": "このsoundは耳に優しい。", "chunks": ["この", "@sound", "は", "みみに", "やさしい。"], "level": "A", "use": "daily"}
+{"text": "そのwebサイトにloginできない。", "chunks": ["その", "@web", "さいとに", "@login", "できない。"], "level": "A", "use": "tech"}
+{"text": "これはbonusの話ではない。", "chunks": ["これは", "@bonus", "の", "はなしでは", "ない。"], "level": "A", "use": "work"}
+{"text": "このsweetsは贈り物にいい。", "chunks": ["この", "@sweets", "は", "おくりものに", "いい。"], "level": "A", "use": "daily"}
+{"text": "仕事のcallが三件入った。", "chunks": ["しごとの", "@call", "が", "さんけん", "はいった。"], "level": "A", "use": "numbers"}
+{"text": "そのcheckは終わっています。", "chunks": ["その", "@check", "は", "おわっています。"], "level": "A", "use": "work"}
+{"text": "今夜のdinnerはお任せします。", "chunks": ["こんやの", "@dinner", "は", "おまかせします。"], "level": "A", "use": "chat"}
+{"text": "週末にcampingへ行く予定です。", "chunks": ["しゅうまつに", "@camping", "へ", "いく", "よていです。"], "level": "A", "use": "daily"}
+{"text": "このkeyboardは打ちやすい。", "chunks": ["この", "@keyboard", "は", "うちやすい。"], "level": "A", "use": "tech"}
+{"text": "朝はbreadと牛乳で済ませた。", "chunks": ["あさは", "@bread", "と", "ぎゅうにゅうで", "すませた。"], "level": "A", "use": "daily"}
+{"text": "そのpasswordは短すぎます。", "chunks": ["その", "@password", "は", "みじかすぎます。"], "level": "A", "use": "tech"}
+{"text": "来週のpresentationが不安だ。", "chunks": ["らいしゅうの", "@presentation", "が", "ふあんだ。"], "level": "A", "use": "work"}
+{"text": "今日のconcertは行けない。", "chunks": ["きょうの", "@concert", "は", "いけない。"], "level": "A", "use": "chat"}
+{"text": "駅前のhotelに泊まりました。", "chunks": ["えきまえの", "@hotel", "に", "とまりました。"], "level": "A", "use": "daily"}
+{"text": "このcolorのほうが好きです。", "chunks": ["この", "@color", "の", "ほうが", "すきです。"], "level": "A", "use": "chat"}
+{"text": "部長にphoneで報告した。", "chunks": ["ぶちょうに", "@phone", "で", "ほうこくした。"], "level": "A", "use": "work"}
+{"text": "今日のmemoを共有フォルダに入れた。", "chunks": ["きょうの", "@memo", "を", "きょうゆう", "ふぉるだに", "いれた。"], "level": "A", "use": "work"}

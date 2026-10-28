@@ -1,0 +1,150 @@
+mixC	C-001	kubernetes nokurasutawosaikouchikushita.	Kubernetesのクラスタを再構築した。
+mixC	C-002	pr norebyu-woonegaishimasu.	PRのレビューをお願いします。
+mixC	C-003	ci gatooranainodegenninwoshiraberu.	CIが通らないので原因を調べる。
+mixC	C-004	api nore-toseigennnihikkakatta.	APIのレート制限に引っかかった。
+mixC	C-005	docker no image wo registry niokuru.	DockerのImageをRegistryに送る。
+mixC	C-006	typescript nokatateigiwoshuuseishita.	TypeScriptの型定義を修正した。
+mixC	C-007	postgresql no index woharinaosu.	PostgreSQLのIndexを張り直す。
+mixC	C-008	aws no lambda debacchiwougokasu.	AWSのLambdaでバッチを動かす。
+mixC	C-009	main buranchini merge shitekudasai.	mainブランチにMergeしてください。
+mixC	C-010	oauth no token gakigengiredesu.	OAuthのTokenが期限切れです。
+mixC	C-011	rest api to graphql wohikakusuru.	REST APIとGraphQLを比較する。
+mixC	C-012	terraform dekankyouwoko-dokasuru.	Terraformで環境をコード化する。
+mixC	C-013	redis no cache gaafureteiru.	RedisのCacheが溢れている。
+mixC	C-014	ssl noshoumeishogakiresouda.	SSLの証明書が切れそうだ。
+mixC	C-015	vs code nokakuchouwoseirisuru.	VS Codeの拡張を整理する。
+mixC	C-016	json nopa-sudeera-gadeta.	JSONのパースでエラーが出た。
+mixC	C-017	linux no kernel wokoushinshita.	LinuxのKernelを更新した。
+mixC	C-018	sql no join gaosoigenninwosagasu.	SQLのJoinが遅い原因を探す。
+mixC	C-019	gpu nomemorigatarinakunatta.	GPUのメモリが足りなくなった。
+mixC	C-020	css no grid dehaichiwonaoshita.	CSSのGridで配置を直した。
+mixC	C-021	react no hook wokakikaeta.	ReactのHookを書き換えた。
+mixC	C-022	nginx nosetteifairuwokakuninsuru.	Nginxの設定ファイルを確認する。
+mixC	C-023	cdn no cache womukoukashita.	CDNのCacheを無効化した。
+mixC	C-024	sdk noba-jonwosoroeteoku.	SDKのバージョンを揃えておく。
+mixC	C-025	dns nodenpawomatteiru.	DNSの伝播を待っている。
+mixC	C-026	python no venv wotsukurinaoshita.	Pythonのvenvを作り直した。
+mixC	C-027	npm nopakke-jiwokoushinsuru.	NPMのパッケージを更新する。
+mixC	C-028	saas nokeiyakuwominaosu.	SaaSの契約を見直す。
+mixC	C-029	kpi nosuujiwokakuninshitekudasai.	KPIの数字を確認してください。
+mixC	C-030	roi wokeisansurunonijikangakakaru.	ROIを計算するのに時間がかかる。
+mixC	C-031	btob noeigyouwotantoushiteiru.	BtoBの営業を担当している。
+mixC	C-032	ceo nosupi-chigayokatta.	CEOのスピーチが良かった。
+mixC	C-033	hr notantoushanirenrakushita.	HRの担当者に連絡した。
+mixC	C-034	mvp nokinouwoshiborikomu.	MVPの機能を絞り込む。
+mixC	C-035	seo nojunnigaagattekita.	SEOの順位が上がってきた。
+mixC	C-036	salesforce node-tawoikousuru.	Salesforceのデータを移行する。
+mixC	C-037	snowflake nokosutowoosaetai.	Snowflakeのコストを抑えたい。
+mixC	C-038	openai no api ki-wosaihakkoushita.	OpenAIのAPIキーを再発行した。
+mixC	C-039	anthropic noryoukinhyouwokakuninshita.	Anthropicの料金表を確認した。
+mixC	C-040	nvidia noatarashii gpu gahappyousareta.	NVIDIAの新しいGPUが発表された。
+mixC	C-041	tsmc nokoujougakumamotonidekita.	TSMCの工場が熊本にできた。
+mixC	C-042	softbank nokessanwoyonda.	SoftBankの決算を読んだ。
+mixC	C-043	mercari de switch woutta.	MercariでSwitchを売った。
+mixC	C-044	ubereats dechuushokuwotanonda.	UberEatsで昼食を頼んだ。
+mixC	C-045	gitlab no runner gatomatteiru.	GitLabのRunnerが止まっている。
+mixC	C-046	jenkins no pipeline woshuuseisuru.	JenkinsのPipelineを修正する。
+mixC	C-047	ansible no playbook wokakinaosu.	AnsibleのPlaybookを書き直す。
+mixC	C-048	grafana no dashboard wotsukutta.	GrafanaのDashboardを作った。
+mixC	C-049	prometheus de metrics woshuushuusuru.	PrometheusでMetricsを収集する。
+mixC	C-050	elasticsearch no index gakowareta.	ElasticsearchのIndexが壊れた。
+mixC	C-051	kafka no topic womittsutsukuru.	KafkaのTopicを三つ作る。
+mixC	C-052	rabbitmq no queue gatsumatta.	RabbitMQのQueueが詰まった。
+mixC	C-053	fastapi deendopointowokaku.	FastAPIでエンドポイントを書く。
+mixC	C-054	django no migration wojikkousuru.	DjangoのMigrationを実行する。
+mixC	C-055	rust noshoyuukengayattowakatta.	Rustの所有権がやっと分かった。
+mixC	C-056	go no goroutine gafuesugita.	GoのGoroutineが増えすぎた。
+mixC	C-057	swiftui no view wobunkatsushita.	SwiftUIのViewを分割した。
+mixC	C-058	kotlin de android apuriwotsukuru.	KotlinでAndroidアプリを作る。
+mixC	C-059	flutter no widget gaomoi.	FlutterのWidgetが重い。
+mixC	C-060	tailwind no class ganagasugiru.	TailwindのClassが長すぎる。
+mixC	C-061	webpack kara vite niikoushita.	WebpackからViteに移行した。
+mixC	C-062	eslint no rule wotsuikasuru.	ESLintのRuleを追加する。
+mixC	C-063	graphql no schema wokoushinshita.	GraphQLのSchemaを更新した。
+mixC	C-064	grpc desa-bisukanwotsunagu.	gRPCでサービス間を繋ぐ。
+mixC	C-065	websocket nosetsuzokugakireru.	WebSocketの接続が切れる。
+mixC	C-066	https nikirikaeruyoteidesu.	HTTPSに切り替える予定です。
+mixC	C-067	tcp nohandosheikuwoshiraberu.	TCPのハンドシェイクを調べる。
+mixC	C-068	vpn nisetsuzokudekinakunatta.	VPNに接続できなくなった。
+mixC	C-069	ssh nokagiwosaiseiseishita.	SSHの鍵を再生成した。
+mixC	C-070	raid nokouseiwominaoshitai.	RAIDの構成を見直したい。
+mixC	C-071	ssd nojumyougashinpaida.	SSDの寿命が心配だ。
+mixC	C-072	bios nosetteiwoshokikashita.	BIOSの設定を初期化した。
+mixC	C-073	hdmi ke-burugamijikai.	HDMIケーブルが短い。
+mixC	C-074	rag noseidogaomottayorihikui.	RAGの精度が思ったより低い。
+mixC	C-075	tensorflow kara pytorch ninorikaeta.	TensorFlowからPyTorchに乗り換えた。
+mixC	C-076	hugging face demoderuwosagasu.	Hugging Faceでモデルを探す。
+mixC	C-077	cuda noba-jongaawanai.	CUDAのバージョンが合わない。
+mixC	C-078	ocr noninshikikekkawoshuuseisuru.	OCRの認識結果を修正する。
+mixC	C-079	ux nochousaworaigetsuokonau.	UXの調査を来月行う。
+mixC	C-080	ui nodezainwominaosu.	UIのデザインを見直す。
+mixC	C-081	qa nochi-mugafuguaiwomitsuketa.	QAのチームが不具合を見つけた。
+mixC	C-082	sla nojoukenwokakuninshitekudasai.	SLAの条件を確認してください。
+mixC	C-083	nda womusundekarashiryouwowatasu.	NDAを結んでから資料を渡す。
+mixC	C-084	erp nodounyuunihantoshikakatta.	ERPの導入に半年かかった。
+mixC	C-085	crm nide-tawonyuuryokusuru.	CRMにデータを入力する。
+mixC	C-086	pdf wo excel nihenkanshitai.	PDFをExcelに変換したい。
+mixC	C-087	csv nohedda-gakuzureteiru.	CSVのヘッダーが崩れている。
+mixC	C-088	url nomatsubinisurasshuwotsukeru.	URLの末尾にスラッシュを付ける。
+mixC	C-089	ip adoresuwokoteinishita.	IPアドレスを固定にした。
+mixC	C-090	qr ko-dowoyomitottekudasai.	QRコードを読み取ってください。
+mixC	C-091	etc ka-dowokurumanisashita.	ETCカードを車に挿した。
+mixC	C-092	jr nodenshagaokureteiru.	JRの電車が遅れている。
+mixC	C-093	ana nobinwoyoyakushita.	ANAの便を予約した。
+mixC	C-094	nhk nobangumiworokugasuru.	NHKの番組を録画する。
+mixC	C-095	kddi nokaisennninorikaeta.	KDDIの回線に乗り換えた。
+mixC	C-096	dena nokabukagaagatta.	DeNAの株価が上がった。
+mixC	C-097	ikea detanawokattekita.	IKEAで棚を買ってきた。
+mixC	C-098	nike nosuni-ka-gahoshii.	NIKEのスニーカーが欲しい。
+mixC	C-099	toyota noshingatashagahappyousareta.	TOYOTAの新型車が発表された。
+mixC	C-100	sony nokamerawotsukatteiru.	SONYのカメラを使っている。
+mixC	C-101	panasonic nosuihankigakowareta.	Panasonicの炊飯器が壊れた。
+mixC	C-102	playstation noshinsakuwoyoyakushita.	PlayStationの新作を予約した。
+mixC	C-103	fifa notaikaiwokazokudemita.	FIFAの大会を家族で見た。
+mixC	C-104	who nohappyouwoyonda.	WHOの発表を読んだ。
+mixC	C-105	ipo nokakakugakimatta.	IPOの価格が決まった。
+mixC	C-106	m a nokoushougasusundeiru.	M&Aの交渉が進んでいる。
+mixC	C-107	esg nohoukokushowosakuseisuru.	ESGの報告書を作成する。
+mixC	C-108	dx nosuishinwomakasareta.	DXの推進を任された。
+mixC	C-109	bcp nokunrenwojisshishita.	BCPの訓練を実施した。
+mixC	C-110	mba wotorutameniryuugakusuru.	MBAを取るために留学する。
+mixC	C-111	gemini pro no api wotameshita.	Gemini ProのAPIを試した。
+mixC	C-112	claude code de bug wonaoshita.	Claude CodeでBugを直した。
+mixC	C-113	llama nomoderuworyoushikasuru.	LLaMAのモデルを量子化する。
+mixC	C-114	bert noseidowohikakushita.	BERTの精度を比較した。
+mixC	C-115	swift no async womanandeiru.	SwiftのAsyncを学んでいる。
+mixC	C-116	mongodb no shard wotsuikasuru.	MongoDBのShardを追加する。
+mixC	C-117	mysql no log wokakuninshita.	MySQLのLogを確認した。
+mixC	C-118	sqlite nofairugahasonshita.	SQLiteのファイルが破損した。
+mixC	C-119	vercel ni deploy gakanryoushita.	VercelにDeployが完了した。
+mixC	C-120	cloudflare no workers wotamesu.	CloudflareのWorkersを試す。
+mixC	C-121	azure no cost womaitsukikakuninsuru.	AzureのCostを毎月確認する。
+mixC	C-122	gcp no project woseirishita.	GCPのProjectを整理した。
+mixC	C-123	firebase no auth gaugokanai.	FirebaseのAuthが動かない。
+mixC	C-124	supabase de db wotateta.	SupabaseでDBを立てた。
+mixC	C-125	stripe no webhook wokenshousuru.	StripeのWebhookを検証する。
+mixC	C-126	shopify de store wohiraita.	ShopifyでStoreを開いた。
+mixC	C-127	adobe no illustrator dekaita.	AdobeのIllustratorで描いた。
+mixC	C-128	photoshop no layer wotougousuru.	PhotoshopのLayerを統合する。
+mixC	C-129	unity no prefab wofukuseishita.	UnityのPrefabを複製した。
+mixC	C-130	unreal engine dege-muwotsukuru.	Unreal Engineでゲームを作る。
+mixC	C-131	blender no render gaowatta.	BlenderのRenderが終わった。
+mixC	C-132	kubernetes no pod ga crashloopbackoff ninatta.	KubernetesのPodがCrashLoopBackOffになった。
+mixC	C-133	github actions de lint wojidoukashita.	GitHub ActionsでLintを自動化した。
+mixC	C-134	python no pandas de csv woyomikomu.	PythonのPandasでCSVを読み込む。
+mixC	C-135	jira no ticket wokonshuuchuunitojiru.	JiraのTicketを今週中に閉じる。
+mixC	C-136	slack no channel ni url wohatteoku.	SlackのChannelにURLを貼っておく。
+mixC	C-137	svelte de spa wotsukurinaoshita.	SvelteでSPAを作り直した。
+mixC	C-138	notion no page wo pdf dekakidasu.	NotionのPageをPDFで書き出す。
+mixC	C-139	heroku kara render heikoushita.	HerokuからRenderへ移行した。
+mixC	C-140	macbook no battery gakyuuniheru.	MacBookのBatteryが急に減る。
+mixC	C-141	zoom no recording wokyouyuushitekudasai.	ZoomのRecordingを共有してください。
+mixC	C-142	deepl deeibunnno mail wohonnyakushita.	DeepLで英文のMailを翻訳した。
+mixC	C-143	spotify no playlist wotsukutta.	SpotifyのPlaylistを作った。
+mixC	C-144	yaml no indent gazureteiru.	YAMLのIndentがずれている。
+mixC	C-145	cpu noshiyouritsugahyakupa-sentoniharitsuita.	CPUの使用率が百パーセントに張り付いた。
+mixC	C-146	shigatsukara cto toshite startup nihairu.	四月からCTOとしてStartupに入る。
+mixC	C-147	samsung to apple nokessanwokurabeta.	SamsungとAppleの決算を比べた。
+mixC	C-148	microsoft no teams dekaigiwohiraita.	MicrosoftのTeamsで会議を開いた。
+mixC	C-149	ruby no gem wokoushinshitara test gaochita.	RubyのGemを更新したらTestが落ちた。
+mixC	C-150	intel no cpu kara amd nikaeta.	IntelのCPUからAMDに替えた。

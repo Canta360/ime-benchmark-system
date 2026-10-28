@@ -68,6 +68,9 @@ def find_browser() -> str:
     sys.exit("no Chrome or Edge found for --pdf (set CHROME)")
 
 
+CURRENT = "c3_"
+C3_ORDER = ["jaA", "jaB", "jaC", "jaslip", "jactx", "postsja", "postsjaslip", "mixA", "mixB", "mixC", "mixslip", "postsmix", "postsmixslip",
+            "mixA2", "mixB2", "mixC2", "mixslip2", "postsmix2", "postsmixslip2", "en", "enslip", "postsen", "postsenslip"]
 GROUPS = {"ja": ("ajimee", "ja", "jatypo", "postsja"), "mix": ("mixB", "mixC", "postsmixB", "postsmixC"),
           "en": ("en", "enclean", "postsen", "postsentypo")}
 
@@ -79,32 +82,45 @@ def rank_types(data: dict, rows: dict) -> dict:
     out = {}
     for group, kinds in GROUPS.items():
         names = [n for n in data["overview"]["sets"] if data["sets"][n]["kind"] in kinds]
-        if not names:
+        if group == "mix":
+            # Typed in one mode and typed with the mode switched are ranked apart.
+            for g2, keep in (("mix", lambda n: not n.endswith("2")), ("mix2", lambda n: n.endswith("2"))):
+                part = [n for n in names if keep(n)]
+                if part:
+                    out.update(rank_names(data, rows, g2, part))
             continue
-        entries = []
-        for r in rows.values():
-            # Live conversion is compared on its own, not ranked with the rest.
-            if "(live)" in r["name"] or not all(n in r["values"] for n in names):
-                continue
-            verdicts = {}
-            for n in names:
-                sysd = next(x for x in data["sets"][n]["systems"] if x["bundle"] == r["bundles"][n] and abs(x["fair"] - r["values"][n]) < 1e-9)
-                verdicts.update({f"{n}|{k}": v for k, v in sysd["verdict"].items()})
-            k = sum(1 for v in verdicts.values() if v in GOOD)
-            lo, hi = wilson(k, len(verdicts))
-            entries.append({"name": r["name"], "k": k, "n": len(verdicts), "fair": 100 * k / len(verdicts), "lo": lo, "hi": hi,
-                            "verdicts": verdicts})
-        entries.sort(key=lambda e: -e["fair"])
-        for e in entries:
-            top = entries[0]
-            common = [x for x in e["verdicts"] if x in top["verdicts"]]
-            a = sum(1 for x in common if top["verdicts"][x] in GOOD and e["verdicts"][x] not in GOOD)
-            b = sum(1 for x in common if e["verdicts"][x] in GOOD and top["verdicts"][x] not in GOOD)
-            e["p"] = 1.0 if e is top else bench.mcnemar(a, b)
-            e["tie"] = e["p"] >= 0.05
-        for e in entries:
-            e.pop("verdicts")
-        out[group] = {"sets": names, "systems": entries}
+        if names:
+            out.update(rank_names(data, rows, group, names))
+    return out
+
+
+def rank_names(data: dict, rows: dict, group: str, names: list[str]) -> dict:
+    """One group of sets ranked: see rank_types."""
+    out = {}
+    entries = []
+    for r in rows.values():
+        # Live conversion is compared on its own, not ranked with the rest.
+        if "(live)" in r["name"] or not all(n in r["values"] for n in names):
+            continue
+        verdicts = {}
+        for n in names:
+            sysd = next(x for x in data["sets"][n]["systems"] if x["bundle"] == r["bundles"][n] and abs(x["fair"] - r["values"][n]) < 1e-9)
+            verdicts.update({f"{n}|{k}": v for k, v in sysd["verdict"].items()})
+        k = sum(1 for v in verdicts.values() if v in GOOD)
+        lo, hi = wilson(k, len(verdicts))
+        entries.append({"name": r["name"], "k": k, "n": len(verdicts), "fair": 100 * k / len(verdicts), "lo": lo, "hi": hi,
+                        "verdicts": verdicts})
+    entries.sort(key=lambda e: -e["fair"])
+    for e in entries:
+        top = entries[0]
+        common = [x for x in e["verdicts"] if x in top["verdicts"]]
+        a = sum(1 for x in common if top["verdicts"][x] in GOOD and e["verdicts"][x] not in GOOD)
+        b = sum(1 for x in common if e["verdicts"][x] in GOOD and top["verdicts"][x] not in GOOD)
+        e["p"] = 1.0 if e is top else bench.mcnemar(a, b)
+        e["tie"] = e["p"] >= 0.05
+    for e in entries:
+        e.pop("verdicts")
+    out[group] = {"sets": names, "systems": entries}
     return out
 
 
@@ -170,6 +186,12 @@ def main() -> int:
     order = {"ajimee": 0, "ja": 1, "jatypo": 2, "postsja": 3, "mixB": 4, "mixC": 5, "postsmixB": 6, "postsmixC": 7,
              "en": 8, "enclean": 9, "postsen": 10, "postsentypo": 11}
     names = sorted(data["sets"], key=lambda n: (order.get(data["sets"][n]["kind"], 99), n))
+    # The current sets (cycle 3) once anything is measured on them; the older
+    # sets stay on the page below as they were.
+    current = [n for n in names if n.startswith(CURRENT)]
+    if current:
+        names = sorted(current, key=lambda n: C3_ORDER.index(n.removeprefix(CURRENT)) if n.removeprefix(CURRENT) in C3_ORDER else 99)
+    data["current"] = CURRENT if current else ""
     rows = {}
     for set_name in names:
         for sysd in data["sets"][set_name]["systems"]:

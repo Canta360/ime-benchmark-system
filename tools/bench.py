@@ -101,12 +101,14 @@ def load_sets(group: str) -> dict[str, dict]:
         if not path.exists():
             continue
         rows, seen = [], set()
+        ctx_path = d / f"{name}.context.tsv"
         for f in rows_of(path):
-            if f[0] in SKIP_SOURCES or f[2] in seen:
-                continue  # the same keys twice (two corpora) count once
+            # The same keys twice (two corpora) count once, unless the sentence
+            # before them (a context set) is what tells them apart.
+            if f[0] in SKIP_SOURCES or (f[2] in seen and not ctx_path.exists()):
+                continue
             seen.add(f[2])
             rows.append({"source": f[0], "id": f[1], "keys": f[2], "meant": f[3], "forms": f[3:]})
-        ctx_path = d / f"{name}.context.tsv"
         if ctx_path.exists():
             ctx = dict(l.split("	", 1) for l in ctx_path.read_text(encoding="utf-8").splitlines() if "	" in l)
             for row in rows:
