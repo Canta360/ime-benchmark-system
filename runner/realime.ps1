@@ -88,7 +88,16 @@ function Set-Rows([string]$s) {
     [Math]::Min($n, $Limit)
 }
 $batchRows = 0; $rowsDone = 0; $jobs = 0; $jobNo = 0
-foreach ($ime in $Imes) { foreach ($s in $Sets) { if ($kinds[$s] -in $profiles[$ime].kinds) { $batchRows += Set-Rows $s; $jobs++ } } }
+function Runs-Set([string]$ime, [string]$s) {
+    $p = $profiles[$ime]
+    if ($kinds[$s] -notin $p.kinds) { return $false }
+    # Cycle 3: Japanese with English typed with the mode switched ("...2" sets, keys
+    # with "|") goes to every input method with a switch key; typed in one mode
+    # (the other mix sets) only to the input methods that take it.
+    $switched = $s -match "(^|_)(mix|postsmix).*2$"
+    return -not ($kinds[$s] -in $mix -and ($switched -xor [bool]$p.switch))
+}
+foreach ($ime in $Imes) { foreach ($s in $Sets) { if (Runs-Set $ime $s) { $batchRows += Set-Rows $s; $jobs++ } } }
 $env:IMEBENCH_TOTAL = "$batchRows"
 
 foreach ($ime in $Imes) {
@@ -113,12 +122,7 @@ foreach ($ime in $Imes) {
     $env:IMEBENCH_CONVERT_KEY = "0"
     $env:IMEBENCH_SWITCH = if ($p.switch) { $p.switch } else { "19" }
     foreach ($s in $Sets) {
-        if ($kinds[$s] -notin $p.kinds) { continue }
-        # Cycle 3: Japanese with English typed with the mode switched ("...2" sets, keys
-        # with "|") goes to every input method with a switch key; typed in one mode
-        # (the other mix sets) only to the input methods that take it.
-        $switched = $s -match "^(mix|postsmix).*2$"
-        if ($kinds[$s] -in $mix -and ($switched -xor [bool]$p.switch)) { continue }
+        if (-not (Runs-Set $ime $s)) { continue }
         $keys = "$work\${s}_keys.tsv"
         if (-not (Test-Path $keys)) {
             if ($ext -eq ".tsv.gz") {

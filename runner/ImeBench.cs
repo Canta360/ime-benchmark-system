@@ -173,11 +173,18 @@ class Bench : Form {
     static readonly string[] switchKeys = (Environment.GetEnvironmentVariable("IMEBENCH_SWITCH") ?? "19").Split(';');
     static int switches;
 
+    static bool pending;   // Japanese typed since the last switch, not committed yet
+
     internal static void Type(char ch) {
         if (ch == '|') {
+            // To English: first convert and commit the Japanese typed so far, as a
+            // person does before switching; back to Japanese: just switch.
+            if (switches % 2 == 0 && pending) { Press(0x20, false); Settle(300); Press(0x0D, false); Settle(200); }
             foreach (var k in switchKeys[switches++ % switchKeys.Length].Split(',')) { Press(Convert.ToUInt16(k.Trim(), 16), false); Settle(80); }
+            pending = false;
             return;
         }
+        if (switches % 2 == 0) pending = true;
         short scan = Native.VkKeyScan(ch);
         if (scan == -1) return;
         Press((ushort)(scan & 0xFF), (scan & 0x100) != 0);
@@ -265,6 +272,7 @@ class Bench : Form {
                 WaitForFront();
                 int touches = UserInput.Count;
                 switches = 0;
+                pending = false;
                 var rowStart = DateTime.UtcNow;
                 box.Clear();
                 string context;
