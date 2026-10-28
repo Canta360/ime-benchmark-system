@@ -39,10 +39,12 @@ $profiles = [ordered]@{
     tekitomix    = @{ ids = $T; keys = "1A,1C,F3"; once = $true; kinds = $ja + $mix }
     tekitoauto   = @{ ids = $T; keys = "1A"; once = $true; english = $true; kinds = $en }
     tekitodirect = @{ ids = $T; keys = "1A,1D"; once = $true; english = $true; kinds = $en }
-    msime        = @{ ids = @("{03b5835f-f03c-411b-9ce2-aa23e1171e36}", "{A76C93D9-5523-4E90-AAFA-4DB112F9AC76}"); keys = "16"; kinds = $ja }
-    google       = @{ ids = @("{D5A86FD5-5308-47EA-AD16-9C4EB160EC3C}", "{773EB24E-CA1D-4B1B-B420-FA985BB0B80D}"); keys = "16"; kinds = $ja }
-    copilot      = @{ ids = @("{D4E1A2B3-5F6C-4D7E-8A9B-0C1D2E3F4A5B}", "{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}"); keys = "16"; kinds = $ja }
-    mozc         = @{ ids = @("{10A67BC8-22FA-4A59-90DC-2546652C56BF}", "{186F700C-71CF-43FE-A00E-AACB1D9E6D3D}"); keys = "16"; kinds = $ja }
+    # Japanese with English typed with the mode switched: to Direct and back to Japanese.
+    tekitoswitch = @{ ids = $T; keys = "1A,1C"; once = $true; switch = "1A,1D;1C"; kinds = $mix }
+    msime        = @{ ids = @("{03b5835f-f03c-411b-9ce2-aa23e1171e36}", "{A76C93D9-5523-4E90-AAFA-4DB112F9AC76}"); keys = "16"; switch = "19"; kinds = $ja + $mix }
+    google       = @{ ids = @("{D5A86FD5-5308-47EA-AD16-9C4EB160EC3C}", "{773EB24E-CA1D-4B1B-B420-FA985BB0B80D}"); keys = "16"; switch = "19"; kinds = $ja + $mix }
+    copilot      = @{ ids = @("{D4E1A2B3-5F6C-4D7E-8A9B-0C1D2E3F4A5B}", "{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}"); keys = "16"; switch = "19"; kinds = $ja + $mix }
+    mozc         = @{ ids = @("{10A67BC8-22FA-4A59-90DC-2546652C56BF}", "{186F700C-71CF-43FE-A00E-AACB1D9E6D3D}"); keys = "16"; switch = "19"; kinds = $ja + $mix }
     meltype      = @{ ids = @("{417D801B-A9BD-4C26-BD16-356A825A6998}", "{21F643F4-72D5-4946-BF70-0A126AB52D05}"); keys = "16"; live = $true; kinds = $ja + $mix + $en }
 }
 
@@ -73,7 +75,9 @@ function Ime-Info($clsid) {
     @{ dll = $shown; version = "$($item.VersionInfo.FileVersion)"; modified = $item.LastWriteTime.ToString("s") }
 }
 $cv = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion"
-$windows = "$($cv.ProductName) $($cv.DisplayVersion) build $($cv.CurrentBuild).$($cv.UBR)"
+# Windows 11 still says "Windows 10" in ProductName; its builds start at 22000.
+$product = if ([int]$cv.CurrentBuild -ge 22000) { $cv.ProductName -replace "Windows 10", "Windows 11" } else { $cv.ProductName }
+$windows = "$product $($cv.DisplayVersion) build $($cv.CurrentBuild).$($cv.UBR)"
 # Rows of the whole batch, for the progress the bench window shows.
 function Set-Rows([string]$s) {
     $n = if ($ext -eq ".tsv.gz") {
@@ -107,8 +111,14 @@ foreach ($ime in $Imes) {
     $env:IMEBENCH_KEYS_ONCE = if ($p.once) { "1" } else { "0" }
     $env:IMEBENCH_ENGLISH = if ($p.english) { "1" } else { "0" }
     $env:IMEBENCH_CONVERT_KEY = "0"
+    $env:IMEBENCH_SWITCH = if ($p.switch) { $p.switch } else { "19" }
     foreach ($s in $Sets) {
         if ($kinds[$s] -notin $p.kinds) { continue }
+        # Cycle 3: Japanese with English typed with the mode switched ("...2" sets, keys
+        # with "|") goes to every input method with a switch key; typed in one mode
+        # (the other mix sets) only to the input methods that take it.
+        $switched = $s -match "^(mix|postsmix).*2$"
+        if ($kinds[$s] -in $mix -and ($switched -xor [bool]$p.switch)) { continue }
         $keys = "$work\${s}_keys.tsv"
         if (-not (Test-Path $keys)) {
             if ($ext -eq ".tsv.gz") {
@@ -147,6 +157,9 @@ foreach ($ime in $Imes) {
             $gz = New-Object IO.Compression.GZipStream($o, [IO.Compression.CompressionLevel]::Optimal)
             $in.CopyTo($gz); $gz.Close(); $o.Close(); $in.Close()
         } else { Move-Item $out "$run\out\" }
+        # When each row was typed, for the check that it was typed at all.
+        New-Item -ItemType Directory -Force "$run\times" | Out-Null
+        if (Test-Path "$out.times") { Move-Item "$out.times" "$run\times\real.$ime`__$s.tsv" }
         $done += "$ime/$s"
     }
 }
@@ -158,5 +171,9 @@ Remove-Item -Recurse -Force $work
    windows = $windows; imes = $imeInfo; learning = $Learning; sets_sha256 = $setHash
    harness = "ImeBench " + (Get-FileHash "$K\ImeBench.exe").Hash.Substring(0, 12).ToLower() } |
     ConvertTo-Json -Depth 4 | Set-Content "$run\meta.json" -Encoding utf8NoBOM
+# The hash of every file as measured: the check sees any later edit.
+Get-ChildItem $run -Recurse -File | Where-Object Name -ne "manifest.sha256" | Sort-Object FullName |
+    ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName).Hash.ToLower(), $_.FullName.Substring($run.Length + 1).Replace("\", "/") } |
+    Set-Content "$run\manifest.sha256" -Encoding utf8NoBOM
 if ($skipped) { "skipped: " + ($skipped -join "; ") }
 "real-IME outputs in $run; score with: python bench.py score <engine run> --with $run"

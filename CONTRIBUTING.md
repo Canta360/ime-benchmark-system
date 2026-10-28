@@ -15,7 +15,7 @@
    python tools\bench.py score results\<your run>
    ```
 
-4. Open a pull request that adds the run folder under `results/` as it is.
+4. Open a pull request. **Share the result** in the app shows the steps and opens GitHub's upload page, where dragging the folder is enough. Or open a pull request yourself that adds the run folder under `results/` as it is.
    Name the folder `<date>-<input method>-<your name>` if you like; do not
    edit the files in it.
 5. A check runs on the pull request. If it fails, the message says which row

@@ -46,6 +46,9 @@ class App : Form {
         { "stagePrompt", new[] { "次は「{0}」を測ります（{1} セット）。\nIME をそのモードにしてから「はい」を押してください。\nこの IME にないモードなら「いいえ」でとばします。",
                                  "Next: {0} ({1} sets).\nPut the input method in that mode, then press Yes.\nPress No to skip a mode this input method does not have." } },
         { "open", new[] { "結果フォルダを開く", "Open results folder" } },
+        { "submit", new[] { "結果を提出", "Share the result" } },
+        { "submitSteps", new[] { "結果フォルダ：\n{0}\n\n提出のしかた（プルリクエスト）：\n1. 「OK」を押すと、ブラウザで GitHub の results フォルダへのアップロード画面が開きます。同時に、結果フォルダを選んだ状態でエクスプローラーが開きます。\n2. 結果フォルダをフォルダごと、ブラウザの画面にドラッグします。中のファイルは変えないでください。\n3. 画面の下で「Propose changes」を押し、次の画面で「Create pull request」を押します。\n4. 説明欄の項目（IME とバージョン、学習、変えた設定）を書いて送ります。\n\nGitHub のアカウントが必要です。送ると自動で検査が走ります。",
+                                 "Result folder:\n{0}\n\nTo share it (a pull request):\n1. OK opens GitHub's upload page for the results folder in the browser, and Explorer with the result folder selected.\n2. Drag the whole result folder onto the page. Do not change the files in it.\n3. Press \"Propose changes\" at the bottom, then \"Create pull request\".\n4. Fill in the description (input method and version, learning, settings changed) and send it.\n\nA GitHub account is needed. A check runs on it automatically." } },
         { "ready", new[] { "入力欄をクリックして、測る IME とモードを選んでから「測定開始」を押してください。",
                            "Click the text box, choose the input method and its mode, then press Start." } },
         { "noSets", new[] { "セットが見つかりません: ", "No sets found: " } },
@@ -82,6 +85,7 @@ class App : Form {
     readonly ProgressBar bar = new ProgressBar { Width = 560, Height = 22 };
     readonly Label status = new Label { AutoSize = true };
     readonly Button openFolder = new Button { Width = 180, Visible = false };
+    readonly Button submit = new Button { Width = 140, Visible = false };
     readonly Label labSet = new Label { AutoSize = true }, labName = new Label { AutoSize = true }, labMode = new Label { AutoSize = true },
                    labLearn = new Label { AutoSize = true }, labHint = new Label { AutoSize = true };
     readonly ComboBox langBox = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 100 };
@@ -110,7 +114,7 @@ class App : Form {
         panel.Controls.Add(Row(labSet, setBox, labName, nameBox));
         panel.Controls.Add(Row(labMode, modeBox));
         panel.Controls.Add(Row(labLearn, learnOn, learnOff, labHint));
-        panel.Controls.Add(Row(start, all, stop, openFolder));
+        panel.Controls.Add(Row(start, all, stop, openFolder, submit));
         panel.Controls.Add(bar);
         panel.Controls.Add(status);
         Controls.Add(panel);
@@ -125,6 +129,7 @@ class App : Form {
         all.Click += (s, e) => MeasureAll();
         stop.Click += (s, e) => { stopping = true; };
         openFolder.Click += (s, e) => { if (lastRun != null) Process.Start("explorer.exe", lastRun); };
+        submit.Click += (s, e) => Submit();
         poll.Tick += (s, e) => ReadIme();
         poll.Start();
         Shown += (s, e) => { box.Focus(); ReadIme(); Scripted(); };
@@ -163,7 +168,7 @@ class App : Form {
         modeBox.SelectedIndex = mode;
         labSet.Text = L("set"); labName.Text = L("name"); labMode.Text = L("mode");
         labLearn.Text = L("learning"); labHint.Text = L("learningHint");
-        start.Text = L("start"); all.Text = L("all"); stop.Text = L("stop"); openFolder.Text = L("open");
+        start.Text = L("start"); all.Text = L("all"); stop.Text = L("stop"); openFolder.Text = L("open"); submit.Text = L("submit");
         if (!stop.Enabled && !openFolder.Visible) status.Text = L("ready");
         if (imeClsid == Guid.Empty && imeProduct != "") { imeProduct = ""; ReadIme(); }
     }
@@ -332,7 +337,7 @@ class App : Form {
         string name = Regex.Replace(nameBox.Text.ToLowerInvariant(), "[^a-z0-9]+", "");
         if (name == "") name = "ime";
         foreach (Control c in new Control[] { setBox, modeBox, learnOn, learnOff, nameBox, start, all }) c.Enabled = false;
-        stop.Enabled = true; openFolder.Visible = false; stopping = false;
+        stop.Enabled = true; openFolder.Visible = false; submit.Visible = false; stopping = false;
         poll.Stop();
         ReadIme();
         var started = DateTime.Now;
@@ -374,16 +379,21 @@ class App : Form {
                 var outPath = Path.Combine(runDir, "out", system + "__" + job.set + ".tsv");
                 int jobDone = 0;
                 var jobStart = DateTime.Now;
+                Directory.CreateDirectory(Path.Combine(runDir, "times"));
+                using (var tw = new StreamWriter(Path.Combine(runDir, "times", system + "__" + job.set + ".tsv"), false, new UTF8Encoding(false)))
                 using (var w = new StreamWriter(outPath, false, new UTF8Encoding(false))) {
                     foreach (var f in job.rows) {
                         if (stopping) break;
                         string text = null;
+                        var rowStart = DateTime.UtcNow;
                         for (int attempt = 0; text == null && attempt < 5 && !stopping; attempt++) {
+                            rowStart = DateTime.UtcNow;
                             text = TypeRow(f[2], job.mode.commit);
                             if (touched) attempt--;   // a person using the PC does not use up a try
                         }
                         if (text == null) break;
                         w.Write(f[0] + "\t" + f[1] + "\t" + text + "\n");
+                        tw.Write(f[0] + "\t" + f[1] + "\t" + Bench.UnixMs(rowStart) + "\t" + Bench.UnixMs(DateTime.UtcNow) + "\n");
                         jobDone++; done++;
                         bar.Value = Math.Min(bar.Maximum, done);
                         double perRow = (typingSeconds + (DateTime.Now - jobStart).TotalSeconds - pausedSeconds) / done;
@@ -402,11 +412,21 @@ class App : Form {
         Finish(runDir, complete && measured.Count > 0);
     }
 
+    // Sharing a result as a pull request: the app only shows the steps and
+    // opens GitHub's upload page and the folder; the person does the rest.
+    void Submit() {
+        if (lastRun == null) return;
+        MessageBox.Show(this, string.Format(L("submitSteps"), lastRun), "IME精度測定", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        Process.Start("https://github.com/Canta360/ime-benchmark-system/upload/main/results");
+        Process.Start("explorer.exe", "/select,\"" + lastRun + "\"");
+    }
+
     void Finish(string runDir, bool complete) {
         foreach (Control c in new Control[] { setBox, modeBox, learnOn, learnOff, nameBox, start, all }) c.Enabled = true;
         stop.Enabled = false;
         lastRun = runDir;
         openFolder.Visible = true;
+        submit.Visible = complete;
         status.Text = (complete ? L("done") : L("stopped")) + runDir;
         poll.Start();
     }
@@ -445,5 +465,13 @@ class App : Form {
         json.Append(" \"complete\": " + (complete ? "true" : "false") + ",\n");
         json.Append(" \"harness\": " + J("ImeBench " + harness) + "\n}\n");
         File.WriteAllText(Path.Combine(runDir, "meta.json"), json.ToString(), new UTF8Encoding(false));
+        // The hash of every file as measured: the check sees any later edit.
+        var manifest = new StringBuilder();
+        foreach (var f in Directory.GetFiles(runDir, "*", SearchOption.AllDirectories).OrderBy(x => x, StringComparer.Ordinal)) {
+            string rel = f.Substring(runDir.Length).TrimStart('\\').Replace('\\', '/');
+            if (rel == "manifest.sha256") continue;
+            manifest.Append(Sha256(File.ReadAllBytes(f)) + "  " + rel + "\n");
+        }
+        File.WriteAllText(Path.Combine(runDir, "manifest.sha256"), manifest.ToString(), new UTF8Encoding(false));
     }
 }

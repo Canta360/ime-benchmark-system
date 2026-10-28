@@ -1,6 +1,7 @@
 name: release
 
-# A tag v* builds ImeBench.exe on Windows and attaches it to the release.
+# A tag v* builds ImeBench.exe on Windows, attaches it to the release, and
+# adds its hash to tools/harness.txt: results measured with it pass the check.
 on:
   push:
     tags: ["v*"]
@@ -13,6 +14,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Build
         shell: pwsh
         run: |
@@ -22,3 +25,13 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: runner/ImeBench.exe
+      - name: Record the released hash
+        shell: pwsh
+        run: |
+          $h = (Get-FileHash runner\ImeBench.exe).Hash.ToLower()
+          Add-Content tools\harness.txt "$h  $env:GITHUB_REF_NAME"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/harness.txt
+          git commit -m "Record ImeBench $env:GITHUB_REF_NAME"
+          git push origin main

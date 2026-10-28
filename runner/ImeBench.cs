@@ -159,7 +159,17 @@ class Bench : Form {
         if (shift) Key(0x10, true);
     }
 
+    // IMEBENCH_SWITCH: the keys (hex virtual keys, comma-separated) that switch
+    // the input method between Japanese and English; a set types them at "|".
+    // "on;off" gives different keys for switching to English and back (TEKITO).
+    static readonly string[] switchKeys = (Environment.GetEnvironmentVariable("IMEBENCH_SWITCH") ?? "19").Split(';');
+    static int switches;
+
     internal static void Type(char ch) {
+        if (ch == '|') {
+            foreach (var k in switchKeys[switches++ % switchKeys.Length].Split(',')) { Press(Convert.ToUInt16(k.Trim(), 16), false); Settle(80); }
+            return;
+        }
         short scan = Native.VkKeyScan(ch);
         if (scan == -1) return;
         Press((ushort)(scan & 0xFF), (scan & 0x100) != 0);
@@ -203,6 +213,8 @@ class Bench : Form {
         OpenJapanese();
         Settle(300);
         var output = new StreamWriter(args[3], false, new UTF8Encoding(false));
+        // When each row was typed (Unix ms), for the check that it was typed at all.
+        var times = new StreamWriter(args[3] + ".times", false, new UTF8Encoding(false));
         // IMEBENCH_CONTEXT: a file of id, tab, the text before the input (left
         // context, as in AJIMEE-Bench); it is put in the box before typing
         // and taken off what the box holds afterwards.
@@ -244,6 +256,7 @@ class Bench : Form {
                 WaitIdle();
                 WaitForFront();
                 int touches = UserInput.Count;
+                switches = 0;
                 var rowStart = DateTime.UtcNow;
                 box.Clear();
                 string context;
@@ -272,6 +285,10 @@ class Bench : Form {
                     if (!english && undisturbed()) {
                         if (!live) Press(Environment.GetEnvironmentVariable("IMEBENCH_CONVERT_KEY") == "1" ? (ushort)0x1C : (ushort)0x20, false);   // Space (or the convert key): convert
                         Settle(delay * 2);
+                        // IMEBENCH_COMMIT_WAIT: milliseconds to wait before Enter, for an
+                        // input method whose answer can change after Space (TEKITO's AI).
+                        int wait;
+                        if (int.TryParse(Environment.GetEnvironmentVariable("IMEBENCH_COMMIT_WAIT"), out wait) && wait > 0) Settle(wait);
                         if (undisturbed()) Press(0x0D, false);   // Enter: commit
                     }
                     Settle(delay * 2);
@@ -285,6 +302,8 @@ class Bench : Form {
                     continue;
                 }
                 typedSeconds += (DateTime.UtcNow - rowStart).TotalSeconds;
+                times.WriteLine(f[0] + "\t" + f[1] + "\t" + UnixMs(rowStart) + "\t" + UnixMs(DateTime.UtcNow));
+                times.Flush();
                 text = box.Text.Replace("\r", "").Replace("\n", "");
                 if (context.Length > 0 && text.StartsWith(context)) text = text.Substring(context.Length);
             }
@@ -295,8 +314,11 @@ class Bench : Form {
             if (n % 50 == 0) Console.WriteLine(n + " done");
         }
         output.Close();
+        times.Close();
         Close();
     }
+
+    internal static long UnixMs(DateTime utc) { return (long)(utc - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds; }
 
     bool InFront() { return Native.GetForegroundWindow() == Handle; }
 

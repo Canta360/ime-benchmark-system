@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  <a href="https://canta360.github.io/ime-benchmark-system/"><img src="assets/results-banner.en.svg" alt="View the results" width="560"></a>
+</p>
+
+<p align="center">
   <a href="README_JP.md">日本語</a> ·
   <a href="#measuring">Measuring</a> ·
   <a href="#results-page">Results page</a> ·
@@ -96,13 +100,21 @@ kappa 0.94); Sonnet does routine judging.
 2. Run `runner\ImeBench.exe`, click its text box, and switch to the input
    method and mode to measure as usual (Win+Space and so on).
 3. Choose the set, the mode and whether learning is on, then press **Start**.
-   Leave the PC alone until the progress bar finishes. If the first three
-   rows stay romaji, it stops and tells you.
+   If the first three rows stay romaji, it stops and tells you.
+
+While it runs, it shows the rows and time left. Touching the mouse or keys
+pauses it; it goes on 5 s after they stop, typing the row it was on again.
 
 The window is in Japanese or English. Results go to
-`results/<date-time>-<name>-<mode>/`: the outputs and `meta.json` (Windows
-build, the input method's DLL and version, mode, learning, the set's
-SHA-256, the app's hash). Then:
+`results/<date-time>-<name>-<mode>/`:
+
+- `out/`: the outputs
+- `meta.json`: Windows build, the input method's DLL and version, mode,
+  learning, the set's SHA-256, the app's hash
+- `times/`: when each row was typed
+- `manifest.sha256`: the hash of every file
+
+Then:
 
 ```powershell
 python tools\bench.py check results\<run>
@@ -113,20 +125,41 @@ python tools\bench.py score results\<run>
 
 ## Results page
 
-`tools/site.py` builds the results page (GitHub Pages, Japanese and English)
-on every push: fair % with 95% intervals, the McNemar test for every pair,
-and every sentence's outputs. `--pdf` also writes A4 reports
-(`report.ja.pdf`, `report.en.pdf`) with Chrome or Edge.
+`tools/site.py` builds the [results page](https://canta360.github.io/ime-benchmark-system/) (GitHub Pages, Japanese and
+English) on every push:
+
+- a rank per kind of text (Japanese, with English, English), with 95%
+  intervals and whether each is different from the first
+- a dot plot of the score on every set
+- a page per input method: points written from the numbers, where it does
+  better and worse, rows only it got wrong
+- the McNemar test for every pair, and every sentence's outputs
+
+`--pdf` also writes A4 portrait PDFs with Chrome or Edge, each with when and
+where the results were measured:
+
+| PDF | what |
+|---|---|
+| `report-summary.en.pdf` | summary (one page) |
+| `report-full.en.pdf` | every set in full |
+| `report.<input method>.en.pdf` | one input method (one page) |
+
+Japanese ones end in `.ja.pdf`.
 
 ## Sharing results
 
 The steps are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Add your run folder under `results/` in a pull request, without editing it.
-GitHub Actions checks it (every row once, the set's hash, the metadata) and
-scores it from the raw outputs; scores in a submission are never used.
+**Share the result** in the app shows the steps and opens GitHub's upload page.
+GitHub Actions checks it (every row once, the set's hash, the metadata, a
+released build of the app, no file changed after measuring, each row typed in
+the time its keys take) and scores it from the raw outputs; scores in a
+submission are never used.
 Maintainers judge new outputs and add them to `labels.tsv`. The results page
-marks maintainers' runs **verified** and others **community**.
+marks **verified** the maintainers' runs and runs whose sample of rows the
+maintainers measured again with the same version and got the same outputs;
+others are **community**.
 
 ## Planned
 

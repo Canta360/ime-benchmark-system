@@ -116,8 +116,25 @@ td.none { color: var(--ink-3); }
 .pdf:hover { background: var(--key-bg); }
 .right { display: flex; gap: 12px; align-items: center; }
 .printed { display: none; }
+@media screen and (prefers-color-scheme: dark) { .brand .wordmark { filter: invert(1); } }
+.env { margin: 2px 0 6px; }
+.types { display: grid; grid-template-columns: 1fr; gap: 12px 24px; }
+.types .tycol svg { max-width: 760px; display: block; }
+.types svg, .card > svg { width: 100%; height: auto; }
+.lbl { font-size: 12px; fill: var(--ink); } .val { font-size: 12px; fill: var(--ink); font-weight: 700; } .tick { font-size: 10px; fill: var(--ink-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; margin: 4px 0 6px; } .lg { display: inline-flex; gap: 4px; align-items: center; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; color: var(--key); font-weight: 700; text-decoration: none; border: 1px solid var(--key); border-radius: var(--radius-s); padding: 8px 14px; line-height: 1; background: var(--surface); }
+.chip:hover, .navrow .pdf:hover { background: var(--key-bg); }
+.navrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; }
+.points li { margin: 2px 0; }
+.exctl { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 6px 0; } .exctl select { font: inherit; padding: 4px 6px; }
+.exim { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; margin: 4px 0 8px; } .exim label { display: inline-flex; gap: 4px; align-items: center; }
+#exchart svg { width: 100%; height: auto; } .points { margin: 4px 0; padding-left: 1.2em; } .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+@media screen and (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+
 /* A4 landscape report: everything expanded, no controls, no sentence browser. */
-@page { size: A4 landscape; margin: 12mm 14mm; }
+@page { size: A4 portrait; margin: 10mm 11mm; }
 @media print {
   :root { --surface: #ffffff; --page: #ffffff; }
   body { font-size: 10pt; line-height: 1.55; letter-spacing: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -157,13 +174,22 @@ td.none { color: var(--ink-3); }
   .madeby img { height: 22px; }
   pre, code { font-size: 6.5pt; line-height: 1.3; }
   #commitments .card { break-inside: avoid; }
+  body.one { font-size: 7.5pt; line-height: 1.35; }
+  body.one h1 { font-size: 14pt; margin: 6px 0 0; } body.one h2 { font-size: 10pt; margin: 8px 0 3px; border-left-width: 4px; padding-left: 8px; } body.one h3 { font-size: 8.5pt; }
+  body.one .card { padding: 5px 7px; margin: 4px 0; } body.one .note { font-size: 6.5pt; }
+  body.one table { font-size: 6.5pt; } body.one th, body.one td { padding: 1px 4px; }
+  body.one .lbl, body.one .val { font-size: 11px; } body.one .tick { font-size: 9px; } body.one .legend { font-size: 7pt; }
+  body.one .brand .icon, body.one .brand .wordmark { height: 30px; width: auto; } body.one footer { padding-top: 4px; font-size: 6.5pt; }
+  body.one .madeby { display: flex; font-size: 7pt; padding-top: 4px; } body.one .madeby img { height: 16px; }
+  body.one .env { font-size: 6.5pt; }
+  .types { grid-template-columns: 1fr 1fr 1fr; }
 }
 </style>
 </head>
 <body>
 <header><div class="wrap top">
   <div class="brand"><img class="icon" src="icon.png" alt=""><img class="wordmark" src="logotext.svg" alt="IME精度測定 IME Benchmark system"></div>
-  <div class="right"><a class="pdf" href="report.ja.pdf">PDF (A4)</a>
+  <div class="right"><a class="pdf" href="report-summary.ja.pdf" data-t="pdfSummary"></a><a class="pdf full" href="report-full.ja.pdf" data-t="pdfFull"></a>
   <div class="toggle" role="group" aria-label="Language">
     <button data-lang="ja">日本語</button><button data-lang="en">English</button>
   </div></div>
@@ -191,6 +217,25 @@ td.none { color: var(--ink-3); }
 <script>
 const DATA = /*DATA*/null;
 const T = {
+  imeListTitle: ["IME ごとの総評", "Per input method"], imeListNote: ["IME を選ぶと、その IME の総評ページを開きます。", "Pick an input method to open its page."],
+  imeScores: ["セットごとの成績", "Scores per set"], imePdf: ["この IME の PDF", "PDF of this input method"],
+  exTitle: ["いろいろな角度から見る", "Explore"], exNote: ["見方、セット、IME を選ぶと、グラフが変わります。", "Pick a view, sets and input methods; the chart follows."],
+  ex_scatter: ["2 つのセットで比べる", "Two sets against each other"], ex_oneSet: ["1 つのセットの順位", "One set, ranked"], ex_pair: ["2 つの IME の差", "Two input methods, set by set"],
+  ex_x: ["横軸", "Across"], ex_y: ["縦軸", "Up"], exNone: ["選んだ条件で測った結果がありません。", "Nothing measured for this choice."],
+  exPairNote: ["{0} − {1}（fair %）。濃い棒と「*」は差あり（McNemar 検定、p < 0.05）。", "{0} minus {1} (fair %). Dark bars and \"*\": a difference (McNemar test, p < 0.05)."],
+  pdfSummary: ["要約 PDF", "Summary PDF"], pdfFull: ["詳細 PDF", "Full PDF"],
+  typesTitle: ["テキストの種類ごとの順位", "Rank per kind of text"],
+  typesNote: ["種類ごとの全セットを測った IME だけ。全セットの文をまとめた fair %（英語は正しい文の割合）と 95% 信頼区間。「=」は 1 位と差なし（McNemar 検定）。", "Input methods measured on every set of the kind. fair % over all its rows (English: sentences right), with 95% intervals. \"=\": no difference from the first (McNemar test)."],
+  dotTitle: ["セットごとの点数", "Score per set"], imeSets: ["セットごとの点数（他の IME と比べて）", "Score per set, against the others"],
+  dotNote: ["点 1 つが IME 1 つ。色と形で区別します。", "One mark per input method, told apart by color and shape."],
+  levelsTitle: ["紛れの多さと点数", "Score by ambiguity"], levelsNote: ["A：紛れが少ない文、B：ほどほど、C：多い文。", "A: little ambiguity, B: some, C: much."],
+  imeList: ["IME ごとの総評：", "Per input method:"], back: ["← 全体に戻る", "← Back to all"],
+  points: ["要点", "In short"], pointsNote: ["数字から自動で書いています。", "Written from the numbers alone."],
+  pointRank: ["{0}：fair {1}%（{3} IME 中 {2} 位{4}）", "{0}: fair {1}% ({2} of {3}{4})"],
+  first: ["1 位", "first"], tieFirst: ["1 位と差なし", "no difference from the first"], belowFirst: ["1 位より低い", "below the first"],
+  pointStrong: ["中央値より高いセット：{0}", "Above the median: {0}"], pointWeak: ["中央値より低いセット：{0}", "Below the median: {0}"],
+  set: ["セット", "Set"], rankCol: ["順位", "Rank"], medianCol: ["全 IME の中央値", "Median of all"],
+  examples: ["この IME だけが間違えた文の例", "Rows only this input method got wrong"],
   title: ["IME の変換精度の比較", "How accurately input methods convert"],
   lead: ["どの IME にも、同じキーを同じ手順で打ちました。数字は全部、公開している出力から計算したものです。", "Every input method gets the same keys, typed the same way. All numbers are computed from the published outputs."],
   fair: ["fair %（完全一致＋表記ちがい）", "fair % (exact + notation variants)"],
@@ -382,6 +427,230 @@ function overview() {
   return h + "</table></div></div>";
 }
 
+// --- Views added for cycle 3: ranks per kind of text, dot plot, one page per input method.
+const PMODE = new URLSearchParams(location.search).get("print") || "";
+const PIME = new URLSearchParams(location.search).get("ime") || "";
+// Fixed identity per input method (overview order): a color and a shape, so
+// print in black and white still tells them apart.
+const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00", "#000000", "#7F7F7F"];
+const SHAPES = ["circle", "square", "triangle", "diamond", "cross", "tri-down", "star", "ring"];
+function ident(name) {
+  const i = Math.max(0, DATA.overview.rows.findIndex(r => r.name === name));
+  return { color: COLORS[i % COLORS.length], shape: SHAPES[i % SHAPES.length] };
+}
+function mark(x, y, name, size, extra) {
+  const { color, shape } = ident(name), s = size || 5, a = extra || "";
+  const xy = (dx, dy) => `${(x + dx).toFixed(1)},${(y + dy).toFixed(1)}`;
+  switch (shape) {
+    case "square": return `<rect x="${(x - s).toFixed(1)}" y="${(y - s).toFixed(1)}" width="${2 * s}" height="${2 * s}" fill="${color}" ${a}/>`;
+    case "triangle": return `<polygon points="${xy(0, -s * 1.2)} ${xy(s * 1.1, s * 0.8)} ${xy(-s * 1.1, s * 0.8)}" fill="${color}" ${a}/>`;
+    case "tri-down": return `<polygon points="${xy(0, s * 1.2)} ${xy(s * 1.1, -s * 0.8)} ${xy(-s * 1.1, -s * 0.8)}" fill="${color}" ${a}/>`;
+    case "diamond": return `<polygon points="${xy(0, -s * 1.3)} ${xy(s * 1.3, 0)} ${xy(0, s * 1.3)} ${xy(-s * 1.3, 0)}" fill="${color}" ${a}/>`;
+    case "cross": return `<path d="M${xy(-s, -s)}L${xy(s, s)}M${xy(-s, s)}L${xy(s, -s)}" stroke="${color}" stroke-width="2.5" ${a}/>`;
+    case "star": return `<polygon points="${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(k => { const r = k % 2 ? s * 0.5 : s * 1.3, an = -Math.PI / 2 + k * Math.PI / 5; return xy(r * Math.cos(an), r * Math.sin(an)); }).join(" ")}" fill="${color}" ${a}/>`;
+    case "ring": return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${s}" fill="none" stroke="${color}" stroke-width="2.5" ${a}/>`;
+    default: return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${s}" fill="${color}" ${a}/>`;
+  }
+}
+// Live conversion is compared on its own; it stays out of these comparisons.
+const cmpRows = () => DATA.overview.rows.filter(r => !r.name.includes("(live)"));
+const setLabel = n => (T.setShort[n] || T.setShort[DATA.sets[n].kind] || [n, n])[lang];
+const median = a => { const b = [...a].sort((x, y) => x - y), m = b.length >> 1; return b.length ? (b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2) : null; };
+
+// Ranks per kind of text: rows right over all of its sets, 95% interval, and
+// "tie" for an input method McNemar cannot tell from the first.
+function typeRanks(only) {
+  const groups = { ja: "groupJa", mix: "groupMix", en: "groupEn" };
+  let h = "";
+  for (const [g, key] of Object.entries(groups)) {
+    const ty = DATA.types && DATA.types[g];
+    if (!ty || !ty.systems.length) continue;
+    const W = 520, row = 26, top = 6, left = 140, right = 44, H = top + ty.systems.length * row + 22;
+    const xs = v => left + (W - left - right) * v / 100;
+    let s = [0, 25, 50, 75, 100].map(v => `<line x1="${xs(v)}" y1="${top}" x2="${xs(v)}" y2="${H - 20}" stroke="var(--grid)"/><text x="${xs(v)}" y="${H - 6}" class="tick" text-anchor="middle">${v}</text>`).join("");
+    ty.systems.forEach((e, i) => {
+      const y = top + i * row + row / 2, hl = only && only !== e.name;
+      s += `<g opacity="${hl ? 0.35 : 1}"><text x="${left - 10}" y="${y + 4}" text-anchor="end" class="lbl">${esc(e.name)}</text>
+        <rect x="${xs(0)}" y="${y - 7}" width="${(xs(e.fair) - xs(0)).toFixed(1)}" height="14" rx="3" fill="${ident(e.name).color}" fill-opacity="0.85"/>
+        <line x1="${xs(e.lo).toFixed(1)}" x2="${xs(e.hi).toFixed(1)}" y1="${y}" y2="${y}" stroke="var(--ink)" stroke-width="1.5"/>
+        <text x="${W - right + 6}" y="${y + 4}" class="val">${e.fair.toFixed(1)}${e.tie && i ? " =" : ""}</text></g>`;
+    });
+    h += `<div class="tycol"><h3>${t(key)} <span class="note">(${ty.sets.map(setLabel).join(", ")})</span></h3><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t(key)}">${s}</svg></div>`;
+  }
+  return h ? `<h2>${t("typesTitle")}</h2><div class="card"><p class="note">${t("typesNote")}</p><div class="types">${h}</div></div>` : "";
+}
+
+// One row per set, one mark per input method; the one asked for drawn on top.
+function dotPlot(only) {
+  const ov = DATA.overview;
+  const W = 640, row = only ? 20 : 22, top = 8, left = 110, right = 16, H = top + ov.sets.length * row + 26;
+  const xs = v => left + (W - left - right) * v / 100;
+  let s = [0, 25, 50, 75, 100].map(v => `<line x1="${xs(v)}" y1="${top}" x2="${xs(v)}" y2="${H - 22}" stroke="var(--grid)"/><text x="${xs(v)}" y="${H - 8}" class="tick" text-anchor="middle">${v}</text>`).join("");
+  ov.sets.forEach((n, i) => {
+    const y = top + i * row + row / 2;
+    s += `<text x="${left - 8}" y="${y + 4}" text-anchor="end" class="lbl">${esc(setLabel(n))}</text><line x1="${xs(0)}" x2="${xs(100)}" y1="${y}" y2="${y}" stroke="var(--grid)" stroke-dasharray="2 3"/>`;
+    const rows = cmpRows().filter(r => r.values[n] != null).sort((a, b) => (a.name === only) - (b.name === only));
+    for (const r of rows) {
+      const dim = only && r.name !== only ? 'opacity="0.3"' : "";
+      s += mark(xs(r.values[n]), y, r.name, only && r.name === only ? 6 : 4.5, `${dim} class="dot" data-tip="${esc(r.name)} · ${esc(setLabel(n))}: ${r.values[n].toFixed(1)}"`);
+    }
+  });
+  const legend = cmpRows().map(r => `<span class="lg"><svg width="14" height="14" viewBox="0 0 14 14">${mark(7, 7, r.name, 4.5)}</svg>${esc(r.name)}</span>`).join("");
+  const card = `<div class="card"><p class="note">${t("dotNote")}</p><div class="legend">${legend}</div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t("dotTitle")}">${s}</svg></div>`;
+  return only ? card : `<h2>${t("dotTitle")}</h2>${card}`;
+}
+
+// Cycle 3 sets of three ambiguity levels (A, B, C): one line per input method.
+function levels(only) {
+  const groups = [["ja", ["jaA", "jaB", "jaC"]], ["mix", ["mixA", "mixB", "mixC"]]].filter(([, ns]) => ns.every(n => DATA.overview.sets.includes(n)));
+  if (!groups.length) return "";
+  let h = "";
+  for (const [g, ns] of groups) {
+    const W = 300, H = 170, l = 34, r = 12, tp = 10, b = 24;
+    const xs = i => l + (W - l - r) * i / 2, ys = v => tp + (H - tp - b) * (1 - v / 100);
+    let s = [0, 50, 100].map(v => `<line x1="${l}" x2="${W - r}" y1="${ys(v)}" y2="${ys(v)}" stroke="var(--grid)"/><text x="${l - 4}" y="${ys(v) + 3}" class="tick" text-anchor="end">${v}</text>`).join("");
+    s += ["A", "B", "C"].map((c, i) => `<text x="${xs(i)}" y="${H - 6}" class="tick" text-anchor="middle">${c}</text>`).join("");
+    for (const row of cmpRows()) {
+      if (!ns.every(n => row.values[n] != null)) continue;
+      const dim = only && row.name !== only ? 'opacity="0.3"' : "";
+      s += `<polyline points="${ns.map((n, i) => `${xs(i)},${ys(row.values[n]).toFixed(1)}`).join(" ")}" fill="none" stroke="${ident(row.name).color}" stroke-width="2" ${dim}/>`;
+      s += ns.map((n, i) => mark(xs(i), ys(row.values[n]), row.name, 3.5, dim)).join("");
+    }
+    h += `<div class="tycol"><h3>${t(g === "ja" ? "groupJa" : "groupMix")}</h3><svg viewBox="0 0 ${W} ${H}">${s}</svg></div>`;
+  }
+  return `<h2>${t("levelsTitle")}</h2><div class="card"><p class="note">${t("levelsNote")}</p><div class="types">${h}</div></div>`;
+}
+
+// When and where the results were measured: dates, Windows builds, learning.
+function envLine(systems) {
+  const u = f => [...new Set(systems.map(f).filter(Boolean))];
+  const dates = u(x => (x.date || "").slice(0, 10)).sort();
+  const span = dates.length > 1 ? `${dates[0]} – ${dates[dates.length - 1]}` : (dates[0] || "—");
+  return `<p class="note env">${t("measured")}: ${esc(span)} · Windows: ${esc(u(x => x.windows).join(", ") || "—")} · ${t("learning")}: ${esc(u(x => x.learning).join(", ") || "—")}</p>`;
+}
+const allSystems = () => Object.values(DATA.sets).flatMap(st => st.systems).filter(x => !x.name.includes("(live)"));
+
+function imeList() {
+  return `<h2>${t("imeListTitle")}</h2><div class="card"><p class="note">${t("imeListNote")}</p><div class="chips">${cmpRows().map(r => `<a class="chip" href="#ime=${DATA.slugs[r.name]}"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">${mark(7, 7, r.name, 4.5)}</svg>${esc(r.name)}</a>`).join("")}</div></div>`;
+}
+
+// One input method: what the numbers say, written from the numbers only.
+function imePage(slug) {
+  const r = DATA.overview.rows.find(x => DATA.slugs[x.name] === slug);
+  if (!r) return `<p>${esc(slug)}?</p>`;
+  const sets = DATA.overview.sets.filter(n => r.values[n] != null);
+  const sys = sets.map(n => DATA.sets[n].systems.find(x => x.bundle === r.bundles[n] && Math.abs(x.fair - r.values[n]) < 1e-9)).filter(Boolean);
+  const versions = [...new Set(sys.map(s => s.version).filter(Boolean))].join(", ");
+  const dates = [...new Set(sys.map(s => s.date.slice(0, 10)))].sort();
+  const learning = [...new Set(sys.map(s => s.learning))].join(", ");
+  // Points: rank per kind of text, then the sets furthest above and below the median.
+  const pts = [];
+  for (const [g, key] of [["ja", "groupJa"], ["mix", "groupMix"], ["en", "groupEn"]]) {
+    const ty = DATA.types && DATA.types[g];
+    const i = ty ? ty.systems.findIndex(e => e.name === r.name) : -1;
+    if (i < 0) continue;
+    const e = ty.systems[i];
+    pts.push(fmt("pointRank", t(key), e.fair.toFixed(1), i + 1, ty.systems.length, i === 0 ? "" : (lang ? ", " : "、") + (e.tie ? t("tieFirst") : t("belowFirst"))));
+  }
+  const rows = sets.map(n => {
+    const all = cmpRows().map(x => x.values[n]).filter(v => v != null);
+    const rank = 1 + all.filter(v => v > r.values[n]).length, med = median(all);
+    const s = DATA.sets[n].systems.find(x => x.bundle === r.bundles[n] && Math.abs(x.fair - r.values[n]) < 1e-9);
+    return { n, v: r.values[n], lo: s ? s.lo : null, hi: s ? s.hi : null, rank, of: all.length, med, d: r.values[n] - med, others: all.length - 1 };
+  });
+  const cmp = rows.filter(x => x.others > 0).sort((a, b) => b.d - a.d);
+  const strong = cmp.filter(x => x.d > 0).slice(0, 3), weak = cmp.filter(x => x.d < 0).slice(-3).reverse();
+  if (strong.length) pts.push(fmt("pointStrong", strong.map(x => `${setLabel(x.n)} (+${x.d.toFixed(1)})`).join(", ")));
+  if (weak.length) pts.push(fmt("pointWeak", weak.map(x => `${setLabel(x.n)} (${x.d.toFixed(1)})`).join(", ")));
+  const table = `<table class="scores"><tr><th>${t("set")}</th><th class="num">${t("fairShort")}</th><th class="num">95% CI</th><th class="num">${t("rankCol")}</th><th class="num">${t("medianCol")}</th></tr>${rows.map(x =>
+    `<tr><td>${esc(setLabel(x.n))}</td><td class="num">${x.v.toFixed(1)}</td><td class="num">${x.lo == null ? "" : x.lo.toFixed(1) + "–" + x.hi.toFixed(1)}</td><td class="num">${x.rank} / ${x.of}</td><td class="num">${x.med.toFixed(1)}</td></tr>`).join("")}</table>`;
+  // Examples: rows only this input method got wrong (every other one measured got them right).
+  const ex = [];
+  for (const n of sets) {
+    const set = DATA.sets[n], me = set.systems.find(x => x.bundle === r.bundles[n] && Math.abs(x.fair - r.values[n]) < 1e-9);
+    if (!me || set.systems.filter(o => !o.name.includes("(live)")).length < 2) continue;
+    for (const row of set.rows) {
+      const v = me.verdict[row.id];
+      if (v === "exact" || v === "A" || v == null) continue;
+      if (set.systems.every(o => o === me || o.name.includes("(live)") || o.verdict[row.id] === "exact" || o.verdict[row.id] === "A")) { ex.push({ n, meant: row.meant, out: me.out[row.id] }); if (ex.filter(e => e.n === n).length >= 1) break; }
+    }
+  }
+  const exh = ex.filter(e => e.meant.length <= 60).slice(0, 4).map(e => `<tr><td>${esc(setLabel(e.n))}</td><td>${esc(e.meant)}</td><td>${esc(e.out)}</td></tr>`).join("");
+  const pdf = `report.${slug}.${lang ? "en" : "ja"}.pdf`;
+  return `<section class="imepage">
+    ${PRINT ? "" : `<div class="navrow"><a class="pdf" href="#">${t("back")}</a><a class="pdf" href="${pdf}">${t("imePdf")}</a></div>`}
+    <h1>${esc(r.name)}</h1>
+    <p class="lead">${t("version")}: ${esc(versions || "—")}</p>${envLine(sys)}
+    <h2>${t("points")}</h2><div class="card"><ul class="points">${pts.map(p => `<li>${p}</li>`).join("")}</ul><p class="note">${t("pointsNote")}</p></div>
+    ${(() => { const sc = `<h2>${t("imeScores")}</h2><div class="card"><div class="scroll">${table}</div></div>`, dp = `<h2>${t("imeSets")}</h2>${dotPlot(r.name)}`;
+       return PRINT ? `<div class="cols"><div>${sc}</div><div>${dp}</div></div>` : sc + dp; })()}
+    ${levels(r.name)}
+    ${exh ? `<h2>${t("examples")}</h2><div class="card"><div class="scroll"><table class="scores"><tr><th>${t("set")}</th><th>${t("meant")}</th><th>${esc(r.name)}</th></tr>${exh}</table></div></div>` : ""}
+  </section>`;
+}
+function fmt(key, ...a) { return t(key).replace(/\{(\d)\}/g, (_, i) => a[+i]); }
+
+// --- Explore: the person picks a view, the sets and the input methods.
+const EX = { view: "scatter", x: null, y: null, set: null, a: null, b: null, off: new Set() };
+function explore() {
+  const ov = DATA.overview, rows = cmpRows();
+  if (!ov || ov.sets.length < 2 || rows.length < 2) return "";
+  EX.x = EX.x || ov.sets[0]; EX.y = EX.y || ov.sets[1]; EX.set = EX.set || ov.sets[0];
+  EX.a = EX.a || rows[0].name; EX.b = EX.b || rows[1].name;
+  const opt = (list, cur, lab) => list.map(v => `<option value="${esc(v)}"${v === cur ? " selected" : ""}>${esc(lab ? lab(v) : v)}</option>`).join("");
+  const views = ["scatter", "oneSet", "pair"].map(v => `<label><input type="radio" name="exv" value="${v}"${EX.view === v ? " checked" : ""}> ${t("ex_" + v)}</label>`).join(" ");
+  let ctl = "";
+  if (EX.view === "scatter") ctl = `${t("ex_x")} <select data-k="x">${opt(ov.sets, EX.x, setLabel)}</select> ${t("ex_y")} <select data-k="y">${opt(ov.sets, EX.y, setLabel)}</select>`;
+  if (EX.view === "oneSet") ctl = `${t("set")} <select data-k="set">${opt(ov.sets, EX.set, setLabel)}</select>`;
+  if (EX.view === "pair") ctl = `<select data-k="a">${opt(rows.map(r => r.name), EX.a)}</select> − <select data-k="b">${opt(rows.map(r => r.name), EX.b)}</select>`;
+  const imes = EX.view === "pair" ? "" : `<div class="exim">${rows.map(r => `<label><input type="checkbox" data-ime="${esc(r.name)}"${EX.off.has(r.name) ? "" : " checked"}><svg width="12" height="12" viewBox="0 0 14 14">${mark(7, 7, r.name, 4.5)}</svg>${esc(r.name)}</label>`).join("")}</div>`;
+  return `<h2>${t("exTitle")}</h2><div class="card" id="explore"><p class="note">${t("exNote")}</p><div class="exctl">${views}</div><div class="exctl">${ctl}</div>${imes}<div id="exchart">${exChart()}</div></div>`;
+}
+function exChart() {
+  const ov = DATA.overview, rows = cmpRows().filter(r => !EX.off.has(r.name));
+  const W = 640, H = 360, l = 48, r = 16, tp = 12, b = 40;
+  if (EX.view === "scatter") {
+    const pts = rows.filter(x => x.values[EX.x] != null && x.values[EX.y] != null);
+    const xs = v => l + (W - l - r) * v / 100, ys = v => tp + (H - tp - b) * (1 - v / 100);
+    let s = [0, 25, 50, 75, 100].map(v => `<line x1="${xs(v)}" x2="${xs(v)}" y1="${tp}" y2="${H - b}" stroke="var(--grid)"/><line x1="${l}" x2="${W - r}" y1="${ys(v)}" y2="${ys(v)}" stroke="var(--grid)"/><text x="${xs(v)}" y="${H - b + 14}" class="tick" text-anchor="middle">${v}</text><text x="${l - 6}" y="${ys(v) + 3}" class="tick" text-anchor="end">${v}</text>`).join("");
+    s += `<line x1="${xs(0)}" y1="${ys(0)}" x2="${xs(100)}" y2="${ys(100)}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+    s += `<text x="${(l + W - r) / 2}" y="${H - 6}" class="lbl" text-anchor="middle">${esc(setLabel(EX.x))}</text><text x="12" y="${(tp + H - b) / 2}" class="lbl" text-anchor="middle" transform="rotate(-90 12 ${(tp + H - b) / 2})">${esc(setLabel(EX.y))}</text>`;
+    for (const p of pts) s += mark(xs(p.values[EX.x]), ys(p.values[EX.y]), p.name, 6, `class="dot" data-tip="${esc(p.name)}: ${p.values[EX.x].toFixed(1)} / ${p.values[EX.y].toFixed(1)}"`)
+      + `<text x="${xs(p.values[EX.x]) + 9}" y="${ys(p.values[EX.y]) + 4}" class="tick">${esc(p.name)}</text>`;
+    return `<svg viewBox="0 0 ${W} ${H}">${s}</svg>${pts.length ? "" : `<p class="note">${t("exNone")}</p>`}`;
+  }
+  if (EX.view === "oneSet") {
+    const set = DATA.sets[EX.set], sys = set.systems.filter(x => rows.some(r => r.bundles[EX.set] === x.bundle && Math.abs(r.values[EX.set] - x.fair) < 1e-9));
+    return sys.length ? chart(EX.set, Object.assign({}, set, { systems: sys })) : `<p class="note">${t("exNone")}</p>`;
+  }
+  // pair: the difference per set, A minus B, with whether McNemar sees it.
+  const A = cmpRows().find(x => x.name === EX.a), Bq = cmpRows().find(x => x.name === EX.b);
+  const sets = ov.sets.filter(n => A.values[n] != null && Bq.values[n] != null);
+  if (!sets.length) return `<p class="note">${t("exNone")}</p>`;
+  const row = 24, Hh = tp + sets.length * row + 30, mid = (l + 70 + W - r) / 2, sc = (W - r - l - 70) / 2 / 50;
+  let s = [-50, -25, 0, 25, 50].map(v => `<line x1="${mid + v * sc}" x2="${mid + v * sc}" y1="${tp}" y2="${Hh - 22}" stroke="var(--grid)"/><text x="${mid + v * sc}" y="${Hh - 8}" class="tick" text-anchor="middle">${v > 0 ? "+" : ""}${v}</text>`).join("");
+  sets.forEach((n, i) => {
+    const d = A.values[n] - Bq.values[n], y = tp + i * row + row / 2, w = Math.max(-50, Math.min(50, d)) * sc;
+    const sa = DATA.sets[n].systems.find(x => x.bundle === A.bundles[n] && Math.abs(x.fair - A.values[n]) < 1e-9);
+    const sb = DATA.sets[n].systems.find(x => x.bundle === Bq.bundles[n] && Math.abs(x.fair - Bq.values[n]) < 1e-9);
+    const p = sa && sb && DATA.sets[n].pairs ? DATA.sets[n].pairs[sa.system + "|" + sb.system] : null;
+    const sig = p && p.p < 0.05;
+    s += `<text x="${l + 62}" y="${y + 4}" class="lbl" text-anchor="end">${esc(setLabel(n))}</text>
+      <rect x="${Math.min(mid, mid + w)}" y="${y - 7}" width="${Math.abs(w)}" height="14" rx="3" fill="${ident(d >= 0 ? A.name : Bq.name).color}" fill-opacity="${sig ? 0.9 : 0.35}"/>
+      <text x="${d >= 0 ? mid + w + 4 : mid + w - 4}" y="${y + 4}" class="tick" text-anchor="${d >= 0 ? "start" : "end"}">${d > 0 ? "+" : ""}${d.toFixed(1)}${sig ? " *" : ""}</text>`;
+  });
+  return `<p class="note">${fmt("exPairNote", esc(A.name), esc(Bq.name))}</p><svg viewBox="0 0 ${W} ${Hh}">${s}</svg>`;
+}
+function wireExplore() {
+  const box = document.getElementById("explore");
+  if (!box) return;
+  const redraw = () => { box.outerHTML = explore().replace(/^<h2>.*?<\/h2>/, ""); wireExplore(); };
+  box.querySelectorAll("input[name=exv]").forEach(i => i.onchange = () => { EX.view = i.value; redraw(); });
+  box.querySelectorAll("select[data-k]").forEach(sel => sel.onchange = () => { EX[sel.dataset.k] = sel.value; redraw(); });
+  box.querySelectorAll("input[data-ime]").forEach(c => c.onchange = () => { c.checked ? EX.off.delete(c.dataset.ime) : EX.off.add(c.dataset.ime); redraw(); });
+  box.querySelectorAll(".dot").forEach(c => { c.onmousemove = e => showTip(e, c.dataset.tip); c.onmouseleave = hideTip; });
+}
+
 function render() {
   document.documentElement.lang = lang ? "en" : "ja";
   document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
@@ -401,11 +670,25 @@ function render() {
       <div class="card"><h3>${t("sigTitle")}</h3><p class="note">${t("sigNote")}</p>${sigTable(set)}</div>
       <div class="card browse" data-set="${esc(name)}"><h3>${t("browseTitle")}</h3>${browser(name, set)}</div>`;
   }
-  const ov = overview(), pr = profiles();
-  document.getElementById("overview").innerHTML = PRINT
-    ? (pr ? `<section class="pg first">${pr}</section>` : "") + (ov ? `<section class="pg${pr ? "" : " first"}">${ov}</section>` : "")
-    : pr + ov;
-  document.getElementById("sets").innerHTML = PRINT && ov ? h.replace('<section class="pg first">', '<section class="pg">') : h;
+  const ov = overview(), top = typeRanks() + dotPlot() + levels();
+  const imeSlug = PMODE === "ime" ? PIME : (location.hash.match(/^#ime=(.+)$/) || [])[1];
+  const about = document.querySelector("section.pg.last"), head = [...document.querySelectorAll("main > h1, main > .lead")];
+  document.body.classList.toggle("one", PMODE === "summary" || PMODE === "ime");
+  about.style.display = imeSlug || PMODE === "summary" ? "none" : "";
+  head.forEach(e => e.style.display = imeSlug ? "none" : "");
+  if (imeSlug) {
+    document.getElementById("overview").innerHTML = imePage(decodeURIComponent(imeSlug));
+    document.getElementById("sets").innerHTML = "";
+  } else if (PMODE === "summary") {
+    document.getElementById("overview").innerHTML = envLine(allSystems()) + top;
+    document.getElementById("sets").innerHTML = "";
+  } else {
+    document.getElementById("overview").innerHTML = PRINT
+      ? `<section class="pg first">${top}</section>` + (ov ? `<section class="pg">${ov}</section>` : "")
+      : imeList() + top + explore() + ov;
+    document.getElementById("sets").innerHTML = PRINT ? h.replace('<section class="pg first">', '<section class="pg">') : h;
+  }
+  if (!PRINT) wireExplore();
   document.querySelectorAll(".browse").forEach(box => {
     renderRows(box);
     box.querySelector(".onlydiff").onchange = () => renderRows(box);
@@ -420,12 +703,14 @@ function render() {
     };
     row.onmouseleave = hideTip;
   });
-  document.querySelectorAll(".rhit").forEach(c => { c.onmousemove = e => showTip(e, c.dataset.tip); c.onmouseleave = hideTip; });
+  document.querySelectorAll(".rhit, .dot").forEach(c => { c.onmousemove = e => showTip(e, c.dataset.tip); c.onmouseleave = hideTip; });
   document.getElementById("commitments").innerHTML = DATA.commitments.map(c =>
     `<details class="card"><summary>${esc(c.cycle)}</summary><pre><code>${c.lines.map(esc).join("\n")}</code></pre></details>`).join("");
 }
 function afterRender() {
-  document.querySelector(".pdf").href = lang ? "report.en.pdf" : "report.ja.pdf";
+  const L = lang ? "en" : "ja";
+  document.querySelector(".pdf").href = `report-summary.${L}.pdf`;
+  document.querySelector(".pdf.full").href = `report-full.${L}.pdf`;
   document.getElementById("printed").textContent = `${t("generated")}: ${DATA.generated || ""}. ${t("webpage")}`;
   if (PRINT) document.querySelectorAll("details").forEach(d => d.open = true);
 }
@@ -435,6 +720,7 @@ document.querySelectorAll(".toggle button").forEach(b => b.onclick = () => {
   render(); afterRender();
 });
 render(); afterRender();
+window.addEventListener("hashchange", () => { render(); afterRender(); window.scrollTo(0, 0); });
 </script>
 </body>
 </html>

@@ -586,6 +586,58 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(read_text(path).encode("utf-8")).hexdigest()
 
 
+# Bundles measured before the app wrote manifests and key timings are
+# checked as before; every later bundle must carry both.
+PROVENANCE_FROM = "2026-10-29"
+MIN_KEY_MS = 10   # the app waits at least this long after each key
+
+
+def provenance(bundle: Path, meta: dict) -> list[str]:
+    """That a bundle came from a released ImeBench.exe and was not edited
+    afterwards: the app's hash is a released one (tools/harness.txt), every
+    file matches manifest.sha256, and each row took at least as long as its
+    keys take to type, rows one after another."""
+    problems = []
+    harness = meta.get("harness", "").removeprefix("ImeBench ").strip()
+    known = KIT / "tools" / "harness.txt"
+    released = {l.split()[0] for l in read_text(known).splitlines() if l.strip() and not l.startswith("#")} if known.exists() else set()
+    if meta.get("date", "") < PROVENANCE_FROM:
+        return problems
+    if harness[:12] not in {h[:12] for h in released}:
+        problems.append(f"{bundle}: measured with ImeBench {harness or '?'}, not a released build")
+    manifest = bundle / "manifest.sha256"
+    if not manifest.exists():
+        return problems + [f"{bundle}: no manifest.sha256"]
+    listed = {}
+    for line in read_text(manifest).splitlines():
+        if line.strip():
+            digest, name = line.split(None, 1)
+            listed[name.strip().replace("\\", "/")] = digest
+    files = {str(f.relative_to(bundle)).replace("\\", "/") for f in bundle.rglob("*") if f.is_file() and f.name != "manifest.sha256"}
+    for name in sorted(files | set(listed)):
+        if name not in listed:
+            problems.append(f"{bundle}: {name} is not in manifest.sha256")
+        elif name not in files:
+            problems.append(f"{bundle}: {name} is missing")
+        elif file_sha256(bundle / name) != listed[name]:
+            problems.append(f"{bundle}: {name} changed after measuring")
+    for out in sorted((bundle / "out").glob("*__*.tsv*")):
+        times = bundle / "times" / (out.name.split(".tsv")[0] + ".tsv")
+        if not times.exists():
+            problems.append(f"{bundle}: no key timings for {out.name}")
+            continue
+        last = 0
+        keys = {(f[0], f[1]): f[2] for f in rows_of(sets_dir("dev") / f"{out.name.split('__', 1)[1].split('.tsv')[0]}.tsv")}
+        for f in rows_of(times):
+            start, end = int(f[2]), int(f[3])
+            typed = keys.get((f[0], f[1]), "")
+            if start < last or end < start + MIN_KEY_MS * len(typed):
+                problems.append(f"{times}: row {f[0]}:{f[1]} timings do not fit typing it")
+                break
+            last = end
+    return problems
+
+
 def cmd_check(args) -> int:
     """Checks result bundles before they are scored: meta.json says what was
     measured and how; every output file belongs to a set whose content has the
@@ -615,6 +667,7 @@ def cmd_check(args) -> int:
             got = [(f[0], f[1]) for f in rows_of(path)]
             if sorted(got) != sorted(want):
                 problems.append(f"{path}: rows differ from the set ({len(got)} vs {len(want)})")
+        problems += provenance(bundle, meta)
     for p in problems:
         print("PROBLEM", p)
     print(f"checked {len(args.bundles)} bundles: {len(problems)} problems")

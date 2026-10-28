@@ -11,6 +11,7 @@ import os
 import subprocess
 import json
 import math
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -29,13 +30,25 @@ OVERVIEW_AS = {"tekitomix": "tekito", "tekitoauto": "tekito"}
 OVERVIEW_ORDER = ["tekito", "tekitomix", "tekitoauto"]
 
 
+def windows_name(text: str) -> str:
+    """Windows 11 reports itself as "Windows 10"; its builds start at 22000."""
+    m = re.search(r"build (\d+)", text)
+    return text.replace("Windows 10", "Windows 11") if m and int(m.group(1)) >= 22000 else text
+
+
+def slug(name: str) -> str:
+    """A file name for an input method: its key, as in NAMES."""
+    inv = {v: k for k, v in NAMES.items()}
+    return inv.get(name, "".join(c for c in name.lower() if c.isalnum()))
+
+
 def wilson(k: int, n: int) -> tuple[float, float]:
     if not n:
         return 0.0, 0.0
     z, p = 1.96, k / n
     mid = (p + z * z / (2 * n)) / (1 + z * z / n)
     half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
-    return 100 * (mid - half), 100 * (mid + half)
+    return max(0.0, 100 * (mid - half)), min(100.0, 100 * (mid + half))
 
 
 def display(system: str) -> str:
@@ -53,6 +66,46 @@ def find_browser() -> str:
         if c and (shutil.which(c) or Path(c).exists()):
             return shutil.which(c) or c
     sys.exit("no Chrome or Edge found for --pdf (set CHROME)")
+
+
+GROUPS = {"ja": ("ajimee", "ja", "jatypo", "postsja"), "mix": ("mixB", "mixC", "postsmixB", "postsmixC"),
+          "en": ("en", "enclean", "postsen", "postsentypo")}
+
+
+def rank_types(data: dict, rows: dict) -> dict:
+    """Per kind of text (Japanese, with English, English): every input method
+    measured on all of its sets, ranked by the rows right over those sets
+    pooled; "tie" when McNemar finds no difference from the first."""
+    out = {}
+    for group, kinds in GROUPS.items():
+        names = [n for n in data["overview"]["sets"] if data["sets"][n]["kind"] in kinds]
+        if not names:
+            continue
+        entries = []
+        for r in rows.values():
+            # Live conversion is compared on its own, not ranked with the rest.
+            if "(live)" in r["name"] or not all(n in r["values"] for n in names):
+                continue
+            verdicts = {}
+            for n in names:
+                sysd = next(x for x in data["sets"][n]["systems"] if x["bundle"] == r["bundles"][n] and abs(x["fair"] - r["values"][n]) < 1e-9)
+                verdicts.update({f"{n}|{k}": v for k, v in sysd["verdict"].items()})
+            k = sum(1 for v in verdicts.values() if v in GOOD)
+            lo, hi = wilson(k, len(verdicts))
+            entries.append({"name": r["name"], "k": k, "n": len(verdicts), "fair": 100 * k / len(verdicts), "lo": lo, "hi": hi,
+                            "verdicts": verdicts})
+        entries.sort(key=lambda e: -e["fair"])
+        for e in entries:
+            top = entries[0]
+            common = [x for x in e["verdicts"] if x in top["verdicts"]]
+            a = sum(1 for x in common if top["verdicts"][x] in GOOD and e["verdicts"][x] not in GOOD)
+            b = sum(1 for x in common if e["verdicts"][x] in GOOD and top["verdicts"][x] not in GOOD)
+            e["p"] = 1.0 if e is top else bench.mcnemar(a, b)
+            e["tie"] = e["p"] >= 0.05
+        for e in entries:
+            e.pop("verdicts")
+        out[group] = {"sets": names, "systems": entries}
+    return out
 
 
 def main() -> int:
@@ -88,7 +141,7 @@ def main() -> int:
             row_out = {f"{r['source']}:{r['id']}": texts.get((r["source"], r["id"]), "") for r in s["rows"]}
             sysd = {
                 "system": system, "name": display(system), "bundle": bundle.name, "verified": verified,
-                "date": meta.get("date", ""), "learning": meta.get("learning", ""), "windows": meta.get("windows", ""),
+                "date": meta.get("date", ""), "learning": meta.get("learning", ""), "windows": windows_name(meta.get("windows", "")),
                 "version": info if isinstance(info, str) else f"{info.get('product', '')} {info.get('version', '')}".strip(),
                 "n": sc["n"], "exact": 100 * sc["exact"] / sc["n"], "fair": 100 * sc["fair"] / sc["n"],
                 "lenient": 100 * sc["lenient"] / sc["n"], "cer": sc["cer"], "lo": lo, "hi": hi, "pending": sc["pending"],
@@ -133,12 +186,14 @@ def main() -> int:
     for r in rows.values():
         r.pop("rank", None)
     data["overview"] = {"sets": names, "rows": sorted(rows.values(), key=lambda r: r["name"])}
+    data["types"] = rank_types(data, rows)
     for f in sorted((ROOT / "heldout").glob("*_commitments.txt")):
         data["commitments"].append({"cycle": f.stem.split("_")[0],
                                     "lines": [l for l in f.read_text(encoding="utf-8").splitlines() if l and not l.startswith("#")]})
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     page = (Path(__file__).parent / "site_template.html").read_text(encoding="utf-8")
+    data["slugs"] = {r["name"]: slug(r["name"]) for r in data["overview"]["rows"]}
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     (out / "index.html").write_text(page.replace("/*DATA*/null", payload), encoding="utf-8", newline="\n")
     shutil.copyfile(ROOT / "assets" / "logotext.svg", out / "logotext.svg")
@@ -148,13 +203,17 @@ def main() -> int:
     print(f"wrote {out / 'index.html'}: {len(data['sets'])} sets")
     if args.pdf:
         browser = find_browser()
+        # Three kinds: a one-page summary, the full report, and one page per input method.
+        jobs = [("report-summary", "summary"), ("report-full", "full")]
+        jobs += [(f"report.{slug(r['name'])}", "ime&ime=" + slug(r["name"])) for r in data["overview"]["rows"] if "(live)" not in r["name"]]
         for lang in ("ja", "en"):
-            pdf = (out / f"report.{lang}.pdf").resolve()
-            url = (out / "index.html").resolve().as_uri() + f"?print=1&lang={lang}"
-            subprocess.run([browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
-                            "--run-all-compositor-stages-before-draw", "--virtual-time-budget=20000",
-                            f"--print-to-pdf={pdf}", url], check=True, capture_output=True, timeout=180)
-            print(f"wrote {pdf}")
+            for stem, mode in jobs:
+                pdf = (out / f"{stem}.{lang}.pdf").resolve()
+                url = (out / "index.html").resolve().as_uri() + f"?print={mode}&lang={lang}"
+                subprocess.run([browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+                                "--run-all-compositor-stages-before-draw", "--virtual-time-budget=20000",
+                                f"--print-to-pdf={pdf}", url], check=True, capture_output=True, timeout=180)
+                print(f"wrote {pdf}")
     return 0
 
 

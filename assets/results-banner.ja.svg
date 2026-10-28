@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="72" viewBox="0 0 560 72">
+  <rect width="560" height="72" rx="12" fill="#197a4b"/>
+  <text x="28" y="33" font-family="'M PLUS 1','Yu Gothic UI','Hiragino Sans','Segoe UI',sans-serif" font-size="22" font-weight="700" fill="#ffffff">結果を見る →</text>
+  <text x="28" y="55" font-family="'M PLUS 1','Yu Gothic UI','Hiragino Sans','Segoe UI',sans-serif" font-size="13" fill="#e6f5ec">IME ごとの成績、グラフ、PDF レポート</text>
+  <text x="532" y="31" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="13" fill="#e6f5ec">canta360.github.io/ime-benchmark-system</text>
+</svg>
