@@ -37,16 +37,18 @@ What is measured:
 | test | what | size | source, license |
 |---|---|---|---|
 | AJIMEE | AJIMEE-Bench, all items, exactly as published (romaji keys added) | 200 | azooKey/AJIMEE-Bench, CC BY-SA 3.0 |
-| MOZC | Mozc evaluation rows with one expected conversion | 297 | google/mozc, BSD-3-Clause |
+| MOZC | Mozc evaluation rows with one expected conversion | 296 | google/mozc, BSD-3-Clause |
 | JA | Japanese sentences, short to long | 998 | this benchmark |
 | JA-SLIP | the JA sentences with two slips each | 998 | this benchmark |
-| MIX-SP | Japanese with English words, Space around the English | 500 | this benchmark |
-| MIX-RUN | the same, typed run together | 500 | this benchmark |
+| MIX-SP | Japanese with English words, Space around the English | 499 | this benchmark |
+| MIX-RUN | the same, typed run together | 499 | this benchmark |
 | EN | English sentences | 498 | this benchmark |
 | EN-SLIP | the EN sentences with two slips each | 498 | this benchmark |
-| POST-JA | tweet-like posts, Japanese | 100 | this benchmark |
-| POST-MIX-SP, POST-MIX-RUN | posts with English words, spaced and run together | 100 each | this benchmark |
-| POST-EN, POST-EN-SLIP | posts in English, as typed right and with slips | 100 each | this benchmark |
+| POST-JA | tweet-like posts, Japanese | 100 posts (254 sentences) | this benchmark |
+| POST-MIX-SP, POST-MIX-RUN | posts with English words, spaced and run together | 100 posts (237 sentences) each | this benchmark |
+| POST-EN, POST-EN-SLIP | posts in English, as typed right and with two slips each | 100 posts each | this benchmark |
+
+Sizes are the rows scored: rows with the very same keys count once (one in MOZC, one in MIX). Posts are typed and scored sentence by sentence.
 
 The sets written for this benchmark are held-out cycle c1 (published unchanged
 in `heldout/c1/`, matching `heldout/c1_commitments.txt`) plus sentences
