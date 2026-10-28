@@ -61,7 +61,15 @@ static class UserInput {
     // How many times the person has touched the PC since the start.
     public static int Count { get { return Thread.VolatileRead(ref count); } }
     public static bool Busy { get { return IdleLeftMs > 0; } }
-    public static int IdleLeftMs { get { return Math.Max(0, IdleMs - (int)((DateTime.UtcNow.Ticks - Interlocked.Read(ref lastTicks)) / 10000)); } }
+    public static int IdleLeftMs {
+        get {
+            // Nobody has touched the PC since the start: nothing to wait for.
+            long last = Interlocked.Read(ref lastTicks);
+            if (last == 0) return 0;
+            long since = (DateTime.UtcNow.Ticks - last) / 10000;
+            return since >= IdleMs ? 0 : IdleMs - (int)since;
+        }
+    }
 
     static void Touch() { Interlocked.Exchange(ref lastTicks, DateTime.UtcNow.Ticks); Interlocked.Increment(ref count); }
 
