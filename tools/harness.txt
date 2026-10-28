@@ -1,1 +1,2 @@
 # SHA-256 of every released ImeBench.exe (added by the release workflow).
+cb869d96368ba4ddb19f47d14aef0ef43eb677bfc89005564ebc4e56dd9e6fe7  v0.2.0
