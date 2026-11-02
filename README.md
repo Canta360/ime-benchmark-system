@@ -76,8 +76,8 @@ sentence, seeing only the meant text and the output, with no input method
 names (`JUDGE.md`):
 
 - **A**: same words, other notation (kanji/kana, okurigana, width, case)
-- **B**: other words that still read naturally
-- **C**: an error a reader would notice
+- **B**: other words that still read naturally (read on its own unless the set gives context)
+- **C**: an error a reader would notice (including a wrong proper noun or number)
 
 Each (meant text, output) pair is judged once and published in `labels.tsv`.
 Claude Opus 5.5 and Claude Sonnet 5.5 agreed on 98.5% of 200 outputs (Cohen's

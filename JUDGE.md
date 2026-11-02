@@ -22,12 +22,15 @@ and give each item one label:
 - **B — other words, still reads naturally.** The output uses different words
   (usually a homophone) but the whole sentence still reads as natural,
   grammatical Japanese that someone could plausibly have meant, e.g. 会う/合う
-  where both fit, 早い/速い where both fit. Use B only when a native reader
-  would not stop at it as an error.
+  where both fit, 早い/速い where both fit. Read the output on its own: a
+  short sentence with no context is B whenever it is a natural sentence by
+  itself (担当/短刀を変更させていただきます). Only sets with a context line
+  judge against that context.
 - **C — wrong.** Anything a reader would see as a conversion error: a word
   that does not fit the sentence, broken or odd phrase boundaries, leftover
   kana or romaji letters, English where Japanese was meant or the reverse
-  (other than the same word as above), missing or extra text.
+  (other than the same word as above), missing or extra text, a wrong
+  proper noun (東京ガス/東京瓦斯), a wrong number.
 
 When unsure between A and B, ask: same words? (A). Between B and C: would a
 careful reader of this message notice something wrong? (C).

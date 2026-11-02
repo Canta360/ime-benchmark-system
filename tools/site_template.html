@@ -570,14 +570,14 @@ function imePage(slug) {
   if (weak.length) pts.push(fmt("pointWeak", weak.map(x => `${setLabel(x.n)} (${x.d.toFixed(1)})`).join(", ")));
   const table = `<table class="scores"><tr><th>${t("set")}</th><th class="num">${t("fairShort")}</th><th class="num">95% CI</th><th class="num">${t("rankCol")}</th><th class="num">${t("medianCol")}</th></tr>${rows.map(x =>
     `<tr><td>${esc(setLabel(x.n))}</td><td class="num">${x.v.toFixed(1)}</td><td class="num">${x.lo == null ? "" : x.lo.toFixed(1) + "–" + x.hi.toFixed(1)}</td><td class="num">${x.rank} / ${x.of}</td><td class="num">${x.med.toFixed(1)}</td></tr>`).join("")}</table>`;
-  // Examples: rows only this input method got wrong (every other one measured got them right).
+  // Examples: rows only this input method got wrong (C; every other one measured got them right).
   const ex = [];
   for (const n of sets) {
     const set = DATA.sets[n], me = set.systems.find(x => x.bundle === r.bundles[n] && Math.abs(x.fair - r.values[n]) < 1e-9);
     if (!me || set.systems.filter(o => !o.name.includes("(live)")).length < 2) continue;
     for (const row of set.rows) {
       const v = me.verdict[row.id];
-      if (v === "exact" || v === "A" || v == null) continue;
+      if (v !== "C") continue;
       if (set.systems.every(o => o === me || o.name.includes("(live)") || o.verdict[row.id] === "exact" || o.verdict[row.id] === "A")) { ex.push({ n, meant: row.meant, out: me.out[row.id] }); if (ex.filter(e => e.n === n).length >= 1) break; }
     }
   }
