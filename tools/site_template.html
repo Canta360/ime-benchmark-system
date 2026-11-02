@@ -136,6 +136,7 @@ td.none { color: var(--ink-3); }
 .chip { display: inline-flex; align-items: center; gap: 6px; color: var(--key); font-weight: 700; text-decoration: none; border: 1px solid var(--key); border-radius: var(--radius-s); padding: 8px 14px; line-height: 1; background: var(--surface); }
 .chip:hover, .navrow .pdf:hover { background: var(--key-bg); }
 .navrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; }
+.pagenav { margin: 32px 0 8px; }
 .points li { margin: 2px 0; }
 .exctl { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 6px 0; } .exctl select { font: inherit; padding: 4px 6px; }
 .exim { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; margin: 4px 0 8px; } .exim label { display: inline-flex; gap: 4px; align-items: center; }
@@ -219,7 +220,7 @@ td.none { color: var(--ink-3); }
 <main class="wrap">
   <h1 data-t="title"></h1>
   <p class="lead" data-t="lead"></p>
-  <p class="lead" id="pagelink"></p>
+  <p class="lead" id="oldlead"></p>
   <p class="note printed" id="printed"></p>
   <div id="overview"></div>
   <div id="sets"></div>
@@ -230,6 +231,7 @@ td.none { color: var(--ink-3); }
   <h2 data-t="howTitle"></h2>
   <div class="card note" data-t="how"></div>
   </section>
+  <div class="navrow pagenav" id="pagenav"></div>
 </main>
 <footer class="wrap">
   <div class="madeby"><span data-t="madeby"></span>
@@ -790,12 +792,15 @@ function render() {
   });
   wireZoom();
   document.querySelectorAll(".rhit, .dot").forEach(c => { c.onmousemove = e => showTip(e, c.dataset.tip); c.onmouseleave = hideTip; });
+  document.querySelectorAll('[data-t="heldoutTitle"], [data-t="heldoutNote"]').forEach(e => e.style.display = DATA.commitments.length ? "" : "none");
   document.getElementById("commitments").innerHTML = DATA.commitments.map(c =>
     `<details class="card"><summary>${esc(c.cycle)}</summary><pre><code>${c.lines.map(esc).join("\n")}</code></pre></details>`).join("");
 }
 function afterRender() {
-  document.getElementById("pagelink").innerHTML = PRINT ? "" : DATA.old
-    ? `${t("oldLead")} <a href="index.html">${t("toCurrent")}</a>` : `<a href="old.html">${t("toOld")}</a>`;
+  // Old results: a line at the top; the way between the two pages is a button at the bottom.
+  document.getElementById("oldlead").textContent = DATA.old ? t("oldLead") : "";
+  document.getElementById("pagenav").innerHTML = PRINT || location.hash.startsWith("#ime=") ? "" : DATA.old
+    ? `<a class="pdf" href="index.html">${t("toCurrent")}</a>` : `<a class="pdf" href="old.html">${t("toOld")}</a>`;
   document.querySelectorAll("header .pdf").forEach(a => a.style.display = DATA.old ? "none" : "");
   const L = lang ? "en" : "ja";
   document.querySelector(".pdf").href = `report-summary.${L}.pdf`;

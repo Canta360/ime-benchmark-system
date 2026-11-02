@@ -203,7 +203,9 @@ def main() -> int:
         else:
             del data["sets"][n]
     for f in sorted((ROOT / "heldout").glob("*_commitments.txt")):
-        data["commitments"].append({"cycle": f.stem.split("_")[0],
+        # Hashes of cycles 1 and 2 go with their results on old.html.
+        page = data if f.stem.startswith("c3") or f.stem[:2] > "c3" else old
+        page["commitments"].append({"cycle": f.stem.split("_")[0],
                                     "lines": [l for l in f.read_text(encoding="utf-8").splitlines() if l and not l.startswith("#")]})
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
