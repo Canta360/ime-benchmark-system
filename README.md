@@ -30,7 +30,7 @@ What is measured, each kind shown on its own (no score adds them up):
 
 - **Japanese**: romaji typed without separators.
 - **Japanese with English words**, typed two ways and measured apart:
-  - (1) in one mode, Space around the English, for input methods made for it;
+  - (1) in one mode, for input methods made for it: with Space around the English, and run together;
   - (2) switching the input method's mode for the English, for every input method.
 - **English**: typed in the input method's English mode.
 
@@ -53,7 +53,7 @@ one slip per sentence.
 | AJIMEE | AJIMEE-Bench, all items, exactly as published (romaji keys added) | 200 |
 | MOZC | Mozc evaluation rows with one expected conversion | 296 |
 
-- The sets with English come for both ways of typing; (2) is `c3_mix*2.tsv`, switching at "|".
+- The sets with English come three ways: (1) spaced, (1) run together (`c3_mix*run.tsv`), and (2) `c3_mix*2.tsv`, switching at "|".
 - Sizes are the rows scored: rows with the very same keys count once. Posts are typed and scored sentence by sentence.
 - Each row's ambiguity and use (chat, work, names, numbers, tech, daily) is in `sets/c3_meta.tsv`.
 - AJIMEE comes from azooKey/AJIMEE-Bench (CC BY-SA 3.0), MOZC from google/mozc (BSD-3-Clause); the rest was written for this benchmark.

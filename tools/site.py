@@ -23,7 +23,7 @@ ROOT = bench.KIT
 NAMES = {
     "tekito": "TEKITO", "tekitolive": "TEKITO (live)", "tekitomix": "TEKITO Mix", "tekitoauto": "TEKITO Auto",
     "tekitodirect": "TEKITO Direct", "msime": "Microsoft IME", "google": "Google 日本語入力",
-    "copilot": "Copilot Keyboard", "mozc": "Mozc", "meltype": "Meltype",
+    "copilot": "Copilot Keyboard", "mozc": "Mozc", "meltype": "Meltype", "beki": "Beki IME", "shunti": "shunti IME", "sumire": "Sumire IME",
 }
 GOOD = {"exact", "A"}
 OVERVIEW_AS = {"tekitomix": "tekito", "tekitoauto": "tekito"}
@@ -70,6 +70,7 @@ def find_browser() -> str:
 
 CURRENT = "c3_"
 C3_ORDER = ["jaA", "jaB", "jaC", "jaslip", "jactx", "postsja", "postsjaslip", "mixA", "mixB", "mixC", "mixslip", "postsmix", "postsmixslip",
+            "mixArun", "mixBrun", "mixCrun", "mixsliprun", "postsmixrun", "postsmixsliprun",
             "mixA2", "mixB2", "mixC2", "mixslip2", "postsmix2", "postsmixslip2", "en", "enslip", "postsen", "postsenslip"]
 GROUPS = {"ja": ("ajimee", "ja", "jatypo", "postsja"), "mix": ("mixB", "mixC", "postsmixB", "postsmixC"),
           "en": ("en", "enclean", "postsen", "postsentypo")}
@@ -84,7 +85,8 @@ def rank_types(data: dict, rows: dict) -> dict:
         names = [n for n in data["overview"]["sets"] if data["sets"][n]["kind"] in kinds]
         if group == "mix":
             # Typed in one mode and typed with the mode switched are ranked apart.
-            for g2, keep in (("mix", lambda n: not n.endswith("2")), ("mix2", lambda n: n.endswith("2"))):
+            for g2, keep in (("mix", lambda n: not n.endswith(("2", "run"))), ("mixrun", lambda n: n.endswith("run")),
+                             ("mix2", lambda n: n.endswith("2"))):
                 part = [n for n in names if keep(n)]
                 if part:
                     out.update(rank_names(data, rows, g2, part))
