@@ -15,7 +15,7 @@
 :root {
   --key: #197a4b; --key-bg: #e6f5ec;
   --surface: #ffffff; --page: #f2f2f2; --ink: #1a1a1a; --ink-2: #4d4d4d; --ink-3: #666666;
-  --grid: #e6e6e6; --line: #949494; --divider: #cccccc; --bar: #1d8b56; --seg-x: #0e5232; --seg-b: #a8dcbf;
+  --grid: #e6e6e6; --line: #949494; --divider: #cccccc; --bar: #1d8b56; --seg-c: #d9d9d9;
   --ok-bg: #197a4b; --ok-ink: #ffffff; --warn-bg: #fff0b3; --warn-ink: #6e5600; --bad-bg: #ce0000; --bad-ink: #ffffff;
   --win: #197a4b; --lose: #ce0000; --chip: #f2f2f2; --link: #0017c1;
   --radius: 0.75rem; --radius-s: 0.5rem;
@@ -25,7 +25,7 @@
   :root:not([data-theme="light"]) {
     --key: #71c598; --key-bg: #0c472a;
     --surface: #1a1a1a; --page: #0d0d0d; --ink: #ffffff; --ink-2: #cccccc; --ink-3: #b3b3b3;
-    --grid: #333333; --line: #7f7f7f; --divider: #4d4d4d; --bar: #2cac6e; --seg-x: #7fd3a6; --seg-b: #1d5a3c;
+    --grid: #333333; --line: #7f7f7f; --divider: #4d4d4d; --bar: #2cac6e; --seg-c: #4d4d4d;
     --ok-bg: #71c598; --ok-ink: #032213; --warn-bg: #604b00; --warn-ink: #fff0b3; --bad-bg: #ff7171; --bad-ink: #1a1a1a;
     --win: #71c598; --lose: #ff9696; --chip: #333333; --link: #9db7f9;
   }
@@ -58,6 +58,7 @@ p.lead { color: var(--ink-2); margin: 0 0 16px; }
 .bar-track .gridline { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--grid); }
 .bar-fill { position: absolute; left: 0; top: 11px; height: 18px; background: var(--bar); border-radius: 0 4px 4px 0; }
 .bar-fill.x { border-radius: 0; }
+.bar-fill.c { background: var(--seg-c); }
 .bar-fill.a { opacity: 0.6; }
 .bar-fill.b { opacity: 0.25; }
 .segkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted, inherit); margin: 0 0 6px; }
@@ -247,12 +248,12 @@ const T = {
   examples: ["この IME だけが間違えた文の例", "Rows only this input method got wrong"],
   title: ["IME の変換精度の比較", "How accurately input methods convert"],
   lead: ["どの IME にも、同じキーを同じ手順で打ちました。数字は全部、公開している出力から計算したものです。", "Every input method gets the same keys, typed the same way. All numbers are computed from the published outputs."],
-  segX: ["完全一致", "Exact"], segA: ["＋表記ちがい（A）", "+ notation (A)"], segB: ["＋言葉ちがいでも自然（B）", "+ other words, natural (B)"],
+  segX: ["完全一致", "Exact"], segA: ["＋表記ちがい（A）", "+ notation (A)"], segB: ["＋言葉ちがいでも自然（B）", "+ other words, natural (B)"], segC: ["誤り（C）", "Wrong (C)"],
   fair: ["fair %（完全一致＋表記ちがい）", "fair % (exact + notation variants)"],
   fairShort: ["fair %", "fair %"],
   zoomOn: ["拡大", "Zoom"],
   zoomOff: ["0–100", "0–100"],
-  ci: ["右の数字は fair %（完全一致＋A）、ひげはその 95% 信頼区間です。棒のない残りが C です。", "The number is fair % (exact + A); whiskers are its 95% interval. The rest of the track is C."],
+  ci: ["右の数字は fair %（完全一致＋A）、ひげはその 95% 信頼区間です。灰色が C です。", "The number is fair % (exact + A); whiskers are its 95% interval. Gray is C."],
   table: ["表で見る", "Show as a table"],
   ime: ["IME", "Input method"], n: ["文数", "Rows"], exact: ["完全一致 %", "Exact %"], plusB: ["+B %", "+B %"], cer: ["CER %", "CER %"],
   acc1: ["acc@1 %（AJIMEE 公式）", "acc@1 % (AJIMEE)"], mincer: ["MinCER", "MinCER"], version: ["バージョン", "Version"],
@@ -336,7 +337,7 @@ function ticks([lo, hi]) {
 }
 const clamp = (v, [lo, hi]) => Math.max(lo, Math.min(hi, v));
 
-const segKey = () => `<div class="segkey"><span><i style="background:var(--line)"></i>${t("segX")}</span><span><i style="background:var(--line);opacity:0.6"></i>${t("segA")}</span><span><i style="background:var(--line);opacity:0.25"></i>${t("segB")}</span></div>`;
+const segKey = () => `<div class="segkey"><span><i style="background:var(--ink)"></i>${t("segX")}</span><span><i style="background:var(--ink);opacity:0.6"></i>${t("segA")}</span><span><i style="background:var(--ink);opacity:0.25"></i>${t("segB")}</span><span><i style="background:var(--seg-c)"></i>${t("segC")}</span></div>`;
 
 function chart(name, set, id) {
   const sys = set.systems;
@@ -348,6 +349,8 @@ function chart(name, set, id) {
     h += `<div class="bar-row" data-set="${esc(name)}" data-s="${esc(s.system)}">
       <div class="bar-name" title="${esc(s.name)}">${esc(s.name)}${s.verified ? "" : ` <span class="badge">${t("community")}</span>`}</div>
       <div class="bar-track">${ticks([lo, hi]).slice(1, -1).map(g => `<div class="gridline" style="left:${pos(g)}"></div>`).join("")}
+        <div class="bar-fill c" style="width:100%"></div>
+        <div class="bar-fill" style="width:${pos(clamp(s.lenient, [lo, hi]))};background:var(--surface)"></div>
         <div class="bar-fill b" style="width:${pos(clamp(s.lenient, [lo, hi]))};background:${ident(s.name).color}"></div>
         <div class="bar-fill a" style="width:${pos(clamp(s.fair, [lo, hi]))};background:${ident(s.name).color}"></div>
         <div class="bar-fill x" style="width:${pos(clamp(s.exact, [lo, hi]))};background:${ident(s.name).color}"></div>
@@ -479,7 +482,7 @@ const PMODE = new URLSearchParams(location.search).get("print") || "";
 const PIME = new URLSearchParams(location.search).get("ime") || "";
 // Fixed identity per input method (overview order): a color and a shape, so
 // print in black and white still tells them apart.
-const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00", "#000000", "#882255", "#7F7F7F", "#44AA99"];
+const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00", "#6A3D9A", "#882255", "#999933", "#44AA99"];
 const SHAPES = ["circle", "square", "triangle", "diamond", "cross", "tri-down", "star", "ring", "square", "triangle"];
 function ident(name) {
   // Live conversion rows are left out of the comparisons, so they get no slot of their own.
@@ -520,6 +523,8 @@ function typeRanks(only) {
     ty.systems.forEach((e, i) => {
       const y = top + i * row + row / 2, hl = only && only !== e.name;
       s += `<g opacity="${hl ? 0.35 : 1}"><text x="${left - 10}" y="${y + 4}" text-anchor="end" class="lbl">${esc(e.name)}</text>
+        <rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(R[1]) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="var(--seg-c)"/>
+        <rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(e.lenient) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="var(--surface)"/>
         ${[[e.lenient, 0.25], [e.fair, 0.6], [e.exact, 1]].filter(([v]) => v != null).map(([v, o]) => `<rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(v) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="${ident(e.name).color}" fill-opacity="${o}"/>`).join("")}
         <line x1="${xs(e.lo).toFixed(1)}" x2="${xs(e.hi).toFixed(1)}" y1="${y}" y2="${y}" stroke="var(--ink)" stroke-width="1.5"/>
         <text x="${W - right + 6}" y="${y + 4}" class="val">${e.fair.toFixed(1)}${e.tie && i ? " =" : ""}</text></g>`;
