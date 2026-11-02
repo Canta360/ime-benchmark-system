@@ -15,7 +15,7 @@
 :root {
   --key: #197a4b; --key-bg: #e6f5ec;
   --surface: #ffffff; --page: #f2f2f2; --ink: #1a1a1a; --ink-2: #4d4d4d; --ink-3: #666666;
-  --grid: #e6e6e6; --line: #949494; --divider: #cccccc; --bar: #1d8b56; --seg-x: #0e5232; --seg-b: #a8dcbf;
+  --grid: #e6e6e6; --line: #949494; --divider: #cccccc; --bar: #1d8b56; --seg-b: #d9d9d9;
   --ok-bg: #197a4b; --ok-ink: #ffffff; --warn-bg: #fff0b3; --warn-ink: #6e5600; --bad-bg: #ce0000; --bad-ink: #ffffff;
   --win: #197a4b; --lose: #ce0000; --chip: #f2f2f2; --link: #0017c1;
   --radius: 0.75rem; --radius-s: 0.5rem;
@@ -25,7 +25,7 @@
   :root:not([data-theme="light"]) {
     --key: #71c598; --key-bg: #0c472a;
     --surface: #1a1a1a; --page: #0d0d0d; --ink: #ffffff; --ink-2: #cccccc; --ink-3: #b3b3b3;
-    --grid: #333333; --line: #7f7f7f; --divider: #4d4d4d; --bar: #2cac6e; --seg-x: #7fd3a6; --seg-b: #1d5a3c;
+    --grid: #333333; --line: #7f7f7f; --divider: #4d4d4d; --bar: #2cac6e; --seg-b: #4d4d4d;
     --ok-bg: #71c598; --ok-ink: #032213; --warn-bg: #604b00; --warn-ink: #fff0b3; --bad-bg: #ff7171; --bad-ink: #1a1a1a;
     --win: #71c598; --lose: #ff9696; --chip: #333333; --link: #9db7f9;
   }
@@ -59,7 +59,7 @@ p.lead { color: var(--ink-2); margin: 0 0 16px; }
 .bar-fill { position: absolute; left: 0; top: 11px; height: 18px; background: var(--bar); border-radius: 0 4px 4px 0; }
 .bar-fill.x { border-radius: 0; }
 .bar-fill.a { opacity: 0.6; }
-.bar-fill.b { opacity: 0.25; }
+.bar-fill.b { background: var(--seg-b); }
 .segkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted, inherit); margin: 0 0 6px; }
 .segkey i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
 .bar-ci { position: absolute; top: 19px; height: 2px; background: var(--ink); }
@@ -336,7 +336,7 @@ function ticks([lo, hi]) {
 }
 const clamp = (v, [lo, hi]) => Math.max(lo, Math.min(hi, v));
 
-const segKey = () => `<div class="segkey"><span><i style="background:var(--line)"></i>${t("segX")}</span><span><i style="background:var(--line);opacity:0.6"></i>${t("segA")}</span><span><i style="background:var(--line);opacity:0.25"></i>${t("segB")}</span></div>`;
+const segKey = () => `<div class="segkey"><span><i style="background:var(--ink)"></i>${t("segX")}</span><span><i style="background:var(--ink);opacity:0.6"></i>${t("segA")}</span><span><i style="background:var(--seg-b)"></i>${t("segB")}</span></div>`;
 
 function chart(name, set, id) {
   const sys = set.systems;
@@ -348,7 +348,8 @@ function chart(name, set, id) {
     h += `<div class="bar-row" data-set="${esc(name)}" data-s="${esc(s.system)}">
       <div class="bar-name" title="${esc(s.name)}">${esc(s.name)}${s.verified ? "" : ` <span class="badge">${t("community")}</span>`}</div>
       <div class="bar-track">${ticks([lo, hi]).slice(1, -1).map(g => `<div class="gridline" style="left:${pos(g)}"></div>`).join("")}
-        <div class="bar-fill b" style="width:${pos(clamp(s.lenient, [lo, hi]))};background:${ident(s.name).color}"></div>
+        <div class="bar-fill b" style="width:${pos(clamp(s.lenient, [lo, hi]))}"></div>
+        <div class="bar-fill" style="width:${pos(clamp(s.fair, [lo, hi]))};background:var(--surface)"></div>
         <div class="bar-fill a" style="width:${pos(clamp(s.fair, [lo, hi]))};background:${ident(s.name).color}"></div>
         <div class="bar-fill x" style="width:${pos(clamp(s.exact, [lo, hi]))};background:${ident(s.name).color}"></div>
         <div class="bar-ci" style="left:${pos(clamp(s.lo, [lo, hi]))};width:calc(${pos(clamp(s.hi, [lo, hi]))} - ${pos(clamp(s.lo, [lo, hi]))})"></div></div>
@@ -479,7 +480,7 @@ const PMODE = new URLSearchParams(location.search).get("print") || "";
 const PIME = new URLSearchParams(location.search).get("ime") || "";
 // Fixed identity per input method (overview order): a color and a shape, so
 // print in black and white still tells them apart.
-const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00", "#000000", "#882255", "#7F7F7F", "#44AA99"];
+const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00", "#6A3D9A", "#882255", "#999933", "#44AA99"];
 const SHAPES = ["circle", "square", "triangle", "diamond", "cross", "tri-down", "star", "ring", "square", "triangle"];
 function ident(name) {
   // Live conversion rows are left out of the comparisons, so they get no slot of their own.
@@ -520,7 +521,8 @@ function typeRanks(only) {
     ty.systems.forEach((e, i) => {
       const y = top + i * row + row / 2, hl = only && only !== e.name;
       s += `<g opacity="${hl ? 0.35 : 1}"><text x="${left - 10}" y="${y + 4}" text-anchor="end" class="lbl">${esc(e.name)}</text>
-        ${[[e.lenient, 0.25], [e.fair, 0.6], [e.exact, 1]].filter(([v]) => v != null).map(([v, o]) => `<rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(v) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="${ident(e.name).color}" fill-opacity="${o}"/>`).join("")}
+        ${e.lenient != null ? `<rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(e.lenient) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="var(--seg-b)"/><rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(e.fair) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="var(--surface)"/>` : ""}
+        ${[[e.fair, 0.6], [e.exact, 1]].filter(([v]) => v != null).map(([v, o]) => `<rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(v) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="${ident(e.name).color}" fill-opacity="${o}"/>`).join("")}
         <line x1="${xs(e.lo).toFixed(1)}" x2="${xs(e.hi).toFixed(1)}" y1="${y}" y2="${y}" stroke="var(--ink)" stroke-width="1.5"/>
         <text x="${W - right + 6}" y="${y + 4}" class="val">${e.fair.toFixed(1)}${e.tie && i ? " =" : ""}</text></g>`;
     });
