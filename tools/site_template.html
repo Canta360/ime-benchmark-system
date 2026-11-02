@@ -57,8 +57,9 @@ p.lead { color: var(--ink-2); margin: 0 0 16px; }
 .bar-track { position: relative; height: 100%; border-left: 1px solid var(--line); }
 .bar-track .gridline { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--grid); }
 .bar-fill { position: absolute; left: 0; top: 11px; height: 18px; background: var(--bar); border-radius: 0 4px 4px 0; }
-.bar-fill.x { background: var(--seg-x); border-radius: 0; }
-.bar-fill.b { background: var(--seg-b); }
+.bar-fill.x { border-radius: 0; }
+.bar-fill.a { opacity: 0.6; }
+.bar-fill.b { opacity: 0.25; }
 .segkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted, inherit); margin: 0 0 6px; }
 .segkey i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
 .bar-ci { position: absolute; top: 19px; height: 2px; background: var(--ink); }
@@ -340,14 +341,14 @@ function chart(name, set, id) {
   id = id || "set:" + name;
   const [lo, hi] = span(sys.flatMap(s => [s.lo, s.hi, s.exact, s.lenient]), id);
   const pos = v => ((v - lo) / (hi - lo) * 100).toFixed(2) + "%";
-  let h = zoomSw(id) + `<div class="segkey"><span><i style="background:var(--seg-x)"></i>${t("segX")}</span><span><i style="background:var(--bar)"></i>${t("segA")}</span><span><i style="background:var(--seg-b)"></i>${t("segB")}</span></div>` + '<div class="chart">';
+  let h = zoomSw(id) + `<div class="segkey"><span><i style="background:var(--line)"></i>${t("segX")}</span><span><i style="background:var(--line);opacity:0.6"></i>${t("segA")}</span><span><i style="background:var(--line);opacity:0.25"></i>${t("segB")}</span></div>` + '<div class="chart">';
   for (const s of sys) {
     h += `<div class="bar-row" data-set="${esc(name)}" data-s="${esc(s.system)}">
       <div class="bar-name" title="${esc(s.name)}">${esc(s.name)}${s.verified ? "" : ` <span class="badge">${t("community")}</span>`}</div>
       <div class="bar-track">${ticks([lo, hi]).slice(1, -1).map(g => `<div class="gridline" style="left:${pos(g)}"></div>`).join("")}
-        <div class="bar-fill b" style="width:${pos(clamp(s.lenient, [lo, hi]))}"></div>
-        <div class="bar-fill" style="width:${pos(clamp(s.fair, [lo, hi]))}"></div>
-        <div class="bar-fill x" style="width:${pos(clamp(s.exact, [lo, hi]))}"></div>
+        <div class="bar-fill b" style="width:${pos(clamp(s.lenient, [lo, hi]))};background:${ident(s.name).color}"></div>
+        <div class="bar-fill a" style="width:${pos(clamp(s.fair, [lo, hi]))};background:${ident(s.name).color}"></div>
+        <div class="bar-fill x" style="width:${pos(clamp(s.exact, [lo, hi]))};background:${ident(s.name).color}"></div>
         <div class="bar-ci" style="left:${pos(clamp(s.lo, [lo, hi]))};width:calc(${pos(clamp(s.hi, [lo, hi]))} - ${pos(clamp(s.lo, [lo, hi]))})"></div></div>
       <div class="bar-val">${s.fair.toFixed(1)}</div></div>`;
   }
