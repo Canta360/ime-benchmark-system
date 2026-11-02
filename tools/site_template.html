@@ -336,12 +336,14 @@ function ticks([lo, hi]) {
 }
 const clamp = (v, [lo, hi]) => Math.max(lo, Math.min(hi, v));
 
+const segKey = () => `<div class="segkey"><span><i style="background:var(--line)"></i>${t("segX")}</span><span><i style="background:var(--line);opacity:0.6"></i>${t("segA")}</span><span><i style="background:var(--line);opacity:0.25"></i>${t("segB")}</span></div>`;
+
 function chart(name, set, id) {
   const sys = set.systems;
   id = id || "set:" + name;
   const [lo, hi] = span(sys.flatMap(s => [s.lo, s.hi, s.exact, s.lenient]), id);
   const pos = v => ((v - lo) / (hi - lo) * 100).toFixed(2) + "%";
-  let h = zoomSw(id) + `<div class="segkey"><span><i style="background:var(--line)"></i>${t("segX")}</span><span><i style="background:var(--line);opacity:0.6"></i>${t("segA")}</span><span><i style="background:var(--line);opacity:0.25"></i>${t("segB")}</span></div>` + '<div class="chart">';
+  let h = zoomSw(id) + segKey() + '<div class="chart">';
   for (const s of sys) {
     h += `<div class="bar-row" data-set="${esc(name)}" data-s="${esc(s.system)}">
       <div class="bar-name" title="${esc(s.name)}">${esc(s.name)}${s.verified ? "" : ` <span class="badge">${t("community")}</span>`}</div>
@@ -508,7 +510,7 @@ const median = a => { const b = [...a].sort((x, y) => x - y), m = b.length >> 1;
 function typeRanks(only) {
   const groups = { ja: "groupJa", mix: "groupMix", mixrun: "groupMixRun", mix2: "groupMix2", en: "groupEn" };
   let h = "";
-  const R = span(Object.keys(groups).flatMap(g => DATA.types && DATA.types[g] ? DATA.types[g].systems.flatMap(e => [e.lo, e.hi, e.fair]) : []), "types");
+  const R = span(Object.keys(groups).flatMap(g => DATA.types && DATA.types[g] ? DATA.types[g].systems.flatMap(e => [e.lo, e.hi, e.exact, e.lenient]) : []), "types");
   for (const [g, key] of Object.entries(groups)) {
     const ty = DATA.types && DATA.types[g];
     if (!ty || !ty.systems.length) continue;
@@ -518,13 +520,13 @@ function typeRanks(only) {
     ty.systems.forEach((e, i) => {
       const y = top + i * row + row / 2, hl = only && only !== e.name;
       s += `<g opacity="${hl ? 0.35 : 1}"><text x="${left - 10}" y="${y + 4}" text-anchor="end" class="lbl">${esc(e.name)}</text>
-        <rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(e.fair) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="${ident(e.name).color}" fill-opacity="0.85"/>
+        ${[[e.lenient, 0.25], [e.fair, 0.6], [e.exact, 1]].filter(([v]) => v != null).map(([v, o]) => `<rect x="${xs(R[0])}" y="${y - 7}" width="${(xs(v) - xs(R[0])).toFixed(1)}" height="14" rx="3" fill="${ident(e.name).color}" fill-opacity="${o}"/>`).join("")}
         <line x1="${xs(e.lo).toFixed(1)}" x2="${xs(e.hi).toFixed(1)}" y1="${y}" y2="${y}" stroke="var(--ink)" stroke-width="1.5"/>
         <text x="${W - right + 6}" y="${y + 4}" class="val">${e.fair.toFixed(1)}${e.tie && i ? " =" : ""}</text></g>`;
     });
     h += `<div class="tycol"><h3>${t(key)} <span class="note">(${ty.sets.map(setLabel).join(", ")})</span></h3><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t(key)}">${s}</svg></div>`;
   }
-  return h ? `<h2>${t("typesTitle")}</h2><div class="card">${zoomSw("types")}<p class="note">${t("typesNote")}</p><div class="types">${h}</div></div>` : "";
+  return h ? `<h2>${t("typesTitle")}</h2><div class="card">${zoomSw("types")}<p class="note">${t("typesNote")}</p>${segKey()}<div class="types">${h}</div></div>` : "";
 }
 
 // One row per set, one mark per input method; the one asked for drawn on top.

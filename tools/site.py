@@ -110,7 +110,10 @@ def rank_names(data: dict, rows: dict, group: str, names: list[str]) -> dict:
             verdicts.update({f"{n}|{k}": v for k, v in sysd["verdict"].items()})
         k = sum(1 for v in verdicts.values() if v in GOOD)
         lo, hi = wilson(k, len(verdicts))
+        exact = 100 * sum(1 for v in verdicts.values() if v == "exact") / len(verdicts)
+        lenient = 100 * sum(1 for v in verdicts.values() if v in GOOD or v == "B") / len(verdicts)
         entries.append({"name": r["name"], "k": k, "n": len(verdicts), "fair": 100 * k / len(verdicts), "lo": lo, "hi": hi,
+                        "exact": exact, "lenient": lenient,
                         "verdicts": verdicts})
     entries.sort(key=lambda e: -e["fair"])
     for e in entries:
