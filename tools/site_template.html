@@ -43,6 +43,8 @@ header { background: var(--surface); border-bottom: 4px solid var(--key); }
 .toggle button { background: var(--surface); color: var(--key); border: 0; padding: 8px 16px; font: inherit; font-size: 16px; line-height: 1; cursor: pointer; min-height: 44px; }
 .toggle button[aria-pressed="true"] { background: var(--key); color: var(--surface); font-weight: 700; }
 .toggle button:hover:not([aria-pressed="true"]) { background: var(--key-bg); }
+.toggle.sm { float: right; margin: 0 0 8px 12px; }
+.toggle.sm button { padding: 4px 12px; font-size: 13px; min-height: 30px; }
 h1 { font-size: 32px; line-height: 1.5; letter-spacing: 0.01em; margin: 24px 0 8px; }
 h2 { font-size: 24px; line-height: 1.5; margin: 40px 0 8px; padding-left: 12px; border-left: 6px solid var(--key); }
 h3 { font-size: 20px; line-height: 1.5; margin: 0 0 8px; }
@@ -121,6 +123,8 @@ td.none { color: var(--ink-3); }
 .types { display: grid; grid-template-columns: 1fr; gap: 12px 24px; }
 .types .tycol svg { max-width: 760px; display: block; }
 .types svg, .card > svg { width: 100%; height: auto; }
+.levels { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.levels .tycol svg { max-width: 460px; }
 .lbl { font-size: 12px; fill: var(--ink); } .val { font-size: 12px; fill: var(--ink); font-weight: 700; } .tick { font-size: 10px; fill: var(--ink-3); }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; margin: 4px 0 6px; } .lg { display: inline-flex; gap: 4px; align-items: center; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
@@ -190,9 +194,6 @@ td.none { color: var(--ink-3); }
 <header><div class="wrap top">
   <div class="brand"><img class="icon" src="icon.png" alt=""><img class="wordmark" src="logotext.svg" alt="IME精度測定 IME Benchmark system"></div>
   <div class="right"><a class="pdf" href="report-summary.ja.pdf" data-t="pdfSummary"></a><a class="pdf full" href="report-full.ja.pdf" data-t="pdfFull"></a>
-  <div class="toggle zoom" role="group" aria-label="Scale">
-    <button data-zoom="1" data-t="zoomOn"></button><button data-zoom="0" data-t="zoomOff"></button>
-  </div>
   <div class="toggle" role="group" aria-label="Language">
     <button data-lang="ja">日本語</button><button data-lang="en">English</button>
   </div></div>
@@ -303,12 +304,20 @@ const tip = document.getElementById("tip");
 function showTip(e, html) { tip.innerHTML = html; tip.style.display = "block"; const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8); tip.style.left = x + "px"; tip.style.top = (e.clientY + 14) + "px"; }
 function hideTip() { tip.style.display = "none"; }
 
-// Axis range: zoomed to the values shown (10-point steps, at least 20 wide), or 0–100.
-let ZOOM = true;
-try { ZOOM = localStorage.getItem("zoom") !== "0"; } catch (e) {}
-function span(vals) {
+// Axis range per chart: zoomed to the values shown (10-point steps, at least
+// 20 wide) unless that chart's switch is set to 0–100.
+const ZOOMS = {};
+const zoomed = id => ZOOMS[id] !== false;
+const zoomSw = id => PRINT ? "" : `<div class="toggle sm" role="group" aria-label="Scale"><button data-z="${esc(id)}" data-v="1" aria-pressed="${zoomed(id)}">${t("zoomOn")}</button><button data-z="${esc(id)}" data-v="0" aria-pressed="${!zoomed(id)}">${t("zoomOff")}</button></div>`;
+function wireZoom() {
+  document.querySelectorAll("button[data-z]").forEach(b => b.onclick = () => {
+    ZOOMS[b.dataset.z] = b.dataset.v === "1";
+    const y = scrollY; render(); afterRender(); scrollTo(0, y);
+  });
+}
+function span(vals, id) {
   const v = vals.filter(x => x != null && isFinite(x));
-  if (!ZOOM || !v.length) return [0, 100];
+  if (!zoomed(id) || !v.length) return [0, 100];
   const hi = Math.min(100, Math.ceil((Math.max(...v) + 2) / 10) * 10);
   let lo = Math.max(0, Math.floor((Math.min(...v) - 2) / 10) * 10);
   if (hi - lo < 20) lo = Math.max(0, hi - 20);
@@ -321,11 +330,12 @@ function ticks([lo, hi]) {
 }
 const clamp = (v, [lo, hi]) => Math.max(lo, Math.min(hi, v));
 
-function chart(name, set) {
+function chart(name, set, id) {
   const sys = set.systems;
-  const [lo, hi] = span(sys.flatMap(s => [s.lo, s.hi, s.fair]));
+  id = id || "set:" + name;
+  const [lo, hi] = span(sys.flatMap(s => [s.lo, s.hi, s.fair]), id);
   const pos = v => ((v - lo) / (hi - lo) * 100).toFixed(2) + "%";
-  let h = '<div class="chart">';
+  let h = zoomSw(id) + '<div class="chart">';
   for (const s of sys) {
     h += `<div class="bar-row" data-set="${esc(name)}" data-s="${esc(s.system)}">
       <div class="bar-name" title="${esc(s.name)}">${esc(s.name)}${s.verified ? "" : ` <span class="badge">${t("community")}</span>`}</div>
@@ -490,7 +500,7 @@ const median = a => { const b = [...a].sort((x, y) => x - y), m = b.length >> 1;
 function typeRanks(only) {
   const groups = { ja: "groupJa", mix: "groupMix", mixrun: "groupMixRun", mix2: "groupMix2", en: "groupEn" };
   let h = "";
-  const R = span(Object.keys(groups).flatMap(g => DATA.types && DATA.types[g] ? DATA.types[g].systems.flatMap(e => [e.lo, e.hi, e.fair]) : []));
+  const R = span(Object.keys(groups).flatMap(g => DATA.types && DATA.types[g] ? DATA.types[g].systems.flatMap(e => [e.lo, e.hi, e.fair]) : []), "types");
   for (const [g, key] of Object.entries(groups)) {
     const ty = DATA.types && DATA.types[g];
     if (!ty || !ty.systems.length) continue;
@@ -506,13 +516,13 @@ function typeRanks(only) {
     });
     h += `<div class="tycol"><h3>${t(key)} <span class="note">(${ty.sets.map(setLabel).join(", ")})</span></h3><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t(key)}">${s}</svg></div>`;
   }
-  return h ? `<h2>${t("typesTitle")}</h2><div class="card"><p class="note">${t("typesNote")}</p><div class="types">${h}</div></div>` : "";
+  return h ? `<h2>${t("typesTitle")}</h2><div class="card">${zoomSw("types")}<p class="note">${t("typesNote")}</p><div class="types">${h}</div></div>` : "";
 }
 
 // One row per set, one mark per input method; the one asked for drawn on top.
 function dotPlot(only) {
   const ov = DATA.overview;
-  const W = 640, row = PRINT ? (ov.sets.length > 12 ? 15 : 18) : (only ? 20 : 22), top = 8, left = 110, right = 16, H = top + ov.sets.length * row + 26;
+  const W = 640, row = PRINT ? (ov.sets.length > 12 ? 15 : 18) : (only ? 20 : 22), top = 8, left = 130, right = 16, H = top + ov.sets.length * row + 26;
   // Always 0–100: the rows are read against each other (which sets are hard).
   const xs = v => left + (W - left - right) * v / 100;
   let s = [0, 25, 50, 75, 100].map(v => `<line x1="${xs(v)}" y1="${top}" x2="${xs(v)}" y2="${H - 22}" stroke="var(--grid)"/><text x="${xs(v)}" y="${H - 8}" class="tick" text-anchor="middle">${v}</text>`).join("");
@@ -525,7 +535,7 @@ function dotPlot(only) {
       s += mark(xs(r.values[n]), y, r.name, only && r.name === only ? 6 : 4.5, `${dim} class="dot" data-tip="${esc(r.name)} · ${esc(setLabel(n))}: ${r.values[n].toFixed(1)}"`);
     }
   });
-  const legend = cmpRows().map(r => `<span class="lg"><svg width="14" height="14" viewBox="0 0 14 14">${mark(7, 7, r.name, 4.5)}</svg>${esc(r.name)}</span>`).join("");
+  const legend = cmpRows().filter(r => ov.sets.some(n => r.values[n] != null)).map(r => `<span class="lg"><svg width="14" height="14" viewBox="0 0 14 14">${mark(7, 7, r.name, 4.5)}</svg>${esc(r.name)}</span>`).join("");
   const card = `<div class="card"><p class="note">${t("dotNote")}</p><div class="legend">${legend}</div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t("dotTitle")}">${s}</svg></div>`;
   return only ? card : `<h2>${t("dotTitle")}</h2>${card}`;
 }
@@ -533,10 +543,10 @@ function dotPlot(only) {
 // Cycle 3 sets of three ambiguity levels (A, B, C): one line per input method.
 function levels(only) {
   const pre = DATA.current || "";
-  const groups = [["ja", ["jaA", "jaB", "jaC"]], ["mix", ["mixA", "mixB", "mixC"]]].map(([g, ns]) => [g, ns.map(n => pre + n)]).filter(([, ns]) => ns.every(n => DATA.overview.sets.includes(n)));
+  const groups = [["groupJa", ["jaA", "jaB", "jaC"]], ["groupMix", ["mixA", "mixB", "mixC"]], ["groupMixRun", ["mixArun", "mixBrun", "mixCrun"]], ["groupMix2", ["mixA2", "mixB2", "mixC2"]]].map(([g, ns]) => [g, ns.map(n => pre + n)]).filter(([, ns]) => ns.every(n => DATA.overview.sets.includes(n)));
   if (!groups.length) return "";
   let h = "";
-  const R = span(groups.flatMap(([, ns]) => cmpRows().flatMap(row => ns.map(n => row.values[n]))));
+  const R = span(groups.flatMap(([, ns]) => cmpRows().flatMap(row => ns.map(n => row.values[n]))), "levels");
   for (const [g, ns] of groups) {
     const W = 300, H = 170, l = 34, r = 12, tp = 10, b = 24;
     const xs = i => l + (W - l - r) * i / 2, ys = v => tp + (H - tp - b) * (1 - (clamp(v, R) - R[0]) / (R[1] - R[0]));
@@ -548,9 +558,10 @@ function levels(only) {
       s += `<polyline points="${ns.map((n, i) => `${xs(i)},${ys(row.values[n]).toFixed(1)}`).join(" ")}" fill="none" stroke="${ident(row.name).color}" stroke-width="2" ${dim}/>`;
       s += ns.map((n, i) => mark(xs(i), ys(row.values[n]), row.name, 3.5, dim)).join("");
     }
-    h += `<div class="tycol"><h3>${t(g === "ja" ? "groupJa" : "groupMix")}</h3><svg viewBox="0 0 ${W} ${H}">${s}</svg></div>`;
+    h += `<div class="tycol"><h3>${t(g)}</h3><svg viewBox="0 0 ${W} ${H}">${s}</svg></div>`;
   }
-  return `<h2>${t("levelsTitle")}</h2><div class="card"><p class="note">${t("levelsNote")}</p><div class="types">${h}</div></div>`;
+  const legend = cmpRows().filter(row => groups.some(([, ns]) => ns.every(n => row.values[n] != null))).map(r => `<span class="lg"><svg width="14" height="14" viewBox="0 0 14 14">${mark(7, 7, r.name, 4.5)}</svg>${esc(r.name)}</span>`).join("");
+  return `<h2>${t("levelsTitle")}</h2><div class="card">${zoomSw("levels")}<p class="note">${t("levelsNote")}</p>${only ? "" : `<div class="legend">${legend}</div>`}<div class="types levels">${h}</div></div>`;
 }
 
 // When and where the results were measured: dates, Windows builds, learning.
@@ -643,18 +654,17 @@ function exChart() {
   const W = 640, H = 360, l = 48, r = 16, tp = 12, b = 40;
   if (EX.view === "scatter") {
     const pts = rows.filter(x => x.values[EX.x] != null && x.values[EX.y] != null);
-    const R = span(pts.flatMap(p => [p.values[EX.x], p.values[EX.y]]));
+    const R = span(pts.flatMap(p => [p.values[EX.x], p.values[EX.y]]), "ex");
     const xs = v => l + (W - l - r) * (clamp(v, R) - R[0]) / (R[1] - R[0]), ys = v => tp + (H - tp - b) * (1 - (clamp(v, R) - R[0]) / (R[1] - R[0]));
     let s = ticks(R).map(v => `<line x1="${xs(v)}" x2="${xs(v)}" y1="${tp}" y2="${H - b}" stroke="var(--grid)"/><line x1="${l}" x2="${W - r}" y1="${ys(v)}" y2="${ys(v)}" stroke="var(--grid)"/><text x="${xs(v)}" y="${H - b + 14}" class="tick" text-anchor="middle">${v}</text><text x="${l - 6}" y="${ys(v) + 3}" class="tick" text-anchor="end">${v}</text>`).join("");
     s += `<line x1="${xs(R[0])}" y1="${ys(R[0])}" x2="${xs(R[1])}" y2="${ys(R[1])}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
     s += `<text x="${(l + W - r) / 2}" y="${H - 6}" class="lbl" text-anchor="middle">${esc(setLabel(EX.x))}</text><text x="12" y="${(tp + H - b) / 2}" class="lbl" text-anchor="middle" transform="rotate(-90 12 ${(tp + H - b) / 2})">${esc(setLabel(EX.y))}</text>`;
-    for (const p of pts) s += mark(xs(p.values[EX.x]), ys(p.values[EX.y]), p.name, 6, `class="dot" data-tip="${esc(p.name)}: ${p.values[EX.x].toFixed(1)} / ${p.values[EX.y].toFixed(1)}"`)
-      + `<text x="${xs(p.values[EX.x]) + 9}" y="${ys(p.values[EX.y]) + 4}" class="tick">${esc(p.name)}</text>`;
-    return `<svg viewBox="0 0 ${W} ${H}">${s}</svg>${pts.length ? "" : `<p class="note">${t("exNone")}</p>`}`;
+    for (const p of pts) s += mark(xs(p.values[EX.x]), ys(p.values[EX.y]), p.name, 6, `class="dot" data-tip="${esc(p.name)}: ${p.values[EX.x].toFixed(1)} / ${p.values[EX.y].toFixed(1)}"`);
+    return `${zoomSw("ex")}<svg viewBox="0 0 ${W} ${H}">${s}</svg>${pts.length ? "" : `<p class="note">${t("exNone")}</p>`}`;
   }
   if (EX.view === "oneSet") {
     const set = DATA.sets[EX.set], sys = set.systems.filter(x => rows.some(r => r.bundles[EX.set] === x.bundle && Math.abs(r.values[EX.set] - x.fair) < 1e-9));
-    return sys.length ? chart(EX.set, Object.assign({}, set, { systems: sys })) : `<p class="note">${t("exNone")}</p>`;
+    return sys.length ? chart(EX.set, Object.assign({}, set, { systems: sys }), "ex") : `<p class="note">${t("exNone")}</p>`;
   }
   // pair: the difference per set, A minus B, with whether McNemar sees it.
   const A = cmpRows().find(x => x.name === EX.a), Bq = cmpRows().find(x => x.name === EX.b);
@@ -682,13 +692,13 @@ function wireExplore() {
   box.querySelectorAll("select[data-k]").forEach(sel => sel.onchange = () => { EX[sel.dataset.k] = sel.value; redraw(); });
   box.querySelectorAll("input[data-ime]").forEach(c => c.onchange = () => { c.checked ? EX.off.delete(c.dataset.ime) : EX.off.add(c.dataset.ime); redraw(); });
   box.querySelectorAll(".dot").forEach(c => { c.onmousemove = e => showTip(e, c.dataset.tip); c.onmouseleave = hideTip; });
+  wireZoom();
 }
 
 function render() {
   document.documentElement.lang = lang ? "en" : "ja";
   document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
   document.querySelectorAll(".toggle button[data-lang]").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.lang === "en") === (lang === 1))));
-  document.querySelectorAll(".toggle button[data-zoom]").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.zoom === "1") === ZOOM)));
   let h = "", first = true;
   for (const [name, set] of Object.entries(DATA.sets)) {
     const title = (T.setNames[name] || T.setShort[name] || T.setShort[set.kind] || [name, name])[lang];
@@ -737,6 +747,7 @@ function render() {
     };
     row.onmouseleave = hideTip;
   });
+  wireZoom();
   document.querySelectorAll(".rhit, .dot").forEach(c => { c.onmousemove = e => showTip(e, c.dataset.tip); c.onmouseleave = hideTip; });
   document.getElementById("commitments").innerHTML = DATA.commitments.map(c =>
     `<details class="card"><summary>${esc(c.cycle)}</summary><pre><code>${c.lines.map(esc).join("\n")}</code></pre></details>`).join("");
@@ -748,11 +759,6 @@ function afterRender() {
   document.getElementById("printed").textContent = `${t("generated")}: ${DATA.generated || ""}. ${t("webpage")}`;
   if (PRINT) document.querySelectorAll("details").forEach(d => d.open = true);
 }
-document.querySelectorAll(".toggle button[data-zoom]").forEach(b => b.onclick = () => {
-  ZOOM = b.dataset.zoom === "1";
-  try { localStorage.setItem("zoom", ZOOM ? "1" : "0"); } catch (e) {}
-  render(); afterRender();
-});
 document.querySelectorAll(".toggle button[data-lang]").forEach(b => b.onclick = () => {
   lang = b.dataset.lang === "en" ? 1 : 0;
   try { localStorage.setItem("lang", b.dataset.lang); } catch (e) {}
