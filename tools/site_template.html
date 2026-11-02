@@ -155,8 +155,9 @@ td.none { color: var(--ink-3); }
   .toggle, .pdf, .browse, .tip, details summary { display: none !important; }
   .printed { display: block; }
   .card { border-color: #cccccc; padding: 10px 12px; margin: 8px 0; }
-  section.pg { break-before: page; }
-  section.pg.first { break-before: auto; }
+  /* Overview sections flow on; each set starts its own page. */
+  section.pg { break-before: auto; }
+  section.pg.set { break-before: page; }
   .card, table, h2, h3 { break-inside: avoid; }
   footer { break-before: avoid; }
   .radars { gap: 0 6px; }
@@ -183,6 +184,14 @@ td.none { color: var(--ink-3); }
   .madeby img { height: 22px; }
   pre, code { font-size: 6.5pt; line-height: 1.3; }
   #commitments .card { break-inside: avoid; }
+  .ovp h2 { margin-top: 0; }
+  .ovp table { font-size: 6.5pt; line-height: 1.2; } .ovp th, .ovp td { padding: 1px 3px; }
+  .set h2 { margin-top: 0; }
+  .set .card { padding: 6px 10px; margin: 5px 0; }
+  .set .bar-row { height: 18px; } .set .bar-fill { top: 3px; height: 12px; } .set .bar-ci { top: 8px; }
+  .set .segkey, .set .note { font-size: 7pt; margin-bottom: 2px; }
+  .set table { font-size: 7pt; line-height: 1.25; } .set th, .set td { padding: 1px 4px; }
+  .set table.sigt { font-size: 6.5pt; } .set td .pv { font-size: 5.5pt; }
   body.one { font-size: 7.5pt; line-height: 1.35; }
   body.one h1 { font-size: 14pt; margin: 6px 0 0; } body.one h2 { font-size: 10pt; margin: 8px 0 3px; border-left-width: 4px; padding-left: 8px; } body.one h3 { font-size: 8.5pt; }
   body.one .card { padding: 5px 7px; margin: 4px 0; } body.one .note { font-size: 6.5pt; }
@@ -191,6 +200,7 @@ td.none { color: var(--ink-3); }
   body.one .brand .icon, body.one .brand .wordmark { height: 30px; width: auto; } body.one footer { padding-top: 4px; font-size: 6.5pt; }
   body.one .madeby { display: flex; font-size: 7pt; padding-top: 4px; } body.one .madeby img { height: 16px; }
   body.one .env { font-size: 6.5pt; }
+  body.one .segkey, body.one .legend { font-size: 6.5pt; margin: 0 0 2px; } body.one .levels .tycol svg { max-height: 40mm; width: auto; }
   .types { grid-template-columns: 1fr 1fr 1fr; }
 }
 </style>
@@ -477,6 +487,8 @@ function overview() {
 
 // --- Views added for cycle 3: ranks per kind of text, dot plot, one page per input method.
 const PMODE = new URLSearchParams(location.search).get("print") || "";
+// The full report is landscape so the wide comparison table fits one page.
+if (PMODE === "full") document.head.insertAdjacentHTML("beforeend", "<style>@page { size: A4 landscape; margin: 9mm 10mm; } .card > svg { width: auto; max-width: 100%; max-height: 95mm; display: block; } .levels .tycol svg { max-height: 55mm; width: auto; }</style>");
 const PIME = new URLSearchParams(location.search).get("ime") || "";
 // Fixed identity per input method (overview order): a color and a shape, so
 // print in black and white still tells them apart.
@@ -715,9 +727,10 @@ function render() {
   for (const [name, set] of Object.entries(DATA.sets)) {
     const title = (T.setNames[name] || T.setShort[name] || T.setShort[set.kind] || [name, name])[lang];
     if (PRINT) {
-      h += `<section class="pg${first ? " first" : ""}"><h2>${esc(title)}</h2><div class="card"><h3>${t("fair")}</h3>${chart(name, set)}<p class="note">${t("ci")}</p></div></section>
-        <section class="pg"><h2>${esc(title)}: ${t("scoresTitle")}</h2><div class="card">${scoreTable(set)}</div><div class="card"><h3>${t("conditions")}</h3>${condTable(set)}</div></section>
-        <section class="pg"><h2>${esc(title)}: ${t("sigShort")}</h2><div class="card"><p class="note">${t("sigNote")}</p>${sigTable(set)}</div></section>`;
+      // One page per set: chart, scores, conditions and significance together.
+      h += `<section class="pg set${first ? " first" : ""}"><h2>${esc(title)}</h2><div class="card"><h3>${t("fair")}</h3>${chart(name, set)}<p class="note">${t("ci")}</p></div>
+        <div class="card"><h3>${t("scoresTitle")}</h3>${scoreTable(set)}</div><div class="card"><h3>${t("conditions")}</h3>${condTable(set)}</div>
+        <div class="card"><h3>${t("sigShort")}</h3><p class="note">${t("sigNote")}</p>${sigTable(set)}</div></section>`;
       first = false;
       continue;
     }
@@ -740,7 +753,7 @@ function render() {
     document.getElementById("sets").innerHTML = "";
   } else {
     document.getElementById("overview").innerHTML = PRINT
-      ? `<section class="pg first">${top}</section>` + (ov ? `<section class="pg">${ov}</section>` : "")
+      ? `<section class="pg first">${top}</section>` + (ov ? `<section class="pg ovp">${ov}</section>` : "")
       : imeList() + top + explore() + ov;
     document.getElementById("sets").innerHTML = PRINT ? h.replace('<section class="pg first">', '<section class="pg">') : h;
   }
@@ -770,6 +783,11 @@ function afterRender() {
   document.querySelector(".pdf.full").href = `report-full.${L}.pdf`;
   document.getElementById("printed").textContent = `${t("generated")}: ${DATA.generated || ""}. ${t("webpage")}`;
   if (PRINT) document.querySelectorAll("details").forEach(d => d.open = true);
+  // In print, the closing notes go after the overview so the set pages end the file.
+  if (PRINT && !document.body.classList.contains("one")) {
+    const sets = document.getElementById("sets");
+    sets.before(document.querySelector("section.pg.last"), document.querySelector("footer"));
+  }
 }
 document.querySelectorAll(".toggle button[data-lang]").forEach(b => b.onclick = () => {
   lang = b.dataset.lang === "en" ? 1 : 0;
