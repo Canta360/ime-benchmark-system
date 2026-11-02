@@ -15,7 +15,7 @@
 :root {
   --key: #197a4b; --key-bg: #e6f5ec;
   --surface: #ffffff; --page: #f2f2f2; --ink: #1a1a1a; --ink-2: #4d4d4d; --ink-3: #666666;
-  --grid: #e6e6e6; --line: #949494; --divider: #cccccc; --bar: #1d8b56;
+  --grid: #e6e6e6; --line: #949494; --divider: #cccccc; --bar: #1d8b56; --seg-x: #0e5232; --seg-b: #a8dcbf;
   --ok-bg: #197a4b; --ok-ink: #ffffff; --warn-bg: #fff0b3; --warn-ink: #6e5600; --bad-bg: #ce0000; --bad-ink: #ffffff;
   --win: #197a4b; --lose: #ce0000; --chip: #f2f2f2; --link: #0017c1;
   --radius: 0.75rem; --radius-s: 0.5rem;
@@ -25,7 +25,7 @@
   :root:not([data-theme="light"]) {
     --key: #71c598; --key-bg: #0c472a;
     --surface: #1a1a1a; --page: #0d0d0d; --ink: #ffffff; --ink-2: #cccccc; --ink-3: #b3b3b3;
-    --grid: #333333; --line: #7f7f7f; --divider: #4d4d4d; --bar: #2cac6e;
+    --grid: #333333; --line: #7f7f7f; --divider: #4d4d4d; --bar: #2cac6e; --seg-x: #7fd3a6; --seg-b: #1d5a3c;
     --ok-bg: #71c598; --ok-ink: #032213; --warn-bg: #604b00; --warn-ink: #fff0b3; --bad-bg: #ff7171; --bad-ink: #1a1a1a;
     --win: #71c598; --lose: #ff9696; --chip: #333333; --link: #9db7f9;
   }
@@ -57,6 +57,10 @@ p.lead { color: var(--ink-2); margin: 0 0 16px; }
 .bar-track { position: relative; height: 100%; border-left: 1px solid var(--line); }
 .bar-track .gridline { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--grid); }
 .bar-fill { position: absolute; left: 0; top: 11px; height: 18px; background: var(--bar); border-radius: 0 4px 4px 0; }
+.bar-fill.x { background: var(--seg-x); border-radius: 0; }
+.bar-fill.b { background: var(--seg-b); }
+.segkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted, inherit); margin: 0 0 6px; }
+.segkey i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
 .bar-ci { position: absolute; top: 19px; height: 2px; background: var(--ink); }
 .bar-ci::before, .bar-ci::after { content: ""; position: absolute; top: -6px; width: 2px; height: 14px; background: var(--ink); }
 .bar-ci::before { left: 0; } .bar-ci::after { right: 0; }
@@ -242,11 +246,12 @@ const T = {
   examples: ["この IME だけが間違えた文の例", "Rows only this input method got wrong"],
   title: ["IME の変換精度の比較", "How accurately input methods convert"],
   lead: ["どの IME にも、同じキーを同じ手順で打ちました。数字は全部、公開している出力から計算したものです。", "Every input method gets the same keys, typed the same way. All numbers are computed from the published outputs."],
+  segX: ["完全一致", "Exact"], segA: ["＋表記ちがい（A）", "+ notation (A)"], segB: ["＋言葉ちがいでも自然（B）", "+ other words, natural (B)"],
   fair: ["fair %（完全一致＋表記ちがい）", "fair % (exact + notation variants)"],
   fairShort: ["fair %", "fair %"],
   zoomOn: ["拡大", "Zoom"],
   zoomOff: ["0–100", "0–100"],
-  ci: ["ひげは 95% 信頼区間です。", "Whiskers: 95% interval."],
+  ci: ["右の数字は fair %（完全一致＋A）、ひげはその 95% 信頼区間です。棒のない残りが C です。", "The number is fair % (exact + A); whiskers are its 95% interval. The rest of the track is C."],
   table: ["表で見る", "Show as a table"],
   ime: ["IME", "Input method"], n: ["文数", "Rows"], exact: ["完全一致 %", "Exact %"], plusB: ["+B %", "+B %"], cer: ["CER %", "CER %"],
   acc1: ["acc@1 %（AJIMEE 公式）", "acc@1 % (AJIMEE)"], mincer: ["MinCER", "MinCER"], version: ["バージョン", "Version"],
@@ -333,14 +338,16 @@ const clamp = (v, [lo, hi]) => Math.max(lo, Math.min(hi, v));
 function chart(name, set, id) {
   const sys = set.systems;
   id = id || "set:" + name;
-  const [lo, hi] = span(sys.flatMap(s => [s.lo, s.hi, s.fair]), id);
+  const [lo, hi] = span(sys.flatMap(s => [s.lo, s.hi, s.exact, s.lenient]), id);
   const pos = v => ((v - lo) / (hi - lo) * 100).toFixed(2) + "%";
-  let h = zoomSw(id) + '<div class="chart">';
+  let h = zoomSw(id) + `<div class="segkey"><span><i style="background:var(--seg-x)"></i>${t("segX")}</span><span><i style="background:var(--bar)"></i>${t("segA")}</span><span><i style="background:var(--seg-b)"></i>${t("segB")}</span></div>` + '<div class="chart">';
   for (const s of sys) {
     h += `<div class="bar-row" data-set="${esc(name)}" data-s="${esc(s.system)}">
       <div class="bar-name" title="${esc(s.name)}">${esc(s.name)}${s.verified ? "" : ` <span class="badge">${t("community")}</span>`}</div>
       <div class="bar-track">${ticks([lo, hi]).slice(1, -1).map(g => `<div class="gridline" style="left:${pos(g)}"></div>`).join("")}
+        <div class="bar-fill b" style="width:${pos(clamp(s.lenient, [lo, hi]))}"></div>
         <div class="bar-fill" style="width:${pos(clamp(s.fair, [lo, hi]))}"></div>
+        <div class="bar-fill x" style="width:${pos(clamp(s.exact, [lo, hi]))}"></div>
         <div class="bar-ci" style="left:${pos(clamp(s.lo, [lo, hi]))};width:calc(${pos(clamp(s.hi, [lo, hi]))} - ${pos(clamp(s.lo, [lo, hi]))})"></div></div>
       <div class="bar-val">${s.fair.toFixed(1)}</div></div>`;
   }
@@ -742,7 +749,7 @@ function render() {
     row.onmousemove = e => {
       const s = DATA.sets[row.dataset.set].systems.find(x => x.system === row.dataset.s);
       showTip(e, `<div><b>${esc(s.name)}</b></div><div>${t("fairShort")} <b>${s.fair.toFixed(1)}</b> (95% CI ${s.lo.toFixed(1)}–${s.hi.toFixed(1)})</div>
-        <div>${t("exact")} ${s.exact.toFixed(1)} · ${t("cer")} ${s.cer.toFixed(1)} · ${t("n")} ${s.n}</div>
+        <div>${t("exact")} ${s.exact.toFixed(1)} · ${t("plusB")} ${s.lenient.toFixed(1)} · ${t("cer")} ${s.cer.toFixed(1)} · ${t("n")} ${s.n}</div>
         <div class="note">${esc(s.version)} · ${t("learning")} ${esc(s.learning)} · ${esc(s.date)}</div>`);
     };
     row.onmouseleave = hideTip;
