@@ -157,7 +157,8 @@ td.none { color: var(--ink-3); }
   .card { border-color: #cccccc; padding: 10px 12px; margin: 8px 0; }
   /* Overview sections flow on; each set starts its own page. */
   section.pg { break-before: auto; }
-  section.pg.set { break-before: page; }
+  section.pg.set, section.pg.last, section.pg.sum2 { break-before: page; }
+  .sum2 > h2:first-child { margin-top: 0; }
   .card, table, h2, h3 { break-inside: avoid; }
   footer { break-before: avoid; }
   .radars { gap: 0 6px; }
@@ -187,6 +188,8 @@ td.none { color: var(--ink-3); }
   .ovp h2 { margin-top: 0; }
   .ovp table { font-size: 6.5pt; line-height: 1.2; } .ovp th, .ovp td { padding: 1px 3px; }
   .set h2 { margin-top: 0; }
+  .setgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; align-items: start; }
+  .set .bar-row { grid-template-columns: 110px 1fr 36px; } .set .axis { grid-template-columns: 110px 1fr 36px; }
   .set .card { padding: 6px 10px; margin: 5px 0; }
   .set .bar-row { height: 18px; } .set .bar-fill { top: 3px; height: 12px; } .set .bar-ci { top: 8px; }
   .set .segkey, .set .note { font-size: 7pt; margin-bottom: 2px; }
@@ -470,25 +473,32 @@ function profiles() {
 function overview() {
   const ov = DATA.overview;
   if (!ov || ov.sets.length < 2) return "";
+  // Two tables: Japanese sets, then the sets with English in them.
+  const isJa = n => (GROUP[DATA.sets[n].kind] || "groupJa") === "groupJa";
+  const parts = [ov.sets.filter(isJa), ov.sets.filter(n => !isJa(n))].filter(p => p.length);
+  return `<h2>${t("overview")}</h2><div class="card ovcard"><p class="note">${t("overviewNote")}</p>${parts.map(ovTable).join("")}</div>`;
+}
+function ovTable(sets) {
+  const ov = DATA.overview;
   const groups = [];
-  for (const n of ov.sets) {
+  for (const n of sets) {
     const g = GROUP[DATA.sets[n].kind] || "groupJa";
     if (groups.length && groups[groups.length - 1].g === g) groups[groups.length - 1].n++; else groups.push({ g, n: 1 });
   }
-  let h = `<h2>${t("overview")}</h2><div class="card"><p class="note">${t("overviewNote")}</p><div class="scroll"><table class="ovt">
+  let h = `<div class="scroll"><table class="ovt">
     <tr><th></th>${groups.map(g => `<th colspan="${g.n}" class="grp">${t(g.g)}</th>`).join("")}</tr>
-    <tr><th>${t("ime")}</th>${ov.sets.map(n => `<th title="${esc((T.setNames[n] || [n, n])[lang])}">${esc((T.setShort[n] || T.setShort[DATA.sets[n].kind] || [n, n])[lang])}</th>`).join("")}</tr>`;
-  for (const r of ov.rows) {
-    h += `<tr><td>${esc(r.name)}</td>${ov.sets.map(n => r.values[n] == null ? `<td class="none">—</td>` :
+    <tr><th>${t("ime")}</th>${sets.map(n => `<th title="${esc((T.setNames[n] || [n, n])[lang])}">${esc((T.setShort[n] || T.setShort[DATA.sets[n].kind] || [n, n])[lang])}</th>`).join("")}</tr>`;
+  for (const r of ov.rows.filter(r => sets.some(n => r.values[n] != null))) {
+    h += `<tr><td>${esc(r.name)}</td>${sets.map(n => r.values[n] == null ? `<td class="none">—</td>` :
       `<td><div class="ov"><span class="ovbar" style="width:${r.values[n].toFixed(1)}%"></span></div><span class="ovv">${r.values[n].toFixed(1)}</span></td>`).join("")}</tr>`;
   }
-  return h + "</table></div></div>";
+  return h + "</table></div>";
 }
 
 // --- Views added for cycle 3: ranks per kind of text, dot plot, one page per input method.
 const PMODE = new URLSearchParams(location.search).get("print") || "";
 // The full report is landscape so the wide comparison table fits one page.
-if (PMODE === "full") document.head.insertAdjacentHTML("beforeend", "<style>@page { size: A4 landscape; margin: 9mm 10mm; } .card > svg { width: auto; max-width: 100%; max-height: 95mm; display: block; } .levels .tycol svg { max-height: 55mm; width: auto; }</style>");
+if (PMODE === "full") document.head.insertAdjacentHTML("beforeend", "<style>@page { size: A4 landscape; margin: 9mm 10mm; } .card > svg { width: auto; max-width: 100%; max-height: 50mm; display: block; } .legend { font-size: 7pt; margin: 0; } .brand .icon, .brand .wordmark { height: 30px; width: auto; } .first .note { margin: 0 0 2px; } .card { margin: 5px 0; } h1 { margin-top: 4px; } .ovt .ov { display: none; } .ovcard { break-inside: auto; } .levels .tycol svg { max-height: 27mm; } .ovt td, .ovt th { padding: 0 3px; line-height: 1.15; } .sum2 h2 { margin: 6px 0 2px; } .ovt td, .ovt th { padding: 1px 3px; } .types .tycol svg { max-height: 34mm; width: auto; } .types h3 { font-size: 8.5pt; } .levels .tycol svg { max-height: 40mm; width: auto; } .levels { grid-template-columns: repeat(3, 1fr); }</style>");
 const PIME = new URLSearchParams(location.search).get("ime") || "";
 // Fixed identity per input method (overview order): a color and a shape, so
 // print in black and white still tells them apart.
@@ -728,8 +738,8 @@ function render() {
     const title = (T.setNames[name] || T.setShort[name] || T.setShort[set.kind] || [name, name])[lang];
     if (PRINT) {
       // One page per set: chart, scores, conditions and significance together.
-      h += `<section class="pg set${first ? " first" : ""}"><h2>${esc(title)}</h2><div class="card"><h3>${t("fair")}</h3>${chart(name, set)}<p class="note">${t("ci")}</p></div>
-        <div class="card"><h3>${t("scoresTitle")}</h3>${scoreTable(set)}</div><div class="card"><h3>${t("conditions")}</h3>${condTable(set)}</div>
+      h += `<section class="pg set${first ? " first" : ""}"><h2>${esc(title)}</h2><div class="setgrid"><div class="card"><h3>${t("fair")}</h3>${chart(name, set)}<p class="note">${t("ci")}</p></div>
+        <div><div class="card"><h3>${t("scoresTitle")}</h3>${scoreTable(set)}</div><div class="card"><h3>${t("conditions")}</h3>${condTable(set)}</div></div></div>
         <div class="card"><h3>${t("sigShort")}</h3><p class="note">${t("sigNote")}</p>${sigTable(set)}</div></section>`;
       first = false;
       continue;
@@ -753,7 +763,7 @@ function render() {
     document.getElementById("sets").innerHTML = "";
   } else {
     document.getElementById("overview").innerHTML = PRINT
-      ? `<section class="pg first">${top}</section>` + (ov ? `<section class="pg ovp">${ov}</section>` : "")
+      ? `<section class="pg first">${typeRanks() + dotPlot()}</section><section class="pg sum2">${levels() + ov}</section>`
       : imeList() + top + explore() + ov;
     document.getElementById("sets").innerHTML = PRINT ? h.replace('<section class="pg first">', '<section class="pg">') : h;
   }
@@ -783,11 +793,7 @@ function afterRender() {
   document.querySelector(".pdf.full").href = `report-full.${L}.pdf`;
   document.getElementById("printed").textContent = `${t("generated")}: ${DATA.generated || ""}. ${t("webpage")}`;
   if (PRINT) document.querySelectorAll("details").forEach(d => d.open = true);
-  // In print, the closing notes go after the overview so the set pages end the file.
-  if (PRINT && !document.body.classList.contains("one")) {
-    const sets = document.getElementById("sets");
-    sets.before(document.querySelector("section.pg.last"), document.querySelector("footer"));
-  }
+
 }
 document.querySelectorAll(".toggle button[data-lang]").forEach(b => b.onclick = () => {
   lang = b.dataset.lang === "en" ? 1 : 0;
