@@ -129,6 +129,21 @@ def rank_names(data: dict, rows: dict, group: str, names: list[str]) -> dict:
     return out
 
 
+def write_pdfs(out: Path, data: dict) -> None:
+    browser = find_browser()
+    # Three kinds: a one-page summary, the full report, and one page per input method.
+    jobs = [("report-summary", "summary"), ("report-full", "full")]
+    jobs += [(f"report.{slug(r['name'])}", "ime&ime=" + slug(r["name"])) for r in data["overview"]["rows"] if "(live)" not in r["name"]]
+    for lang in ("ja", "en"):
+        for stem, mode in jobs:
+            pdf = (out / f"{stem}.{lang}.pdf").resolve()
+            url = (out / "index.html").resolve().as_uri() + f"?print={mode}&lang={lang}"
+            subprocess.run([browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+                            "--run-all-compositor-stages-before-draw", "--virtual-time-budget=20000",
+                            f"--print-to-pdf={pdf}", url], check=True, capture_output=True, timeout=180)
+            print(f"wrote {pdf}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(ROOT / "site"))
@@ -173,6 +188,49 @@ def main() -> int:
                 sysd["acc1"] = 100 * aj["acc1"] / sc["n"]
                 sysd["mincer"] = aj["mincer"]
             entry["systems"].append(sysd)
+    # Cycle 3 on the main page; cycles 1 and 2 (older sets, and older bundles
+    # of the shared sets) on old.html.
+    c3_bundles = [d["bundle"] for n, e in data["sets"].items() if n.startswith(CURRENT) for d in e["systems"]]
+    start = min(c3_bundles) if c3_bundles else "~"
+    old = {"sets": {}, "commitments": [], "generated": data["generated"], "old": True}
+    for n, e in list(data["sets"].items()):
+        keep = [d for d in e["systems"] if n.startswith(CURRENT) or (n in ("ajimee", "mozc") and d["bundle"] >= start)]
+        rest = [d for d in e["systems"] if d not in keep]
+        if rest:
+            old["sets"][n] = dict(e, systems=rest)
+        if keep:
+            e["systems"] = keep
+        else:
+            del data["sets"][n]
+    for f in sorted((ROOT / "heldout").glob("*_commitments.txt")):
+        data["commitments"].append({"cycle": f.stem.split("_")[0],
+                                    "lines": [l for l in f.read_text(encoding="utf-8").splitlines() if l and not l.startswith("#")]})
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    finish(data)
+    write_page(out / "index.html", data)
+    if old["sets"]:
+        finish(old)
+        write_page(out / "old.html", old)
+    shutil.copyfile(ROOT / "assets" / "logotext.svg", out / "logotext.svg")
+    shutil.copyfile(ROOT / "assets" / "icon.png", out / "icon.png")
+    for name in ("capitata.svg", "capitata-dark.png"):
+        shutil.copyfile(ROOT / "assets" / name, out / name)
+    print(f"wrote {out / 'index.html'}: {len(data['sets'])} sets; old.html: {len(old['sets'])} sets")
+    if args.pdf:
+        write_pdfs(out, data)
+    return 0
+
+
+def write_page(path: Path, data: dict) -> None:
+    page = (Path(__file__).parent / "site_template.html").read_text(encoding="utf-8")
+    data["slugs"] = {r["name"]: slug(r["name"]) for r in data["overview"]["rows"]}
+    payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    path.write_text(page.replace("/*DATA*/null", payload), encoding="utf-8", newline="\n")
+
+
+def finish(data: dict) -> None:
+    """Pairwise tests, the overview and the ranks for one page's sets."""
     # McNemar for every pair on the same set.
     for entry in data["sets"].values():
         systems = entry["systems"]
@@ -214,34 +272,6 @@ def main() -> int:
         r.pop("rank", None)
     data["overview"] = {"sets": names, "rows": sorted(rows.values(), key=lambda r: r["name"])}
     data["types"] = rank_types(data, rows)
-    for f in sorted((ROOT / "heldout").glob("*_commitments.txt")):
-        data["commitments"].append({"cycle": f.stem.split("_")[0],
-                                    "lines": [l for l in f.read_text(encoding="utf-8").splitlines() if l and not l.startswith("#")]})
-    out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
-    page = (Path(__file__).parent / "site_template.html").read_text(encoding="utf-8")
-    data["slugs"] = {r["name"]: slug(r["name"]) for r in data["overview"]["rows"]}
-    payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
-    (out / "index.html").write_text(page.replace("/*DATA*/null", payload), encoding="utf-8", newline="\n")
-    shutil.copyfile(ROOT / "assets" / "logotext.svg", out / "logotext.svg")
-    shutil.copyfile(ROOT / "assets" / "icon.png", out / "icon.png")
-    for name in ("capitata.svg", "capitata-dark.png"):
-        shutil.copyfile(ROOT / "assets" / name, out / name)
-    print(f"wrote {out / 'index.html'}: {len(data['sets'])} sets")
-    if args.pdf:
-        browser = find_browser()
-        # Three kinds: a one-page summary, the full report, and one page per input method.
-        jobs = [("report-summary", "summary"), ("report-full", "full")]
-        jobs += [(f"report.{slug(r['name'])}", "ime&ime=" + slug(r["name"])) for r in data["overview"]["rows"] if "(live)" not in r["name"]]
-        for lang in ("ja", "en"):
-            for stem, mode in jobs:
-                pdf = (out / f"{stem}.{lang}.pdf").resolve()
-                url = (out / "index.html").resolve().as_uri() + f"?print={mode}&lang={lang}"
-                subprocess.run([browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
-                                "--run-all-compositor-stages-before-draw", "--virtual-time-budget=20000",
-                                f"--print-to-pdf={pdf}", url], check=True, capture_output=True, timeout=180)
-                print(f"wrote {pdf}")
-    return 0
 
 
 if __name__ == "__main__":

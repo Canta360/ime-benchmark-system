@@ -219,6 +219,7 @@ td.none { color: var(--ink-3); }
 <main class="wrap">
   <h1 data-t="title"></h1>
   <p class="lead" data-t="lead"></p>
+  <p class="lead" id="pagelink"></p>
   <p class="note printed" id="printed"></p>
   <div id="overview"></div>
   <div id="sets"></div>
@@ -259,6 +260,8 @@ const T = {
   set: ["セット", "Set"], rankCol: ["順位", "Rank"], medianCol: ["全 IME の中央値", "Median of all"],
   examples: ["この IME だけが間違えた文の例", "Rows only this input method got wrong"],
   title: ["IME の変換精度の比較", "How accurately input methods convert"],
+  oldLead: ["以前のセット（第 1・2 サイクル）で測った結果です。", "Results on the earlier sets (cycles 1 and 2)."],
+  toCurrent: ["現在の結果へ", "Current results"], toOld: ["以前のセットの結果", "Results on earlier sets"],
   lead: ["どの IME にも、同じキーを同じ手順で打ちました。数字は全部、公開している出力から計算したものです。", "Every input method gets the same keys, typed the same way. All numbers are computed from the published outputs."],
   segX: ["完全一致", "Exact"], segA: ["＋表記ちがい（A）", "+ notation (A)"], segB: ["＋言葉ちがいでも自然（B）", "+ other words, natural (B)"],
   fair: ["fair %（完全一致＋表記ちがい）", "fair % (exact + notation variants)"],
@@ -506,7 +509,10 @@ const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00"
 const SHAPES = ["circle", "square", "triangle", "diamond", "cross", "tri-down", "star", "ring", "square", "triangle"];
 function ident(name) {
   // Live conversion rows are left out of the comparisons, so they get no slot of their own.
-  const i = Math.max(0, DATA.overview.rows.filter(r => !r.name.includes("(live)")).findIndex(r => r.name === name));
+  // Known input methods keep their slot on every page; others follow.
+  const known = ["Beki IME", "Copilot Keyboard", "Google 日本語入力", "Meltype", "Microsoft IME", "Mozc", "TEKITO", "shunti IME"];
+  const others = DATA.overview.rows.filter(r => !r.name.includes("(live)") && !known.includes(r.name)).map(r => r.name);
+  const i = Math.max(0, known.includes(name) ? known.indexOf(name) : known.length + others.indexOf(name));
   return { color: COLORS[i % COLORS.length], shape: SHAPES[i % SHAPES.length] };
 }
 function mark(x, y, name, size, extra) {
@@ -655,7 +661,7 @@ function imePage(slug) {
   const exh = ex.filter(e => e.meant.length <= 60).slice(0, 4).map(e => `<tr><td>${esc(setLabel(e.n))}</td><td>${esc(e.meant)}</td><td>${esc(e.out)}</td></tr>`).join("");
   const pdf = `report.${slug}.${lang ? "en" : "ja"}.pdf`;
   return `<section class="imepage">
-    ${PRINT ? "" : `<div class="navrow"><a class="pdf" href="#">${t("back")}</a><a class="pdf" href="${pdf}">${t("imePdf")}</a></div>`}
+    ${PRINT ? "" : `<div class="navrow"><a class="pdf" href="#">${t("back")}</a>${DATA.old ? "" : `<a class="pdf" href="${pdf}">${t("imePdf")}</a>`}</div>`}
     <h1>${esc(r.name)}</h1>
     <p class="lead">${t("version")}: ${esc(versions || "—")}</p>${envLine(sys)}
     <h2>${t("points")}</h2><div class="card"><ul class="points">${pts.map(p => `<li>${p}</li>`).join("")}</ul><p class="note">${t("pointsNote")}</p></div>
@@ -788,6 +794,9 @@ function render() {
     `<details class="card"><summary>${esc(c.cycle)}</summary><pre><code>${c.lines.map(esc).join("\n")}</code></pre></details>`).join("");
 }
 function afterRender() {
+  document.getElementById("pagelink").innerHTML = PRINT ? "" : DATA.old
+    ? `${t("oldLead")} <a href="index.html">${t("toCurrent")}</a>` : `<a href="old.html">${t("toOld")}</a>`;
+  document.querySelectorAll("header .pdf").forEach(a => a.style.display = DATA.old ? "none" : "");
   const L = lang ? "en" : "ja";
   document.querySelector(".pdf").href = `report-summary.${L}.pdf`;
   document.querySelector(".pdf.full").href = `report-full.${L}.pdf`;
