@@ -1,0 +1,66 @@
+{
+ "windows": "Windows 11 Pro 26H2 build 26300.9711",
+ "skipped": [],
+ "imes": {
+  "beki": {
+   "version": "0.33.0.506",
+   "modified": "2026-10-29T00:02:48",
+   "dll": "C:\\Program Files\\Beki IME\\x64\\bekiime.dll"
+  },
+  "shunti": {
+   "version": "0.7.3",
+   "modified": "2026-10-28T20:04:22",
+   "dll": "C:\\Program Files\\shunti IME\\shunti_ime_x64.dll"
+  }
+ },
+ "sets_sha256": {
+  "c3_jaA": "b17593000667cc79f6e2873b35e320d8479763d1ca5080c783725837be65d441",
+  "c3_jaB": "38c01145f33d3694dd53f7bf755a96352c49ddab61ae3a844a3a64d67f7311e3",
+  "c3_jaC": "c22f04d8f73a95d200c007886c8126898f48628b8192a3e5700bcfc84ddbece1",
+  "c3_jactx": "3d6f59f7bdd374e1e16a9bea81d12b1157f96866fa89cefab1685d6e5b16565b",
+  "c3_jaslip": "5d981a9d85f46f2fd3e40e9402247f3681ecde08995dcdacda9b6fc023171aec",
+  "c3_mixA2": "d2de8a156230f53b1469c07ee513321b91e6fc1e560689dabb112b2656362e4d",
+  "c3_mixB2": "99dbaf17d7996761cd3b749316b8ef98fc6cde8aebbf270ee78b0f514263f808",
+  "c3_mixC2": "5a6b9977f74eef73f7f04a962fe543e3be09c6e6b18f59a884f8aa3ab684c062",
+  "c3_mixslip2": "06e66e66a01852f4a179dcc783f09a6439ed0b11808b065cc39cfbf4cc1f8d68",
+  "c3_postsja": "cabed8c57b2b26cc9dbf51e6ec69bc3b9d3002c3ea4d16e40be1b4655604c211",
+  "c3_postsjaslip": "1198f40c5188eddc46ba47bcb76484316b4ac5bcdccc993083f5e0391b53c0d9",
+  "c3_postsmix2": "1d4b32284d170f8e9198740b3bf528a5e75fc6ffcb24fad89b7f3daa6921829a",
+  "c3_postsmixslip2": "515255320cd990dd9a733127a01525991c197b6d1a9f452905ef03061258f633"
+ },
+ "learning": "off",
+ "date": "2026-10-29 15:23",
+ "group": "dev",
+ "harness": "ImeBench 78c267d09752",
+ "done": [
+  "beki/c3_jaA",
+  "beki/c3_jaB",
+  "beki/c3_jaC",
+  "beki/c3_jactx",
+  "beki/c3_jaslip",
+  "beki/c3_mixA2",
+  "beki/c3_mixB2",
+  "beki/c3_mixC2",
+  "beki/c3_mixslip2",
+  "beki/c3_postsja",
+  "beki/c3_postsjaslip",
+  "beki/c3_postsmix2",
+  "beki/c3_postsmixslip2",
+  "shunti/c3_jaA",
+  "shunti/c3_jaB",
+  "shunti/c3_jaC",
+  "shunti/c3_jactx",
+  "shunti/c3_jaslip",
+  "shunti/c3_mixA2",
+  "shunti/c3_mixB2",
+  "shunti/c3_mixC2",
+  "shunti/c3_mixslip2",
+  "shunti/c3_postsja",
+  "shunti/c3_postsjaslip",
+  "shunti/c3_postsmix2",
+  "shunti/c3_postsmixslip2"
+ ],
+ "note": "cycle 3, Beki IME, shunti IME, Sumire IME",
+ "kind": "real-ime",
+ "measured_by": "maintainer (verified)"
+}

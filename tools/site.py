@@ -69,7 +69,7 @@ def find_browser() -> str:
 
 
 CURRENT = "c3_"
-C3_ORDER = ["jaA", "jaB", "jaC", "jaslip", "jactx", "postsja", "postsjaslip", "mixA", "mixB", "mixC", "mixslip", "postsmix", "postsmixslip",
+C3_ORDER = ["jaA", "jaB", "jaC", "jaslip", "jactx", "postsja", "postsjaslip", "ajimee", "mozc", "mixA", "mixB", "mixC", "mixslip", "postsmix", "postsmixslip",
             "mixArun", "mixBrun", "mixCrun", "mixsliprun", "postsmixrun", "postsmixsliprun",
             "mixA2", "mixB2", "mixC2", "mixslip2", "postsmix2", "postsmixslip2", "en", "enslip", "postsen", "postsenslip"]
 GROUPS = {"ja": ("ajimee", "ja", "jatypo", "postsja"), "mix": ("mixB", "mixC", "postsmixB", "postsmixC"),
@@ -190,10 +190,10 @@ def main() -> int:
     names = sorted(data["sets"], key=lambda n: (order.get(data["sets"][n]["kind"], 99), n))
     # The current sets (cycle 3) once anything is measured on them; the older
     # sets stay on the page below as they were.
-    current = [n for n in names if n.startswith(CURRENT)]
+    current = [n for n in names if n.startswith(CURRENT) or n in ("ajimee", "mozc")] if any(n.startswith(CURRENT) for n in names) else []
     if current:
         names = sorted(current, key=lambda n: C3_ORDER.index(n.removeprefix(CURRENT)) if n.removeprefix(CURRENT) in C3_ORDER else 99)
-    data["current"] = CURRENT if current else ""
+    data["current"] = CURRENT if any(n.startswith(CURRENT) for n in current) else ""
     rows = {}
     for set_name in names:
         for sysd in data["sets"][set_name]["systems"]:

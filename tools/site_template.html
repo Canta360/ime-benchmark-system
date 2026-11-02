@@ -436,10 +436,11 @@ const PMODE = new URLSearchParams(location.search).get("print") || "";
 const PIME = new URLSearchParams(location.search).get("ime") || "";
 // Fixed identity per input method (overview order): a color and a shape, so
 // print in black and white still tells them apart.
-const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00", "#000000", "#7F7F7F"];
-const SHAPES = ["circle", "square", "triangle", "diamond", "cross", "tri-down", "star", "ring"];
+const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00", "#000000", "#882255", "#7F7F7F", "#44AA99"];
+const SHAPES = ["circle", "square", "triangle", "diamond", "cross", "tri-down", "star", "ring", "square", "triangle"];
 function ident(name) {
-  const i = Math.max(0, DATA.overview.rows.findIndex(r => r.name === name));
+  // Live conversion rows are left out of the comparisons, so they get no slot of their own.
+  const i = Math.max(0, DATA.overview.rows.filter(r => !r.name.includes("(live)")).findIndex(r => r.name === name));
   return { color: COLORS[i % COLORS.length], shape: SHAPES[i % SHAPES.length] };
 }
 function mark(x, y, name, size, extra) {
@@ -487,7 +488,7 @@ function typeRanks(only) {
 // One row per set, one mark per input method; the one asked for drawn on top.
 function dotPlot(only) {
   const ov = DATA.overview;
-  const W = 640, row = only ? 20 : 22, top = 8, left = 110, right = 16, H = top + ov.sets.length * row + 26;
+  const W = 640, row = PRINT ? (ov.sets.length > 12 ? 15 : 18) : (only ? 20 : 22), top = 8, left = 110, right = 16, H = top + ov.sets.length * row + 26;
   const xs = v => left + (W - left - right) * v / 100;
   let s = [0, 25, 50, 75, 100].map(v => `<line x1="${xs(v)}" y1="${top}" x2="${xs(v)}" y2="${H - 22}" stroke="var(--grid)"/><text x="${xs(v)}" y="${H - 8}" class="tick" text-anchor="middle">${v}</text>`).join("");
   ov.sets.forEach((n, i) => {

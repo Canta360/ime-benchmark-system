@@ -594,6 +594,16 @@ PROVENANCE_FROM = "2026-10-29"
 MIN_KEY_MS = 10   # the app waits at least this long after each key
 
 
+def same_bytes(path: Path, digest: str) -> bool:
+    """The file hashes to what the app wrote, as checked out (git keeps text
+    files with LF line ends; the app may have written CRLF)."""
+    import hashlib
+    data = path.read_bytes()
+    lf = data.replace(b"\r\n", b"\n")
+    return digest in {hashlib.sha256(data).hexdigest(), hashlib.sha256(lf).hexdigest(),
+                      hashlib.sha256(lf.replace(b"\n", b"\r\n")).hexdigest()}
+
+
 def provenance(bundle: Path, meta: dict) -> list[str]:
     """That a bundle came from a released ImeBench.exe and was not edited
     afterwards: the app's hash is a released one (tools/harness.txt), every
@@ -621,7 +631,7 @@ def provenance(bundle: Path, meta: dict) -> list[str]:
             problems.append(f"{bundle}: {name} is not in manifest.sha256")
         elif name not in files:
             problems.append(f"{bundle}: {name} is missing")
-        elif file_sha256(bundle / name) != listed[name]:
+        elif not same_bytes(bundle / name, listed[name]):
             problems.append(f"{bundle}: {name} changed after measuring")
     for out in sorted((bundle / "out").glob("*__*.tsv*")):
         times = bundle / "times" / (out.name.split(".tsv")[0] + ".tsv")
